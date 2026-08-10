@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "npx",
+            "args": [
+                "/home/infmys/.config/herd-lite/bin/php",
+                "/home/infmys/Project/tokoxyz/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
