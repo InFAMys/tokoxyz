@@ -62,6 +62,14 @@
                         @endphp
 
                         <div class="card-pink p-3 mb-3">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input keranjang-check" type="checkbox"
+                                    value="{{ $item->id_keranjang }}" id="check-{{ $item->id_keranjang }}"
+                                    @checked($isAvailable)>
+                                <label class="form-check-label small text-muted" for="check-{{ $item->id_keranjang }}">
+                                    Pilih untuk checkout
+                                </label>
+                            </div>
                             <div class="row g-3 align-items-center">
                                 <div class="col-4 col-md-2">
                                     @if ($isAvailable)
@@ -130,8 +138,7 @@
                                 <input type="number" name="jumlah_barang" min="1" max="{{ $stockReady }}"
                                     value="{{ $item->jumlah_barang }}" class="form-control form-control-sm"
                                     required>
-                                <small class="text-danger d-none position-absolute"
-                                    style="top:100%;left:0" data-jumlah-error></small>
+                                <small class="text-danger d-none d-block mt-2" data-jumlah-error></small>
                             </div>
                             <button type="submit" class="btn btn-sm btn-pink-outline" aria-label="Perbarui jumlah">
                                 <i class="fa-solid fa-check"></i>
@@ -188,20 +195,27 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="summary-box">
-            <h2 class="h5 mb-3">Ringkasan</h2>
-            <div class="summary-row">
-                <span>Total Barang</span>
-                <span>{{ $keranjang->sum('jumlah_barang') }}</span>
+            <div class="summary-box">
+                <h2 class="h5 mb-3">Ringkasan</h2>
+                <div class="summary-row">
+                    <span>Total Barang</span>
+                    <span>{{ $keranjang->sum('jumlah_barang') }}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+                </div>
+                <form method="POST" action="{{ route('keranjang.checkout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-pink w-100 mt-3" id="checkout-selected">
+                        <i class="fa-solid fa-receipt"></i> Checkout
+                    </button>
+                    <small class="text-danger d-none mt-2" id="checkout-error"></small>
+                </form>
+                <small class="d-block text-muted text-center mt-2">
+                    Centang item yang ingin di-checkout.
+                </small>
             </div>
-            <div class="summary-row total">
-                <span>Total</span>
-                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
-            </div>
-            <button type="button" class="btn btn-pink w-100 mt-3" disabled>
-                <i class="fa-solid fa-receipt"></i> Checkout
-            </button>
-        </div>
     </div>
     </div>
     @endif

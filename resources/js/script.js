@@ -124,6 +124,33 @@ document.querySelectorAll("form[novalidate] input[name='jumlah_barang']").forEac
     });
 });
 
+// Keranjang checkout: require at least one checked item
+(() => {
+    const btn = document.getElementById("checkout-selected");
+    if (!btn) return;
+    const form = btn.closest("form");
+    const err = document.getElementById("checkout-error");
+    form.addEventListener("submit", (e) => {
+        const checked = document.querySelectorAll(".keranjang-check:checked");
+        if (!checked.length) {
+            e.preventDefault();
+            err.textContent = "Pilih minimal satu barang untuk checkout.";
+            err.classList.remove("d-none");
+            return;
+        }
+        checked.forEach((c) => {
+            const hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "id_keranjang[]";
+            hidden.value = c.value;
+            form.appendChild(hidden);
+        });
+    });
+    document.querySelectorAll(".keranjang-check").forEach((c) =>
+        c.addEventListener("change", () => err.classList.add("d-none"))
+    );
+})();
+
 // Toast countdown progress (shrinks over the toast delay)
 document.querySelectorAll(".toast[data-bs-delay]").forEach((toast) => {
     const bar = toast.querySelector(".toast-progress");
@@ -183,3 +210,214 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         }
     });
 });
+
+// Alamat form: Klikresi province -> city -> district dropdowns
+(() => {
+    const provSel = document.getElementById("id_provinsi");
+    const citySel = document.getElementById("id_kota");
+    const distSel = document.getElementById("id_kecamatan");
+    if (!provSel || !citySel || !distSel) return;
+
+    const cityUrlTpl = provSel.dataset.citiesUrl || null;
+    const distUrlTpl = citySel.dataset.districtsUrl || null;
+    const labelFor = (name) => document.querySelector(`input[name='${name}']`);
+
+    const optionOf = (item) => {
+        const o = document.createElement("option");
+        o.value = item.id;
+        o.textContent = item.name;
+        return o;
+    };
+
+    const syncLabels = () => {
+        const p = provSel.selectedOptions[0];
+        const c = citySel.selectedOptions[0];
+        const d = distSel.selectedOptions[0];
+        if (labelFor("provinsi")) labelFor("provinsi").value = p && p.value ? p.textContent : "";
+        if (labelFor("kota")) labelFor("kota").value = c && c.value ? c.textContent : "";
+        if (labelFor("kecamatan")) labelFor("kecamatan").value = d && d.value ? d.textContent : "";
+    };
+
+    const fill = (sel, items, saved) => {
+        sel.innerHTML = '<option value="">Pilih</option>';
+        items.forEach((it) => sel.appendChild(optionOf(it)));
+        if (saved) sel.value = saved;
+        syncLabels();
+    };
+
+    const fetchList = (url) =>
+        fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } }).then((res) => res.json());
+
+    const loadCities = () => {
+        const id = provSel.value;
+        citySel.innerHTML = '<option value="">Pilih</option>';
+        distSel.innerHTML = '<option value="">Pilih</option>';
+        syncLabels();
+        if (!id || !cityUrlTpl) return;
+        fetchList(cityUrlTpl.replace(":id", id))
+            .then((cities) => {
+                fill(citySel, cities, citySel.dataset.saved);
+                if (citySel.value) loadDistricts();
+            })
+            .catch(() => {});
+    };
+
+    const loadDistricts = () => {
+        const id = citySel.value;
+        distSel.innerHTML = '<option value="">Pilih</option>';
+        syncLabels();
+        if (!id || !distUrlTpl) return;
+        fetchList(distUrlTpl.replace(":id", id))
+            .then((districts) => fill(distSel, districts, distSel.dataset.saved))
+            .catch(() => {});
+    };
+
+    provSel.addEventListener("change", loadCities);
+    citySel.addEventListener("change", loadDistricts);
+    distSel.addEventListener("change", syncLabels);
+    if (provSel.value) loadCities();
+})();
+
+// Checkout: shipping rate + discount + live total
+(() => {
+    const form = document.getElementById("checkout-form");
+    if (!form) return;
+
+    const fmt = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
+    const subtotalRaw = () => Number(document.getElementById("subtotal-raw").value || 0);
+    const ongkirRaw = () => Number(document.getElementById("ongkir-raw").value || 0);
+    const diskonRaw = () => Number(document.getElementById("diskon-raw").value || 0);
+
+    const refreshTotal = () => {
+        const total = Math.max(0, subtotalRaw() - diskonRaw() + ongkirRaw());
+        document.getElementById("sum-subtotal").textContent = fmt(subtotalRaw());
+        document.getElementById("sum-diskon").textContent = diskonRaw() > 0 ? "- " + fmt(diskonRaw()) : "-";
+        document.getElementById("sum-ongkir").textContent = ongkirRaw() > 0 ? fmt(ongkirRaw()) : "-";
+        document.getElementById("sum-total").textContent = fmt(total);
+    };
+
+    const selectedAddress = () => form.querySelector("input[name='id_alamat']:checked")?.value;
+
+    form.addEventListener("submit", (e) => {
+        const service = document.getElementById("shipping-service")?.value;
+        const cost = document.getElementById("shipping-cost")?.value;
+
+        if (!service || !cost) {
+            e.preventDefault();
+            const box = document.getElementById("shipping-error");
+            box.textContent = "Pilih layanan ongkir terlebih dahulu.";
+            box.style.display = "block";
+        }
+    });
+
+    document.getElementById("cek-ongkir").addEventListener("click", () => {
+        const id = selectedAddress();
+        const box = document.getElementById("shipping-options");
+        if (!id) {
+            box.innerHTML = '<span class="text-danger">Pilih alamat terlebih dahulu.</span>';
+            return;
+        }
+        box.innerHTML = '<span class="text-muted">Menghitung ongkir…</span>';
+        const csrf = form.querySelector("input[name='_token']")?.value || "";
+        const rateUrl = form.dataset.rateUrl || "";
+        fetch(rateUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrf },
+            body: JSON.stringify({ id_alamat: id }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.options) throw new Error(data.message || "Tidak ada ongkir");
+                box.innerHTML = "";
+                data.options.forEach((o) => {
+                    const el = document.createElement("label");
+                    el.className = "form-check d-block mb-1";
+                    el.innerHTML =
+                        `<input class="form-check-input ship-opt" type="radio" name="shipping_service" ` +
+                        `value="${o.id}" data-cost="${o.cost}"> ` +
+                        `<span>${o.service}</span> ` +
+                        `<small class="text-muted">${o.description || ""} ${o.etd ? "(" + o.etd + ")" : ""}</small> ` +
+                        `<strong class="float-end">${fmt(o.cost)}</strong>`;
+                    box.appendChild(el);
+                });
+            })
+            .catch((err) => {
+                box.innerHTML = '<span class="text-danger">' + (err.message || "Gagal memuat ongkir.") + "</span>";
+            });
+    });
+
+    document.addEventListener("click", (e) => {
+        const opt = e.target.closest(".ship-opt");
+        if (!opt) return;
+        document.getElementById("shipping-service").value = opt.value;
+        document.getElementById("shipping-cost").value = opt.dataset.cost;
+        document.getElementById("ongkir-raw").value = opt.dataset.cost;
+        const errEl = document.getElementById("shipping-error");
+        if (errEl) errEl.style.display = "none";
+        refreshTotal();
+    });
+
+    document.getElementById("terapkan-diskon").addEventListener("click", () => {
+        const input = document.getElementById("kode-diskon");
+        const info = document.getElementById("diskon-info");
+        const csrf = form.querySelector("input[name='_token']")?.value || "";
+        const diskonUrl = form.dataset.diskonUrl || "";
+
+        info.innerHTML = '<span class="text-muted">Memverifikasi…</span>';
+
+        fetch(diskonUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrf },
+            body: JSON.stringify({ kode_diskon: input.value }),
+        })
+            .then((res) => res.json().then((data) => ({ ok: res.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok || !data.code) throw new Error(data.message || "Kode diskon tidak valid.");
+                document.getElementById("diskon-raw").value = data.nominal;
+                info.innerHTML = '<span class="text-success">Diskon: ' + fmt(data.nominal) + "</span>";
+                refreshTotal();
+            })
+            .catch((err) => {
+                document.getElementById("diskon-raw").value = 0;
+                info.innerHTML = '<span class="text-danger">' + (err.message || "Gagal memverifikasi diskon.") + "</span>";
+                refreshTotal();
+            });
+    });
+
+    refreshTotal();
+})();
+
+// Snap.js payment popup (checkout show page)
+(() => {
+    const btn = document.getElementById("bayar-button");
+    if (!btn) return;
+
+    const token = btn.dataset.checkoutToken;
+    const clientKey = btn.dataset.clientKey;
+    const sdkBase = btn.dataset.prod === "1" ? "https://app.midtrans.com" : "https://app.sandbox.midtrans.com";
+
+    const loadSnap = () =>
+        new Promise((resolve, reject) => {
+            if (window.snap) return resolve();
+            const s = document.createElement("script");
+            s.src = sdkBase + "/snap/snap.js";
+            s.dataset.clientKey = clientKey;
+            s.onload = () => resolve();
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
+
+    btn.addEventListener("click", () => {
+        loadSnap().then(() => {
+            window.snap.pay(token, {
+                onSuccess: () => { window.location.reload(); },
+                onPending: () => { window.location.reload(); },
+                onError: () => { window.location.reload(); },
+                onClose: () => { window.location.reload(); },
+            });
+        }).catch(() => {
+            btn.closest("div").insertAdjacentHTML("beforeend",
+                '<p class="text-danger small mt-2">Gagal memuat pembayaran. Coba lagi.</p>');
+        });
+    });
+})();

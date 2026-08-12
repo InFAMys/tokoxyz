@@ -39,6 +39,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return route('home');
         });
+
+        $middleware->validateCsrfTokens(except: [
+            'checkout/notification',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

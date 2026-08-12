@@ -10,6 +10,7 @@ use App\Models\Ukuran;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -34,6 +35,27 @@ class KeranjangController extends Controller
         });
 
         return view('customer.keranjang.index', compact('keranjang', 'total'));
+    }
+
+    public function checkoutSelected(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'id_keranjang' => ['required', 'array', 'min:1'],
+            'id_keranjang.*' => ['integer'],
+        ]);
+
+        $ids = $this->customer()->keranjangs()
+            ->whereIn('id_keranjang', array_map('intval', $data['id_keranjang']))
+            ->pluck('id_keranjang')
+            ->all();
+
+        if ($ids === []) {
+            return back()->withErrors(['id_keranjang' => 'Pilih minimal satu barang untuk checkout.']);
+        }
+
+        Session::put('checkout_ids', $ids);
+
+        return redirect()->route('checkout.create');
     }
 
     public function store(Request $request): RedirectResponse

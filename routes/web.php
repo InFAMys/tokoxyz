@@ -1,18 +1,19 @@
 <?php
 
-use App\Http\Controllers\Auth\OwnerAuthController;
 use App\Http\Controllers\Auth\CustomerAuthController;
+use App\Http\Controllers\Auth\OwnerAuthController;
 use App\Http\Controllers\Auth\PegawaiAuthController;
-use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\AlamatController;
+use App\Http\Controllers\Customer\CheckoutController;
+use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\KeranjangController;
 use App\Http\Controllers\Owner\KelolaDiskonController;
 use App\Http\Controllers\Owner\KelolaPegawaiController;
 use App\Http\Controllers\Owner\OwnerController;
 use App\Http\Controllers\Pegawai\BarangController;
-use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Pegawai\BrandController;
 use App\Http\Controllers\Pegawai\KategoriController;
+use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Pegawai\StokController;
 use App\Http\Controllers\Pegawai\UkuranController;
 use Illuminate\Support\Facades\Route;
@@ -20,12 +21,10 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-    // Route::get('/', fn () => view('welcome'))->name('home');
-    Route::get('/', [CustomerController::class, 'home'])->name('home');
-    Route::get('barang/{id}', [CustomerController::class, 'detailBarang'])->name('barang.detail');
-    Route::get('cari', [CustomerController::class, 'cari'])->name('barang.search');
-
-
+// Route::get('/', fn () => view('welcome'))->name('home');
+Route::get('/', [CustomerController::class, 'home'])->name('home');
+Route::get('barang/{id}', [CustomerController::class, 'detailBarang'])->name('barang.detail');
+Route::get('cari', [CustomerController::class, 'cari'])->name('barang.search');
 
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +78,6 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('login', [PegawaiAuthController::class, 'showLogin'])->name('login');
         Route::post('login', [PegawaiAuthController::class, 'login']);
 
-        
     });
 
     Route::middleware('auth:pegawai')->group(function () {
@@ -99,7 +97,7 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('edit-barang/{id}', [BarangController::class, 'editBarang'])->name('ebarang');
         Route::put('update-barang/{id}', [BarangController::class, 'updateBarang'])->name('ubarang');
         Route::post('delete-barang/{id}', [BarangController::class, 'deleteBarang'])->name('delbarang');
-        
+
         Route::get('kelola-kategori', [KategoriController::class, 'listKategoris'])->name('kategori');
         Route::get('add-kategori', [KategoriController::class, 'tambahKategori'])->name('akategori');
         Route::post('add-kategori', [KategoriController::class, 'addKategori']);
@@ -113,7 +111,7 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('edit-brand/{id}', [BrandController::class, 'editBrand'])->name('ebrand');
         Route::put('update-brand/{id}', [BrandController::class, 'updateBrand'])->name('ubrand');
         Route::post('delete-brand/{id}', [BrandController::class, 'deleteBrand'])->name('delbrand');
-        
+
         Route::get('stok-barang/{id}', [StokController::class, 'stokBarang'])->name('stok');
         Route::put('update-stok/{id}', [StokController::class, 'updateStok'])->name('ustok');
         Route::put('update-stok/{id_b}/{id_u}', [StokController::class, 'updateStokUkuran'])->name('ustoku');
@@ -125,8 +123,6 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::put('update-ukuran/{id_b}/{id_u}', [UkuranController::class, 'updateUkuran'])->name('uukuran');
         Route::post('delete-ukuran/{id}', [UkuranController::class, 'deleteUkuran'])->name('delukuran');
 
-
-        
     });
 });
 
@@ -136,7 +132,7 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('/')->group(function () {
-    
+
     Route::middleware('guest:customer')->group(function () {
         Route::get('login', [CustomerAuthController::class, 'showLogin'])->name('login');
         Route::post('login', [CustomerAuthController::class, 'login']);
@@ -162,6 +158,7 @@ Route::prefix('/')->group(function () {
         // Keranjang
         Route::get('keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
         Route::post('keranjang', [KeranjangController::class, 'store'])->name('keranjang.store');
+        Route::post('keranjang/checkout', [KeranjangController::class, 'checkoutSelected'])->name('keranjang.checkout');
         Route::put('keranjang/{id}', [KeranjangController::class, 'update'])->name('keranjang.update');
         Route::post('keranjang/{id}', [KeranjangController::class, 'destroy'])->name('keranjang.destroy');
 
@@ -172,5 +169,20 @@ Route::prefix('/')->group(function () {
         Route::get('alamat/{id}/edit', [AlamatController::class, 'edit'])->name('alamat.edit');
         Route::put('alamat/{id}', [AlamatController::class, 'update'])->name('alamat.update');
         Route::post('alamat/{id}', [AlamatController::class, 'destroy'])->name('alamat.destroy');
+
+        // Alamat: Klikresi province -> city -> district
+        Route::get('alamat/cities/{id}', [AlamatController::class, 'cities'])->name('alamat.cities');
+        Route::get('alamat/districts/{id}', [AlamatController::class, 'districts'])->name('alamat.districts');
+
+        // Checkout
+        Route::get('checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+        Route::post('checkout/rate', [CheckoutController::class, 'rate'])->name('checkout.rate');
+        Route::post('checkout/diskon', [CheckoutController::class, 'diskon'])->name('checkout.diskon');
+        Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+        Route::get('checkout/riwayat', [CheckoutController::class, 'history'])->name('checkout.history');
+        Route::get('checkout/{id}', [CheckoutController::class, 'show'])->name('checkout.show');
     });
 });
+
+// Midtrans payment notification (unauthenticated, CSRF-exempt)
+Route::post('checkout/notification', [CheckoutController::class, 'notification'])->name('checkout.notification');

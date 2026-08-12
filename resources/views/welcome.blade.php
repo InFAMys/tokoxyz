@@ -37,9 +37,13 @@
             @foreach ($barangNew as $bn)
                 <a href="{{ route('barang.detail', $bn->id_barang) }}" class="col-6 col-md-3 col-lg-2 text-decoration-none">
                     <div class="product-card">
-                        <div class="product-img">
+                        <div class="product-img position-relative">
                             <img class="img-fluid" src="{{ asset('storage/' . $bn->thumbnailPath()) }}"
                                 alt="{{ $bn->nama_barang }}" style="width:8rem" />
+                            @if ($bn->stokReady() < 1)
+                                <span class="position-absolute top-0 start-0 badge text-bg-secondary"
+                                    style="opacity:.85">Habis</span>
+                            @endif
                         </div>
                         <div class="card-body">
                             {{-- <div class="product-name">{{ Str::limit($bn->nama_barang, 20) }}</div> --}}
@@ -61,9 +65,13 @@
             @foreach ($barangRand as $br)
                 <a href="{{ route('barang.detail', $br->id_barang) }}" class="col-6 col-md-3 col-lg-2 text-decoration-none">
                     <div class="product-card">
-                        <div class="product-img">
+                        <div class="product-img position-relative">
                             <img class="img-fluid" src="{{ asset('storage/' . $br->thumbnailPath()) }}"
                                 alt="{{ $br->nama_barang }}" style="width:8rem" />
+                            @if ($br->stokReady() < 1)
+                                <span class="position-absolute top-0 start-0 badge text-bg-secondary"
+                                    style="opacity:.85">Habis</span>
+                            @endif
                         </div>
                         <div class="card-body">
                             {{-- <div class="product-name">{{ Str::limit($br->nama_barang, 20) }}</div> --}}

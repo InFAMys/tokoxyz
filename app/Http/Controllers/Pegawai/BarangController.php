@@ -43,15 +43,15 @@ class BarangController extends Controller
             ->where('id_barang', $id)
             ->firstOrFail();
 
-        $stokbrg=Barang::with('ukurans')
+        $stokbrg = Barang::with('ukurans')
             ->whereHas('ukurans')
             ->find($id);
-            
-        if (!$stokbrg) {
-            $stok=null;
+
+        if (! $stokbrg) {
+            $stok = null;
         } else {
             $ukuran = Ukuran::where('id_barang', $id)->get();
-            $stok=$ukuran;
+            $stok = $ukuran;
         }
 
         return view('pegawai.kelola.detail.detailBarang', compact('barang', 'stok'));
@@ -79,35 +79,35 @@ class BarangController extends Controller
             'foto' => ['required', 'array', 'max:5'],
             'foto.*' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
             'harga' => ['required', 'numeric', 'min:1'],
-            'berat' => ['nullable', 'numeric', 'min:0.001'],
+            'berat' => ['required', 'numeric', 'min:0.001'],
         ],
-        [
-            'id_brand.required' => 'Brand Harus Diisi!',
-            'id_kategori.required' => 'Kategori Harus Diisi!',
-            'id_brand.exists' => 'Brand Tidak Valid!',
-            'id_kategori.exists' => 'Kategori Tidak Valid!',
-            'kode_barang.required' => 'Kode Barang Harus Diisi!',
-            'kode_barang.max' => 'Kode Barang Maksimal 15 Karakter!',
-            'kode_barang.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Kode Barang.',
-            'nama_barang.required' => 'Nama Barang Harus Diisi!',
-            'nama_barang.max' => 'Nama Barang Maksimal 32 Karakter!',
-            'deskripsi.required' => 'Deskripsi Harus Diisi!',
-            'thumbnail.required' => 'Thumbnail Harus Diisi!',
-            'thumbnail.image' => 'Thumbnail Harus Berupa Foto!',
-            'thumbnail.mimes' => 'Thumbnail harus berformat JPG, JPEG, atau PNG!',
-            'thumbnail.max' => 'Ukuran Thumbnail Maksimal 5 MB!',
-            'foto.required' => 'Foto Harus Diisi!',
-            'foto.array' => 'Format Foto Tidak Valid!',
-            'foto.max' => 'Maksimal 5 Foto!',
-            'foto.*.required' => 'Foto Harus Diisi!',
-            'foto.*.image' => 'File Harus Berupa Foto!',
-            'foto.*.mimes' => 'Foto harus berformat JPG, JPEG, atau PNG!',
-            'foto.*.max' => 'Ukuran Foto Maksimal 5 MB!',
-            'harga.required' => 'Harga Harus Diisi!',
-            'harga.min' => 'Harga Minimal 1 Karakter!',
-            'berat.numeric' => 'Berat harus berupa angka kilogram!',
-            'berat.min' => 'Berat minimal 0,001 kg!',
-        ]
+            [
+                'id_brand.required' => 'Brand Harus Diisi!',
+                'id_kategori.required' => 'Kategori Harus Diisi!',
+                'id_brand.exists' => 'Brand Tidak Valid!',
+                'id_kategori.exists' => 'Kategori Tidak Valid!',
+                'kode_barang.required' => 'Kode Barang Harus Diisi!',
+                'kode_barang.max' => 'Kode Barang Maksimal 15 Karakter!',
+                'kode_barang.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Kode Barang.',
+                'nama_barang.required' => 'Nama Barang Harus Diisi!',
+                'nama_barang.max' => 'Nama Barang Maksimal 32 Karakter!',
+                'deskripsi.required' => 'Deskripsi Harus Diisi!',
+                'thumbnail.required' => 'Thumbnail Harus Diisi!',
+                'thumbnail.image' => 'Thumbnail Harus Berupa Foto!',
+                'thumbnail.mimes' => 'Thumbnail harus berformat JPG, JPEG, atau PNG!',
+                'thumbnail.max' => 'Ukuran Thumbnail Maksimal 5 MB!',
+                'foto.required' => 'Foto Harus Diisi!',
+                'foto.array' => 'Format Foto Tidak Valid!',
+                'foto.max' => 'Maksimal 5 Foto!',
+                'foto.*.required' => 'Foto Harus Diisi!',
+                'foto.*.image' => 'File Harus Berupa Foto!',
+                'foto.*.mimes' => 'Foto harus berformat JPG, JPEG, atau PNG!',
+                'foto.*.max' => 'Ukuran Foto Maksimal 5 MB!',
+                'harga.required' => 'Harga Harus Diisi!',
+                'harga.min' => 'Harga Minimal 1 Karakter!',
+                'berat.numeric' => 'Berat harus berupa angka kilogram!',
+                'berat.min' => 'Berat minimal 0,001 kg!',
+            ]
         );
 
         $data['thumbnail'] = $data['thumbnail']->store($this->thumbnailDirectory($data['kode_barang']), 'public');
@@ -130,7 +130,6 @@ class BarangController extends Controller
         return view('pegawai.kelola.edit.editBarang', compact('barang', 'brands', 'kategoris'));
     }
 
-
     public function updateBarang(Request $request, int $id)
     {
         $barang = Barang::where('id_barang', $id)->firstOrFail();
@@ -149,7 +148,7 @@ class BarangController extends Controller
             'hapus_foto' => ['nullable', 'array'],
             'hapus_foto.*' => ['required', 'string', Rule::in($barang->foto)],
             'harga' => ['required', 'numeric', 'min:1'],
-            'berat' => ['nullable', 'numeric', 'min:0.001'],
+            'berat' => ['required', 'numeric', 'min:0.001'],
             'status' => ['required', 'in:Ditampilkan,Disembunyikan'],
             'preorder' => ['required', 'in:Tersedia,Tidak Tersedia'],
             'estimasi_preorder' => ['nullable', 'required_if:preorder,Tersedia', 'integer', 'min:1'],

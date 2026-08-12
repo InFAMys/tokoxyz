@@ -153,3 +153,54 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Do NOT delete tests without approval.
 
 </laravel-boost-guidelines>
+
+## Repository-specific notes (Toko XYZ)
+
+### Database & models
+- Custom primary keys everywhere — never assume `id`. Set via `#[Table(key: 'id_x')]`
+  attribute (and/or `$primaryKey`): `barangs.id_barang`, `ukurans.id_ukuran`,
+  `keranjang.id_keranjang`, `customers.id_cst`. Use the exact key in queries/relations.
+- Soft deletes on `barangs`, `ukurans`, `pegawais`, etc. Eloquent excludes trashed rows
+  by default; use `withTrashed()` when needed (e.g. cart shows trashed barang+ukuran).
+
+### Routing & auth
+- Three isolated areas, each own guard + layout:
+  customer (public), `prefix('owner')` (+`guest:owner`/`auth:owner`), `prefix('pegawai')`
+  (+`auth:pegawai`). Named routes scoped: `owner.*`, `pegawai.*`, `barang.*`, `keranjang.*`.
+- Layouts: `resources/views/{customer,owner,pegawai}/layouts/app.blade.php`.
+
+### Frontend / JS (critical build step)
+- All custom JS is centralized in `resources/js/script.js` (single Vite module, loaded via
+  `@vite` in every layout). Add page JS there, not inline in views.
+- Bootstrap 5.3.8 + Font Awesome load from CDN AFTER `@vite(...)`, so the global
+  `bootstrap` object is available to script.js (e.g. `bootstrap.Toast`).
+- Line endings are MIXED across views (some CRLF, some LF). When editing with
+  sed/grep, `$`-anchored patterns can miss CRLF lines. Prefer the edit tool.
+- **Frontend changes don't reflect until `npm run build`** (Vite). Run it after any
+  CSS/JS change; recompile blades with `php artisan view:cache`.
+
+### Flash messages → toasts
+- Alert boxes were replaced by Bootstrap toasts. Central partial
+  `resources/views/components/toasts.blade.php` (included in the 3 layouts + standalone
+  auth pages) auto-collects EVERY string flash key plus `$errors`.
+  Flash keys vary per feature (`astatus`, `estatus`, `delStatus`, per-row `estatus-<id>`, …).
+- Old alert blocks remain as Blade comments (`{{-- … --}}`) in views — do NOT re-introduce
+  alert boxes for flash/session messages. Field-clamped `@error`/invalid-feedback messages
+  stay under their inputs (not toasts).
+
+### Money & numeric fields
+- Prices: `barangs.harga` (decimal:2); optional per-ukuran `ukurans.harga_ukuran`
+  (decimal:2, nullable). Cart unit price = ukuran price when set:
+  `$item->ukuran?->harga_ukuran ?? $item->barang->harga`. Displayed price is a range
+  (min–max of ukuran prices).
+- Harga inputs are `type="text"` formatted live (id-ID thousand dots) by
+  `moneyFormat()`/`toIntegerDigits()` in script.js; JS strips separators on submit because
+  server validates `numeric`. DB `decimal:2` yields values like `"3000000.00"`.
+- `berat` UI uses comma-decimal (input mask allows `.` or `,`); converted to dot server-side
+  via `BarangController@normalizeBerat`.
+- `Barang@stokReady()` = sum(`stok_ukuran`) when ukurans exist, else `barang.stok`.
+
+### Commands
+- `vendor/bin/pint --dirty --format agent` after PHP edits.
+- `php artisan test --compact` (currently only the 2 Example tests).
+- `npm run build` for asset changes.

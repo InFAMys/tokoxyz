@@ -104,7 +104,7 @@
                                 Stok Tidak Tersedia
                             </button>
                         @else
-                            <form method="POST" action="{{ route('keranjang.store') }}">
+                            <form method="POST" action="{{ route('keranjang.store') }}" novalidate>
                                 @csrf
                                 <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
 
@@ -133,12 +133,13 @@
                                     </div>
                                 @endif
 
-                                <div class="mb-3">
+                                <div class="mb-3 position-relative">
                                     <label for="jumlah_barang" class="form-label-pink">Jumlah</label>
                                     <input id="jumlah_barang" type="number" name="jumlah_barang" min="1"
                                         @if (!$hasUkuran) max="{{ $stokReady }}" @endif
                                         value="{{ old('jumlah_barang', 1) }}"
                                         class="form-control @error('jumlah_barang') is-invalid @enderror" required>
+                                    <small class="text-danger d-none d-block mt-2" data-jumlah-error></small>
                                     @error('jumlah_barang')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

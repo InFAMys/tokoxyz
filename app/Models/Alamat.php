@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Alamat extends Model
 {
@@ -25,6 +25,9 @@ class Alamat extends Model
         'kota',
         'provinsi',
         'kode_pos',
+        'id_provinsi',
+        'id_kota',
+        'id_kecamatan',
     ];
 
     public function customer(): BelongsTo

@@ -147,7 +147,7 @@
                     <div class="input-group mb-3">
                         <input id="berat" type="text" class="form-control form-control-pink" name="berat"
                             placeholder="0,5" aria-label="Berat" aria-describedby="berat-addon1" inputmode="decimal"
-                            value="{{ str_replace('.', ',', old('berat', $barang->berat)) }}">
+                            value="{{ str_replace('.', ',', old('berat', $barang->berat)) }}" required>
                         <span class="input-group-text" id="berat-addon1">kg</span>
                     </div>
                     @error('berat')

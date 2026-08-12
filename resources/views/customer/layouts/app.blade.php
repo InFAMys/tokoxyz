@@ -81,11 +81,11 @@
                             </li>
                             <li class="nav-item mx-1">
                                 @if ($activ == 'pesanan')
-                                    <a href="" class="nav-link active-link">
+                                    <a href="{{ route('checkout.history') }}" class="nav-link active-link">
                                         <i class="fa-solid fa-receipt"></i> Pesanan
                                     </a>
                                 @else
-                                    <a href="" class="nav-link">
+                                    <a href="{{ route('checkout.history') }}" class="nav-link">
                                         <i class="fa-solid fa-receipt"></i> Pesanan
                                     </a>
                                 @endif

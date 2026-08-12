@@ -35,4 +35,19 @@ return [
         ],
     ],
 
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+    ],
+
+    'klikresi' => [
+        'key' => env('KLIKRESI_KEY'),
+        'origin_id' => env('KLIKRESI_ORIGIN'),
+        // 'courier' => env('KLIKRESI_COURIER', 'jnt'),
+        'courier' => env('KLIKRESI_COURIER', 'jnt'),
+        'base_url' => env('KLIKRESI_BASE_URL', 'https://klikresi.com'),
+        'rate_url' => env('KLIKRESI_RATE_URL', '/api/rates'),
+    ],
+
 ];

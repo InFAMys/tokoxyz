@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Alamat;
+use App\Services\KlikresiApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AlamatController extends Controller
 {
+    public function __construct(protected KlikresiApi $klikresi) {}
+
     public function index()
     {
         $alamat = Auth::guard('customer')->user()->alamats()->get();
@@ -18,7 +20,9 @@ class AlamatController extends Controller
 
     public function create()
     {
-        return view('customer.alamat.form');
+        $provinces = $this->provinces();
+
+        return view('customer.alamat.form', compact('provinces'));
     }
 
     public function store(Request $request)
@@ -33,8 +37,36 @@ class AlamatController extends Controller
     public function edit($id)
     {
         $alamat = $this->findOwned($id);
+        $provinces = $this->provinces();
 
-        return view('customer.alamat.form', compact('alamat'));
+        return view('customer.alamat.form', compact('alamat', 'provinces'));
+    }
+
+    public function cities(string $id)
+    {
+        try {
+            return response()->json($this->klikresi->cities($id));
+        } catch (\Throwable $e) {
+            return response()->json([], 500);
+        }
+    }
+
+    public function districts(string $id)
+    {
+        try {
+            return response()->json($this->klikresi->districts($id));
+        } catch (\Throwable $e) {
+            return response()->json([], 500);
+        }
+    }
+
+    protected function provinces(): array
+    {
+        try {
+            return $this->klikresi->provinces();
+        } catch (\Throwable) {
+            return [];
+        }
     }
 
     public function update(Request $request, $id)
@@ -70,6 +102,9 @@ class AlamatController extends Controller
             'kota' => ['required', 'string', 'max:64'],
             'provinsi' => ['required', 'string', 'max:64'],
             'kode_pos' => ['required', 'string', 'max:10'],
+            'id_provinsi' => ['nullable', 'string', 'max:32'],
+            'id_kota' => ['nullable', 'string', 'max:32'],
+            'id_kecamatan' => ['nullable', 'string', 'max:32'],
         ], [
             'nama_alamat.required' => 'Masukkan Label Alamat!',
             'nama_penerima.required' => 'Masukkan Nama Penerima!',
