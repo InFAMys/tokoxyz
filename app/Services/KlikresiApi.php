@@ -93,6 +93,34 @@ class KlikresiApi
     }
 
     /**
+     * Track a waybill (resi) for the configured courier.
+     *
+     * @return array<string, mixed>
+     */
+    public function tracking(string $trackingNumber): array
+    {
+        try {
+            $response = Http::withHeaders(['x-api-key' => $this->key])
+                ->timeout(15)
+                ->get($this->base.config('services.klikresi.tracking_url', '/api/trackings')."/{$trackingNumber}/couriers/{$this->courier}");
+        } catch (ConnectionException) {
+            throw new RuntimeException('Klikresi tidak dapat dihubungi.');
+        }
+
+        if ($response->failed()) {
+            throw new RuntimeException('No resi tidak valid atau tidak ditemukan.');
+        }
+
+        $data = $response->json();
+
+        if (! is_array($data)) {
+            throw new RuntimeException('Klikresi response tidak valid.');
+        }
+
+        return $data['data'] ?? $data;
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     protected function list(string $path, array $query = []): array

@@ -23,42 +23,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>#PSN-20250527-001</td>
-                            <td>
-                                <span class="badge-status badge-pending">Menunggu Konfirmasi</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-pink-outline btn-sm">
-                                    <i class="fa-solid fa-circle-info"></i> Detail
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>#PSN-20250527-002</td>
-                            <td>
-                                <span class="badge-status badge-pending">Menunggu Konfirmasi</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-pink-outline btn-sm">
-                                    <i class="fa-solid fa-circle-info"></i> Detail
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>#PSN-20250527-003</td>
-                            <td>
-                                <span class="badge-status badge-pending">Menunggu Konfirmasi</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-pink-outline btn-sm">
-                                    <i class="fa-solid fa-circle-info"></i> Detail
-                                </button>
-                            </td>
-                        </tr>
+                        @forelse ($pesananBaru as $po)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $po->order_id }}</td>
+                                <td>
+                                    <span class="badge rounded-pill text-bg-{{ $po->statusColor() }}">
+                                        {{ $po->statusLabel() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('pegawai.detailpesanan', $po->id_checkout) }}"
+                                        class="btn btn-pink-outline btn-sm">
+                                        <i class="fa-solid fa-circle-info"></i> Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Tidak ada pesanan baru.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                     </table>
                 </div>

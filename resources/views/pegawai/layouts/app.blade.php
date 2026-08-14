@@ -76,8 +76,13 @@
                         </ul>
                     </li>
                     <li class="nav-item mx-1">
-                        <a href="#" class="nav-link"><i class="fa-solid fa-receipt"></i> Kelola
-                            Pesanan</a>
+                        @if ($activ == 'pesanan')
+                            <a href="{{ route('pegawai.pesanan') }}" class="nav-link active-link">
+                                <i class="fa-solid fa-receipt"></i> Kelola Pesanan</a>
+                        @else
+                            <a href="{{ route('pegawai.pesanan') }}" class="nav-link">
+                                <i class="fa-solid fa-receipt"></i> Kelola Pesanan</a>
+                        @endif
                     </li>
                     <li class="nav-item dropdown mx-1">
                         @if ($activ == 'profil')

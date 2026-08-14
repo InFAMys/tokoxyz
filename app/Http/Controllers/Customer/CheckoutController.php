@@ -195,8 +195,23 @@ class CheckoutController extends Controller
     public function show(int $id): View
     {
         $checkout = $this->ownedCheckout($id);
+        $this->reconcileShipping($checkout);
 
         return view('customer.checkout.show', compact('checkout'));
+    }
+
+    public function confirm(int $id): RedirectResponse
+    {
+        $checkout = $this->ownedCheckout($id);
+        $this->reconcileShipping($checkout);
+
+        if ($checkout->status !== 'delivered') {
+            return back()->withErrors(['status' => 'Pesanan belum sampai di tujuan.']);
+        }
+
+        $checkout->update(['status' => 'completed']);
+
+        return redirect()->route('checkout.show', $checkout->id_checkout)->with('status', 'Pesanan diselesaikan. Terima kasih!');
     }
 
     public function history(): View
@@ -210,6 +225,10 @@ class CheckoutController extends Controller
 
         foreach ($checkouts->where('status', 'pending') as $checkout) {
             $this->reconcileMidtrans($checkout);
+        }
+
+        foreach ($checkouts->whereIn('status', ['shipping', 'delivered']) as $checkout) {
+            $this->reconcileShipping($checkout);
         }
 
         $checkouts = $customer->checkouts()
@@ -521,6 +540,51 @@ class CheckoutController extends Controller
         }
 
         $this->applyMidtransStatus($checkout, strval($data['transaction_status'] ?? ''), strval($data['payment_type'] ?? ''));
+    }
+
+    protected function reconcileShipping(Checkout $checkout): void
+    {
+        if ($checkout->status === 'shipping' && $checkout->no_resi && $this->trackingIsDelivered($checkout->no_resi)) {
+            $checkout->update([
+                'status' => 'delivered',
+                'delivered_at' => $checkout->delivered_at ?? now(),
+            ]);
+        }
+
+        if ($checkout->status === 'delivered' && $checkout->delivered_at && $checkout->delivered_at->lt(now()->subDays(7))) {
+            $checkout->update(['status' => 'completed']);
+        }
+    }
+
+    protected function trackingIsDelivered(string $noResi): bool
+    {
+        try {
+            return $this->hasDeliveredMarker($this->klikresi->tracking($noResi));
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
+    /** @param mixed $value */
+    protected function hasDeliveredMarker($value): bool
+    {
+        if (is_string($value)) {
+            return str_contains(strtolower($value), 'deliver')
+                || str_contains(strtolower($value), 'sampai')
+                || str_contains(strtolower($value), 'terkirim');
+        }
+
+        if (! is_array($value)) {
+            return false;
+        }
+
+        foreach ($value as $item) {
+            if ($this->hasDeliveredMarker($item)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function addressLabel(Alamat $alamat): string

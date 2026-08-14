@@ -34,8 +34,8 @@
                                     <td>{{ $checkout->created_at->format('d M Y H:i') }}</td>
                                     <td>Rp {{ number_format($checkout->total_amount, 0, ',', '.') }}</td>
                                     <td>
-                                        <span class="badge rounded-pill text-bg-{{ $checkout->status === 'paid' ? 'success' : ($checkout->status === 'pending' ? 'warning' : 'secondary') }}">
-                                            {{ ucfirst($checkout->status) }}
+                                        <span class="badge rounded-pill text-bg-{{ $checkout->statusColor() }}">
+                                            {{ $checkout->statusLabel() }}
                                         </span>
                                     </td>
                                     <td>

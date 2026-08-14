@@ -14,8 +14,10 @@ use App\Http\Controllers\Pegawai\BarangController;
 use App\Http\Controllers\Pegawai\BrandController;
 use App\Http\Controllers\Pegawai\KategoriController;
 use App\Http\Controllers\Pegawai\PegawaiController;
+use App\Http\Controllers\Pegawai\PesananController;
 use App\Http\Controllers\Pegawai\StokController;
 use App\Http\Controllers\Pegawai\UkuranController;
+use App\Models\Checkout;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -82,7 +84,14 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
 
     Route::middleware('auth:pegawai')->group(function () {
         Route::get('/', fn () => redirect()->route('pegawai.dashboard'));
-        Route::get('dashboard', fn () => view('pegawai.dashboard'))->name('dashboard');
+        Route::get('dashboard', function () {
+            $pesananBaru = Checkout::with('items')
+                ->where('status', 'paid')
+                ->latest('id_checkout')
+                ->get();
+
+            return view('pegawai.dashboard', compact('pesananBaru'));
+        })->name('dashboard');
         Route::post('logout', [PegawaiAuthController::class, 'logout'])->name('logout');
         Route::get('profile', [PegawaiController::class, 'editProfile'])->name('profile.edit');
         Route::put('updateNama', [PegawaiController::class, 'updateNama'])->name('update.nama');
@@ -122,6 +131,12 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('edit-ukuran/{id_b}/{id_u}', [UkuranController::class, 'editUkuran'])->name('eukuran');
         Route::put('update-ukuran/{id_b}/{id_u}', [UkuranController::class, 'updateUkuran'])->name('uukuran');
         Route::post('delete-ukuran/{id}', [UkuranController::class, 'deleteUkuran'])->name('delukuran');
+
+        // Pesanan
+        Route::get('pesanan', [PesananController::class, 'listPesanan'])->name('pesanan');
+        Route::get('pesanan/{id}', [PesananController::class, 'detailPesanan'])->name('detailpesanan');
+        Route::post('pesanan/{id}/proses', [PesananController::class, 'proccessRequest'])->name('prosespesanan');
+        Route::post('pesanan/{id}/kirim', [PesananController::class, 'kirim'])->name('kirimpesanan');
 
     });
 });
@@ -180,6 +195,7 @@ Route::prefix('/')->group(function () {
         Route::post('checkout/diskon', [CheckoutController::class, 'diskon'])->name('checkout.diskon');
         Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('checkout/riwayat', [CheckoutController::class, 'history'])->name('checkout.history');
+        Route::post('checkout/{id}/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
         Route::get('checkout/{id}', [CheckoutController::class, 'show'])->name('checkout.show');
     });
 });

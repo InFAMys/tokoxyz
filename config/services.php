@@ -48,6 +48,11 @@ return [
         'courier' => env('KLIKRESI_COURIER', 'jnt'),
         'base_url' => env('KLIKRESI_BASE_URL', 'https://klikresi.com'),
         'rate_url' => env('KLIKRESI_RATE_URL', '/api/rates'),
+        'tracking_url' => env('KLIKRESI_TRACKING_URL', '/api/trackings'),
+    ],
+
+    'whatsapp' => [
+        'number' => env('WA_NUMBER'),
     ],
 
 ];
