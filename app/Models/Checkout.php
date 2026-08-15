@@ -35,6 +35,10 @@ class Checkout extends Model
         'paid_at',
         'no_resi',
         'delivered_at',
+        'cancel_reason',
+        'cancel_from',
+        'cancel_response',
+        'cancel_requested_at',
     ];
 
     protected function casts(): array
@@ -47,6 +51,7 @@ class Checkout extends Model
             'berat_total' => 'decimal:2',
             'paid_at' => 'datetime',
             'delivered_at' => 'datetime',
+            'cancel_requested_at' => 'datetime',
         ];
     }
 
@@ -70,23 +75,30 @@ class Checkout extends Model
         return $this->hasMany(CheckoutItem::class, 'id_checkout', 'id_checkout');
     }
 
+    /** @return array<int, string> */
+    public static function cancellableStatuses(): array
+    {
+        return ['pending', 'paid', 'processed'];
+    }
+
     public function isFinal(): bool
     {
         return in_array($this->status, ['completed', 'expired', 'cancelled', 'refunded', 'partially_refunded', 'deny'], true);
     }
 
-    private const LABELS = [
+    public const STATUSES = [
         'pending' => 'Menunggu Pembayaran',
         'paid' => 'Menunggu Diproses',
         'expired' => 'Kadaluarsa',
         'cancelled' => 'Dibatalkan',
-        'refunded' => 'Dikembalikan',
-        'partially_refunded' => 'Dikembalikan Sebagian',
+        'refunded' => 'Dana Dikembalikan',
+        'partially_refunded' => 'Dana Dikembalikan Sebagian',
         'deny' => 'Ditolak',
         'processed' => 'Diproses',
         'shipping' => 'Dalam Pengiriman',
         'delivered' => 'Sampai Di Tujuan',
         'completed' => 'Selesai',
+        'cancel_pending' => 'Menunggu Pembatalan',
     ];
 
     private const COLORS = [
@@ -101,15 +113,40 @@ class Checkout extends Model
         'shipping' => 'info',
         'delivered' => 'success',
         'completed' => 'dark',
+        'cancel_pending' => 'danger',
     ];
 
     public function statusLabel(): string
     {
-        return self::LABELS[$this->status] ?? ucfirst($this->status);
+        return self::STATUSES[$this->status] ?? ucfirst($this->status);
     }
 
     public function statusColor(): string
     {
         return self::COLORS[$this->status] ?? 'secondary';
+    }
+
+    /** @return array<int, array{id_ukuran?: int|null, id_barang: int, jumlah_barang: int}> */
+    public function restoreStock(): void
+    {
+        foreach ($this->items ?? collect() as $item) {
+            $jumlah = (int) $item->jumlah_barang;
+
+            if ($item->id_ukuran) {
+                $ukuran = Ukuran::find($item->id_ukuran);
+
+                if ($ukuran) {
+                    $ukuran->stok_ukuran = (int) $ukuran->stok_ukuran + $jumlah;
+                    $ukuran->save();
+                }
+            } else {
+                $barang = Barang::find($item->id_barang);
+
+                if ($barang) {
+                    $barang->stok = (int) $barang->stok + $jumlah;
+                    $barang->save();
+                }
+            }
+        }
     }
 }

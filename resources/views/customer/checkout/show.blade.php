@@ -12,44 +12,46 @@
         </div>
 
         <div class="card-pink p-4">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
-                    <h1 class="h4 mb-0">Pesanan {{ $checkout->order_id }}</h1>
-                    <span class="badge rounded-pill text-bg-{{ $checkout->statusColor() }}">
-                        {{ $checkout->statusLabel() }}
-                    </span>
-                </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+                <h1 class="h4 mb-0">Pesanan {{ $checkout->order_id }}</h1>
+                <span class="badge rounded-pill text-bg-{{ $checkout->statusColor() }}">
+                    {{ $checkout->statusLabel() }}
+                </span>
+            </div>
 
-                @if (in_array($checkout->status, ['paid', 'processed', 'shipping', 'delivered', 'completed'], true))
-                    @php
-                        $steps = [
-                            'paid' => 'Pembayaran',
-                            'processed' => 'Diproses',
-                            'shipping' => 'Pengiriman',
-                            'delivered' => 'Sampai Tujuan',
-                            'completed' => 'Selesai',
-                        ];
-                        $order = ['paid', 'processed', 'shipping', 'delivered', 'completed'];
-                        $current = $checkout->status === 'completed' ? 5 : array_search($checkout->status, $order);
-                    @endphp
-                    <div class="d-flex justify-content-between mb-3">
-                        @foreach ($order as $i => $state)
-                            <div class="text-center {{ ($i + 1) <= $current ? 'text-pink fw-bold' : 'text-muted' }}" style="flex:1">
-                                <div class="mb-1">{{ $steps[$state] }}</div>
-                                <i class="fa-solid {{ ($i + 1) <= $current ? 'fa-circle-check' : 'fa-regular fa-circle' }}"></i>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-
-                @if (in_array($checkout->status, ['shipping', 'delivered', 'completed'], true) && $checkout->no_resi)
-                    <div class="summary-box mb-3">
-                        <div class="form-label-pink">No Resi Pengiriman</div>
-                        <div class="fw-bold">{{ $checkout->no_resi }}
-                            <span class="small text-muted">({{ $checkout->shipping_courier }} {{ $checkout->shipping_service }})</span>
+            @if (in_array($checkout->status, ['paid', 'processed', 'shipping', 'delivered', 'completed'], true))
+                @php
+                    $steps = [
+                        'paid' => 'Pembayaran',
+                        'processed' => 'Diproses',
+                        'shipping' => 'Pengiriman',
+                        'delivered' => 'Sampai Tujuan',
+                        'completed' => 'Selesai',
+                    ];
+                    $order = ['paid', 'processed', 'shipping', 'delivered', 'completed'];
+                    $current = $checkout->status === 'completed' ? 5 : array_search($checkout->status, $order);
+                @endphp
+                <div class="d-flex justify-content-between mb-3">
+                    @foreach ($order as $i => $state)
+                        <div class="text-center {{ $i + 1 <= $current ? 'text-pink fw-bold' : 'text-muted' }}"
+                            style="flex:1">
+                            <div class="mb-1">{{ $steps[$state] }}</div>
+                            <i class="fa-solid {{ $i + 1 <= $current ? 'fa-circle-check' : 'fa-regular fa-circle' }}"></i>
                         </div>
-                        <div class="small text-muted">Status pengiriman diperbarui otomatis.</div>
+                    @endforeach
+                </div>
+            @endif
+
+            @if (in_array($checkout->status, ['shipping', 'delivered', 'completed'], true) && $checkout->no_resi)
+                <div class="summary-box mb-3">
+                    <div class="form-label-pink">No Resi Pengiriman</div>
+                    <div class="fw-bold">{{ $checkout->no_resi }}
+                        <span class="small text-muted">({{ $checkout->shipping_courier }}
+                            {{ $checkout->shipping_service }})</span>
                     </div>
-                @endif
+                    <div class="small text-muted">Status pengiriman diperbarui otomatis.</div>
+                </div>
+            @endif
 
             <div class="summary-box mb-3">
                 <div class="form-label-pink">Alamat Pengiriman</div>
@@ -91,6 +93,27 @@
                 </div>
             </div>
 
+            @if ($checkout->status === 'cancel_pending')
+                <div class="alert alert-warning mb-3">
+                    <i class="fa-solid fa-clock"></i> Permintaan pembatalan sedang menunggu konfirmasi admin.
+                    <div class="small mt-1">Alasan: {{ $checkout->cancel_reason ?? '-' }}</div>
+                </div>
+            @endif
+
+            @if ($checkout->status === 'pending')
+                <div class="alert alert-warning mb-3">
+                    <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan pada
+                    <strong>{{ $checkout->created_at->addHours(24)->format('d M Y H:i') }}</strong>
+                    jika pembayaran belum diterima.
+                </div>
+            @elseif ($checkout->status === 'paid')
+                <div class="alert alert-warning mb-3">
+                    <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana direfund) pada
+                    <strong>{{ optional($checkout->paid_at)->addDays(3)->format('d M Y H:i') }}</strong>
+                    jika belum diproses.
+                </div>
+            @endif
+
             @if ($checkout->status === 'delivered')
                 <form method="POST" action="{{ route('checkout.confirm', $checkout->id_checkout) }}">
                     @csrf
@@ -113,11 +136,77 @@
                     <i class="fa-solid fa-credit-card"></i> Bayar Sekarang
                 </button>
                 <p class="text-muted small mt-2 mb-0">Setelah pembayaran, status akan diperbarui otomatis.</p>
+            @elseif (in_array($checkout->status, ['refunded', 'partially_refunded'], true))
+                <p class="text-muted small mt-2 mb-0">
+                    Dana mungkin butuh beberapa hari untuk kembali. Jika ada kendala, hubungi kami via
+                    <a href="https://wa.me/{{ config('services.whatsapp.number') }}?text=Halo, saya ingin tanya refund pesanan {{ $checkout->order_id }}"
+                        target="_blank" rel="noopener">
+                        WhatsApp
+                    </a>.
+                </p>
             @elseif ($checkout->status === 'pending')
                 <div class="alert alert-info mb-0">Pembayaran belum bisa dimulai kembali. Hubungi admin.</div>
             @else
                 <div class="alert alert-success mb-0">
                     <i class="fa-solid fa-circle-check"></i> Status pesanan: {{ $checkout->statusLabel() }}
+                </div>
+            @endif
+
+            @if (in_array($checkout->status, \App\Models\Checkout::cancellableStatuses(), true))
+                @if ($checkout->cancel_response)
+                    <div class="alert alert-danger mt-3 mb-2">
+                        <i class="fa-solid fa-circle-xmark"></i> Permintaan pembatalan ditolak.
+                        <div class="small mt-1">Alasan: {{ $checkout->cancel_response }}</div>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('checkout.cancel', $checkout->id_checkout) }}" id="cancel-form"
+                    class="mt-3">
+                    @csrf
+                    @error('cancel')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    <button type="button" class="btn btn-delete w-100" data-bs-toggle="modal"
+                        data-bs-target="#cancelModal">
+                        <i class="fa-solid fa-ban"></i> Batalkan Pesanan
+                    </button>
+                </form>
+
+                <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Pembatalan Pesanan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="mb-2">Yakin ingin membatalkan pesanan
+                                    <strong>{{ $checkout->order_id }}</strong>?
+                                    <span class="d-block small text-muted">
+                                        @if ($checkout->status === 'pending')
+                                            Pesanan akan langsung dibatalkan.
+                                        @else
+                                            Admin akan memverifikasi permintaan Anda.
+                                        @endif
+                                    </span>
+                                </p>
+                                @if ($checkout->status !== 'pending')
+                                    <textarea name="cancel_reason" form="cancel-form" rows="2" maxlength="255"
+                                        class="form-control form-control-pink @error('cancel_reason') is-invalid @enderror" placeholder="Alasan pembatalan"
+                                        required>{{ old('cancel_reason') }}</textarea>
+                                    @error('cancel_reason')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                @endif
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-pink-outline" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" form="cancel-form" class="btn btn-delete">
+                                    <i class="fa-solid fa-check"></i> Ya, Batalkan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

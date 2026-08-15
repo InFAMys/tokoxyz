@@ -12,18 +12,12 @@
             <h1 class="page-title">Kelola Pesanan</h1>
             <div class="card-pink p-3">
                 <div class="filter-bar">
-                    <form method="GET" class="search-wrapper" style="width: 230px">
+                    <form method="GET" class="search-wrapper" style="width: 300px">
                         <span class="search-icon"><i class="fa-solid fa-filter"></i></span>
                         <select name="status" class="form-control form-control-pink"
                             onchange="this.form.submit()">
                             <option value="">Semua Status</option>
-                            @foreach ([
-                                'paid' => 'Belum Diproses',
-                                'processed' => 'Diproses',
-                                'shipping' => 'Dalam Pengiriman',
-                                'delivered' => 'Sampai Di Tujuan',
-                                'completed' => 'Selesai',
-                            ] as $code => $label)
+                            @foreach (\App\Models\Checkout::STATUSES as $code => $label)
                                 <option value="{{ $code }}" @selected($filter === $code)>{{ $label }}</option>
                             @endforeach
                         </select>

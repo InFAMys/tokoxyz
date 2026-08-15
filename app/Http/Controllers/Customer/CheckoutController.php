@@ -195,6 +195,7 @@ class CheckoutController extends Controller
     public function show(int $id): View
     {
         $checkout = $this->ownedCheckout($id);
+        $this->reconcileAutoStatuses($checkout);
         $this->reconcileShipping($checkout);
 
         return view('customer.checkout.show', compact('checkout'));
@@ -214,6 +215,36 @@ class CheckoutController extends Controller
         return redirect()->route('checkout.show', $checkout->id_checkout)->with('status', 'Pesanan diselesaikan. Terima kasih!');
     }
 
+    public function cancel(Request $request, int $id): RedirectResponse
+    {
+        $checkout = $this->ownedCheckout($id);
+
+        if (! in_array($checkout->status, Checkout::cancellableStatuses(), true)) {
+            return back()->withErrors(['cancel' => 'Pesanan tidak bisa dibatalkan.']);
+        }
+
+        if ($checkout->status === 'pending') {
+            $checkout->update(['status' => 'cancelled']);
+
+            return redirect()->route('checkout.show', $checkout->id_checkout)
+                ->with('status', 'Pesanan dibatalkan.');
+        }
+
+        $data = $request->validate([
+            'cancel_reason' => ['required', 'string', 'max:255'],
+        ]);
+
+        $checkout->update([
+            'status' => 'cancel_pending',
+            'cancel_from' => $checkout->status,
+            'cancel_reason' => trim($data['cancel_reason']),
+            'cancel_requested_at' => now(),
+        ]);
+
+        return redirect()->route('checkout.show', $checkout->id_checkout)
+            ->with('status', 'Permintaan pembatalan dikirim. Menunggu konfirmasi admin.');
+    }
+
     public function history(): View
     {
         $customer = $this->customer();
@@ -229,6 +260,10 @@ class CheckoutController extends Controller
 
         foreach ($checkouts->whereIn('status', ['shipping', 'delivered']) as $checkout) {
             $this->reconcileShipping($checkout);
+        }
+
+        foreach ($checkouts as $checkout) {
+            $this->reconcileAutoStatuses($checkout);
         }
 
         $checkouts = $customer->checkouts()
@@ -524,11 +559,30 @@ class CheckoutController extends Controller
             $this->reconcileMidtrans($checkout);
         }
 
+        return $checkout;
+    }
+
+    protected function reconcileAutoStatuses(Checkout $checkout): void
+    {
         if ($checkout->status === 'pending' && $checkout->created_at->lt(now()->subHours(24))) {
-            $checkout->update(['status' => 'expired']);
+            $checkout->update(['status' => 'cancelled']);
         }
 
-        return $checkout;
+        if ($checkout->status === 'paid' && $checkout->paid_at && $checkout->paid_at->lt(now()->subDays(3))) {
+            $this->restockAndRefund($checkout, 'Pesanan dibatalkan otomatis, pembayaran belum dikonfirmasi 3 hari.');
+        }
+    }
+
+    protected function restockAndRefund(Checkout $checkout, string $reason): void
+    {
+        try {
+            $this->midtrans->refund($checkout->order_id, (float) $checkout->total_amount, $reason);
+        } catch (Throwable $e) {
+            logger()->warning('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
+        }
+
+        $checkout->restoreStock();
+        $checkout->update(['status' => 'refunded']);
     }
 
     protected function reconcileMidtrans(Checkout $checkout): void

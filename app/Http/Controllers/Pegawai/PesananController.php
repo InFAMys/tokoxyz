@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pegawai;
 use App\Http\Controllers\Controller;
 use App\Models\Checkout;
 use App\Services\KlikresiApi;
+use App\Services\MidtransApi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -12,9 +13,10 @@ use Throwable;
 
 class PesananController extends Controller
 {
-    public const PROGRESS = ['paid', 'processed', 'shipping', 'delivered', 'completed'];
-
-    public function __construct(protected KlikresiApi $klikresi) {}
+    public function __construct(
+        protected KlikresiApi $klikresi,
+        protected MidtransApi $midtrans,
+    ) {}
 
     public function listPesanan(Request $request): View
     {
@@ -22,7 +24,7 @@ class PesananController extends Controller
 
         $pesanan = Checkout::query()
             ->with(['items', 'pegawai'])
-            ->when($filter !== '' && in_array($filter, self::PROGRESS, true), fn ($q) => $q->where('status', $filter))
+            ->when($filter !== '' && array_key_exists($filter, Checkout::STATUSES), fn ($q) => $q->where('status', $filter))
             ->latest('id_checkout')
             ->get();
 
@@ -76,5 +78,56 @@ class PesananController extends Controller
         ]);
 
         return redirect()->route('pegawai.pesanan')->with('status', 'No resi disimpan, pesanan dalam pengiriman.');
+    }
+
+    public function cancelApprove(Request $request, int $id): RedirectResponse
+    {
+        $checkout = Checkout::findOrFail($id);
+
+        if ($checkout->status !== 'cancel_pending') {
+            return back()->withErrors(['cancel' => 'Pesanan tidak dalam status pembatalan.']);
+        }
+
+        if (in_array($checkout->cancel_from, ['paid', 'processed'], true)) {
+            try {
+                $this->midtrans->refund(
+                    $checkout->order_id,
+                    (float) $checkout->total_amount,
+                    'Pembatalan pesanan '.$checkout->order_id,
+                );
+            } catch (Throwable $e) {
+                logger()->warning('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
+            }
+
+            $checkout->restoreStock();
+            $checkout->update(['status' => 'refunded', 'id_pegawai' => (int) auth('pegawai')->id()]);
+        } else {
+            $checkout->update(['status' => 'cancelled', 'id_pegawai' => (int) auth('pegawai')->id()]);
+        }
+
+        return redirect()->route('pegawai.pesanan')->with('status', 'Pembatalan pesanan disetujui.');
+    }
+
+    public function cancelReject(Request $request, int $id): RedirectResponse
+    {
+        $data = $request->validate([
+            'cancel_response' => ['required', 'string', 'max:255'],
+        ]);
+
+        $checkout = Checkout::findOrFail($id);
+
+        if ($checkout->status !== 'cancel_pending') {
+            return back()->withErrors(['cancel' => 'Pesanan tidak dalam status pembatalan.']);
+        }
+
+        $checkout->update([
+            'status' => $checkout->cancel_from ?? 'paid',
+            'cancel_response' => trim($data['cancel_response']),
+            'cancel_from' => null,
+            'cancel_reason' => null,
+            'cancel_requested_at' => null,
+        ]);
+
+        return redirect()->route('pegawai.pesanan')->with('status', 'Permintaan pembatalan ditolak.');
     }
 }

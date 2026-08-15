@@ -75,12 +75,22 @@ class MidtransApi
      */
     public function refund(string $orderId, int|string $amount, string $reason = ''): array
     {
-        return Http::withBasicAuth(strval(config('services.midtrans.server_key')), '')
+        $base = config('services.midtrans.is_production')
+            ? 'https://api.midtrans.com'
+            : 'https://api.sandbox.midtrans.com';
+
+        $response = Http::withBasicAuth(strval(config('services.midtrans.server_key')), '')
             ->asJson()
-            ->post($this->base."/v2/{$orderId}/refund", [
+            ->timeout(15)
+            ->post($base."/v2/{$orderId}/refund", [
                 'amount' => (float) $amount,
                 'reason' => $reason,
-            ])
-            ->json();
+            ]);
+
+        if ($response->failed()) {
+            throw new RuntimeException('Midtrans refund error: '.$response->body());
+        }
+
+        return $response->json() ?? [];
     }
 }

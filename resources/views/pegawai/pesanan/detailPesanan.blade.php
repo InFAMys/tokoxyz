@@ -20,6 +20,20 @@
                     </span>
                 </div>
 
+                @if ($checkout->status === 'pending')
+                    <div class="alert alert-warning">
+                        <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan pada
+                        <strong>{{ $checkout->created_at->addHours(24)->format('d M Y H:i') }}</strong>
+                        jika pembayaran belum diterima.
+                    </div>
+                @elseif ($checkout->status === 'paid')
+                    <div class="alert alert-warning">
+                        <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana direfund) pada
+                        <strong>{{ optional($checkout->paid_at)->addDays(3)->format('d M Y H:i') }}</strong>
+                        jika belum diproses.
+                    </div>
+                @endif
+
                 <div class="summary-box mb-3">
                     <div class="form-label-pink">Customer</div>
                     <div>{{ $checkout->customer_name }} · {{ $checkout->customer_telp }}</div>
@@ -71,6 +85,82 @@
                     </div>
                 </div>
 
+                @if ($checkout->status === 'cancel_pending')
+                    <div class="summary-box mb-3">
+                        <div class="form-label-pink">Permintaan Pembatalan</div>
+                        <div>Alasan customer: {{ $checkout->cancel_reason ?? '-' }}</div>
+                        <div class="small text-muted">
+                            Diajukan {{ optional($checkout->cancel_requested_at)->format('d M Y H:i') ?? '-' }} ·
+                            Status sebelumnya: {{ $checkout->cancel_from ?? '-' }}
+                            @if ($checkout->cancel_from === 'paid' || $checkout->cancel_from === 'processed')
+                                (akan refund)
+                            @endif
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-delete w-100 mb-2" data-bs-toggle="modal"
+                        data-bs-target="#cancelModal">
+                        <i class="fa-solid fa-xmark"></i> Proses Pembatalan
+                    </button>
+
+                    <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Proses Pembatalan {{ $checkout->order_id }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form method="POST"
+                                        action="{{ route('pegawai.cancelapprovepesanan', $checkout->id_checkout) }}"
+                                        id="approve-form">
+                                        @csrf
+
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div>
+                                                <div class="fw-bold">
+                                                    @if ($checkout->cancel_from === 'paid' || $checkout->cancel_from === 'processed')
+                                                        Setujui Pembatalan (Refund Dana)
+                                                    @else
+                                                        Setujui Pembatalan
+                                                    @endif
+                                                </div>
+                                                @if ($checkout->cancel_from === 'paid' || $checkout->cancel_from === 'processed')
+                                                    <div class="small text-muted">
+                                                        Dana dikembalikan ke customer ({{ $checkout->cancel_from }} → refund).
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <button type="submit" class="btn btn-delete">
+                                                <i class="fa-solid fa-check"></i> Setujui
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <hr>
+
+                                    <form method="POST"
+                                        action="{{ route('pegawai.cancelrejectpesanan', $checkout->id_checkout) }}"
+                                        id="reject-form">
+                                        @csrf
+                                        <label class="form-label-pink">Tolak Pembatalan</label>
+                                        <textarea name="cancel_response" rows="2" maxlength="255"
+                                            class="form-control form-control-pink mb-2 @error('cancel_response') is-invalid @enderror"
+                                            placeholder="Alasan menolak pembatalan (wajib)">{{ old('cancel_response') }}</textarea>
+                                        @error('cancel_response')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <button type="submit" class="btn btn-delete-outline w-100">
+                                            <i class="fa-solid fa-ban"></i> Tolak
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 @if ($checkout->status === 'paid')
                     <form method="POST" action="{{ route('pegawai.prosespesanan', $checkout->id_checkout) }}">
                         @csrf
@@ -99,7 +189,7 @@
                 @endif
 
                 @if ($checkout->status !== 'paid' && $checkout->status !== 'processed' && $checkout->status !== 'shipping')
-                    <div class="alert alert-success mb-0">
+                    <div class="alert alert-success mb-0 mt-3">
                         <i class="fa-solid fa-circle-check"></i> Status pesanan: {{ $checkout->statusLabel() }}
                     </div>
                 @endif

@@ -642,6 +642,9 @@ body {
 .search-wrapper input {
     padding-left: 2.4rem;
 }
+.search-wrapper select {
+    padding-left: 2.4rem;
+}
 .search-wrapper .search-icon {
     position: absolute;
     left: 0.75rem;

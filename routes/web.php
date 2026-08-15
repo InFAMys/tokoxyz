@@ -137,6 +137,8 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('pesanan/{id}', [PesananController::class, 'detailPesanan'])->name('detailpesanan');
         Route::post('pesanan/{id}/proses', [PesananController::class, 'proccessRequest'])->name('prosespesanan');
         Route::post('pesanan/{id}/kirim', [PesananController::class, 'kirim'])->name('kirimpesanan');
+        Route::post('pesanan/{id}/cancel-approve', [PesananController::class, 'cancelApprove'])->name('cancelapprovepesanan');
+        Route::post('pesanan/{id}/cancel-reject', [PesananController::class, 'cancelReject'])->name('cancelrejectpesanan');
 
     });
 });
@@ -196,6 +198,7 @@ Route::prefix('/')->group(function () {
         Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('checkout/riwayat', [CheckoutController::class, 'history'])->name('checkout.history');
         Route::post('checkout/{id}/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
+        Route::post('checkout/{id}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
         Route::get('checkout/{id}', [CheckoutController::class, 'show'])->name('checkout.show');
     });
 });
