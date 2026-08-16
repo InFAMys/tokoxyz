@@ -15,6 +15,15 @@
             <p class="text-muted small">{{ $customer->username }} <br> {{ $customer->email }}</p>
         </div>
         <div class="card p-0 overflow-hidden">
+            <a href="{{ route('membership.index') }}"
+                class="d-flex align-items-center p-3 text-decoration-none text-dark border-bottom"
+                style="border-bottom: 1px solid var(--pink-100) !important">
+                <span class="me-3"><i
+                        class="fa-solid fa-id-card {{ $customer->member === 'true' ? 'text-warning' : '' }}"></i></span>
+                Member
+                <span class="ms-auto text-muted">{{ $customer->member === 'true' ? 'Aktif' : 'Tidak Aktif' }}</span>
+                <span class="ms-3 text-muted">›</span>
+            </a>
             <a href="{{ route('alamat.index') }}"
                 class="d-flex align-items-center p-3 text-decoration-none text-dark border-bottom"
                 style="border-bottom: 1px solid var(--pink-100) !important">

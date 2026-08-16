@@ -7,6 +7,7 @@ use App\Http\Controllers\Customer\AlamatController;
 use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\KeranjangController;
+use App\Http\Controllers\Customer\MemberController;
 use App\Http\Controllers\Owner\KelolaDiskonController;
 use App\Http\Controllers\Owner\KelolaPegawaiController;
 use App\Http\Controllers\Owner\OwnerController;
@@ -171,6 +172,11 @@ Route::prefix('/')->group(function () {
         Route::get('profil/password', [CustomerController::class, 'passwordEdit'])->name('password.edit');
         Route::put('profil/ubah/password', [CustomerController::class, 'passwordUpdate'])->name('password.update');
         Route::post('logout', [CustomerAuthController::class, 'logout'])->name('logout');
+
+        // Member
+        Route::get('member', [MemberController::class, 'show'])->name('membership.index');
+        Route::get('member/mendaftar', [MemberController::class, 'subscribe'])->name('membership.subscribe');
+        Route::post('member/token', [MemberController::class, 'token'])->name('membership.token');
 
         // Keranjang
         Route::get('keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');

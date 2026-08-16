@@ -109,6 +109,8 @@
                                 <ul class="dropdown-menu dropdown-menu-end drop-pink">
                                     <li><a href="{{ route('profil') }}" class="dropdown-item nav-link-drop">
                                             <i class="fa-solid fa-user-pen"></i> Profil Saya</a></li>
+                                    <li><a href="{{ route('membership.index') }}" class="dropdown-item nav-link-drop">
+                                            <i class="fa-solid fa-id-card"></i> Member</a></li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf

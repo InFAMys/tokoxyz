@@ -10,6 +10,7 @@ use App\Models\CheckoutItem;
 use App\Models\Customer;
 use App\Models\Diskon;
 use App\Models\Keranjang;
+use App\Models\Membership;
 use App\Models\Ukuran;
 use App\Services\KlikresiApi;
 use App\Services\MidtransApi;
@@ -45,8 +46,9 @@ class CheckoutController extends Controller
         $subtotal = $this->sum($items, 'subtotal');
         $beratTotal = $this->sum($items, 'berat');
         $alamats = $customer->alamats()->get();
+        $memberDiskon = $this->memberDiscount($customer, $subtotal);
 
-        return view('customer.checkout.create', compact('items', 'subtotal', 'beratTotal', 'alamats'));
+        return view('customer.checkout.create', compact('items', 'subtotal', 'beratTotal', 'alamats', 'customer', 'memberDiskon'));
     }
 
     public function rate(Request $request): JsonResponse
@@ -123,16 +125,20 @@ class CheckoutController extends Controller
         $shippingCost = $this->verifyShippingCost($alamat, (float) $data['shipping_cost'], $data['shipping_service']);
 
         // Discount (percentage off subtotal, server-side).
-        [$kodeDiskon, $diskonNominal] = $this->verifyDiscount($subtotal, $data['kode_diskon'] ?? null);
+        // Kode diskon wins; member 10% applies only when no kode diskon is used.
+        $customer = $this->customer();
+        $memberNominal = $this->memberDiscount($customer, $subtotal);
+        [$kodeDiskon, $kodeNominal] = $this->verifyDiscount($subtotal, $data['kode_diskon'] ?? null);
+        $useMember = $kodeDiskon === null && $memberNominal > 0;
+        $diskonNominal = $useMember ? $memberNominal : $kodeNominal;
+        $memberDiskonNominal = $useMember ? $memberNominal : null;
 
         $totalAmount = max(0, round($subtotal - $diskonNominal + $shippingCost, 2));
-
-        $customer = $this->customer();
 
         try {
             $checkout = DB::transaction(function () use (
                 $customer, $alamat, $items, $subtotal, $beratTotal,
-                $shippingCost, $data, $kodeDiskon, $diskonNominal, $totalAmount
+                $shippingCost, $data, $kodeDiskon, $diskonNominal, $memberDiskonNominal, $totalAmount
             ) {
                 $checkout = Checkout::create([
                     'id_cst' => $customer->id_cst,
@@ -143,6 +149,7 @@ class CheckoutController extends Controller
                     'customer_telp' => $customer->no_telp,
                     'subtotal' => $subtotal,
                     'diskon_nominal' => $diskonNominal,
+                    'member_diskon_nominal' => $memberDiskonNominal,
                     'shipping_cost' => $shippingCost,
                     'total_amount' => $totalAmount,
                     'berat_total' => $beratTotal,
@@ -172,6 +179,12 @@ class CheckoutController extends Controller
                     $this->decrementStockForItems($items);
                 }
 
+                if ($totalAmount > 0) {
+                    $checkout->update([
+                        'snap_token' => $this->midtrans->createSnapToken($this->snapPayload($checkout, $items, $shippingCost, $diskonNominal)),
+                    ]);
+                }
+
                 return $checkout;
             });
 
@@ -179,16 +192,13 @@ class CheckoutController extends Controller
             $customer->keranjangs()->whereIn('id_keranjang', $ids)->delete();
             Session::forget('checkout_ids');
 
-            if ($totalAmount > 0) {
-                $snapToken = $this->midtrans->createSnapToken($this->snapPayload($checkout, $items, $shippingCost, $diskonNominal));
-                $checkout->update(['snap_token' => $snapToken]);
-            }
-
             return redirect()->route('checkout.show', $checkout->id_checkout);
         } catch (Throwable $e) {
             DB::rollBack();
 
-            return back()->withErrors(['kode_diskon' => $e->getMessage()])->withInput();
+            report($e);
+
+            return back()->withErrors(['kode_diskon' => 'Gagal memproses pembayaran. Silakan coba lagi.'])->withInput();
         }
     }
 
@@ -289,11 +299,21 @@ class CheckoutController extends Controller
 
         $checkout = Checkout::where('order_id', $request->string('order_id'))->first();
 
-        if (! $checkout || abs((float) $checkout->total_amount - (float) $request->input('gross_amount')) > 0.01) {
-            return response()->json(['message' => 'Order not found'], 200);
+        if ($checkout) {
+            if (abs((float) $checkout->total_amount - (float) $request->input('gross_amount')) > 0.01) {
+                return response()->json(['message' => 'Order not found'], 200);
+            }
+
+            $this->applyMidtransStatus($checkout, $request->string('transaction_status'), $request->string('payment_type'));
+
+            return response()->json(['message' => 'OK']);
         }
 
-        $this->applyMidtransStatus($checkout, $request->string('transaction_status'), $request->string('payment_type'));
+        $membership = Membership::where('order_id', $request->string('order_id'))->first();
+
+        if ($membership && abs((float) $membership->nominal - (float) $request->input('gross_amount')) <= 0.01) {
+            app(MemberController::class)->reconcile($membership);
+        }
 
         return response()->json(['message' => 'OK']);
     }
@@ -430,6 +450,15 @@ class CheckoutController extends Controller
         return [$diskon->kode_diskon, min($nominal, $subtotal)];
     }
 
+    protected function memberDiscount(Customer $customer, float $subtotal): float
+    {
+        if ($customer->member !== 'true') {
+            return 0.0;
+        }
+
+        return round($subtotal * 0.10, 2);
+    }
+
     /** @return array<string, mixed> */
     protected function snapPayload(Checkout $checkout, array $items, float $shippingCost, float $diskonNominal): array
     {
@@ -438,7 +467,7 @@ class CheckoutController extends Controller
         foreach ($items as $item) {
             $itemDetails[] = [
                 'id' => (string) $item['barang']->id_barang,
-                'price' => $item['unit_price'],
+                'price' => (int) round($item['unit_price']),
                 'quantity' => $item['jumlah_barang'],
                 'name' => Str::limit($item['barang']->nama_barang, 48),
             ];
@@ -447,7 +476,7 @@ class CheckoutController extends Controller
         if ($shippingCost > 0) {
             $itemDetails[] = [
                 'id' => 'SHIPPING_JNT',
-                'price' => $shippingCost,
+                'price' => (int) round($shippingCost),
                 'quantity' => 1,
                 'name' => 'Ongkir J&T '.$checkout->shipping_service,
             ];
@@ -456,16 +485,21 @@ class CheckoutController extends Controller
         if ($diskonNominal > 0) {
             $itemDetails[] = [
                 'id' => 'DISCOUNT',
-                'price' => -$diskonNominal,
+                'price' => -(int) round($diskonNominal),
                 'quantity' => 1,
                 'name' => 'Diskon',
             ];
         }
 
+        $gross = array_sum(array_map(
+            fn (array $item): float => $item['price'] * $item['quantity'],
+            $itemDetails
+        ));
+
         return [
             'transaction_details' => [
                 'order_id' => $checkout->order_id,
-                'gross_amount' => (int) round($checkout->total_amount),
+                'gross_amount' => $gross,
             ],
             'customer_details' => [
                 'first_name' => $checkout->customer_name,

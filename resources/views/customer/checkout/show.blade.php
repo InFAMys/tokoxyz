@@ -80,7 +80,7 @@
                     <span>Rp {{ number_format($checkout->subtotal, 0, ',', '.') }}</span>
                 </div>
                 <div class="summary-row">
-                    <span>Diskon</span>
+                    <span>{{ $checkout->member_diskon_nominal ? 'Diskon Member 10%' : 'Diskon' }}</span>
                     <span>- Rp {{ number_format($checkout->diskon_nominal, 0, ',', '.') }}</span>
                 </div>
                 <div class="summary-row">

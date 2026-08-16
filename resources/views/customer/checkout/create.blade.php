@@ -19,8 +19,8 @@
         @endif
 
         <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form"
-            data-rate-url="{{ route('checkout.rate') }}"
-            data-diskon-url="{{ route('checkout.diskon') }}">
+            data-rate-url="{{ route('checkout.rate') }}" data-diskon-url="{{ route('checkout.diskon') }}"
+            data-member-diskon="{{ $memberDiskon }}">
             @csrf
 
             <div class="row g-4">
@@ -28,18 +28,21 @@
                     <div class="card-pink p-3 mb-4">
                         <div class="form-label-pink mb-2">Alamat Pengiriman</div>
                         @if ($alamats->isEmpty())
-                            <p class="text-muted mb-2">Belum ada alamat. <a href="{{ route('alamat.create') }}">Tambah alamat</a></p>
+                            <p class="text-muted mb-2">Belum ada alamat. <a href="{{ route('alamat.create') }}">Tambah
+                                    alamat</a></p>
                         @else
                             @php $defaultAlamat = optional($alamats->firstWhere('id_kecamatan', '!=', null))->id_alamat; @endphp
                             @foreach ($alamats as $alamat)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="id_alamat" value="{{ $alamat->id_alamat }}"
-                                        id="alamat-{{ $alamat->id_alamat }}" @checked(old('id_alamat', $defaultAlamat) == $alamat->id_alamat)
-                                        @if (!$alamat->id_kecamatan) disabled @endif>
+                                    <input class="form-check-input" type="radio" name="id_alamat"
+                                        value="{{ $alamat->id_alamat }}" id="alamat-{{ $alamat->id_alamat }}"
+                                        @checked(old('id_alamat', $defaultAlamat) == $alamat->id_alamat) @if (!$alamat->id_kecamatan) disabled @endif>
                                     <label class="form-check-label" for="alamat-{{ $alamat->id_alamat }}">
                                         <strong>{{ $alamat->nama_alamat }}</strong> – {{ $alamat->nama_penerima }}
-                                        ({{ $alamat->telp_penerima }})<br>
-                                        <small class="text-muted">{{ $alamat->detail_alamat }}, {{ $alamat->kecamatan }}, {{ $alamat->kota }}, {{ $alamat->provinsi }} {{ $alamat->kode_pos }}</small>
+                                        ({{ $alamat->telp_penerima }})
+                                        <br>
+                                        <small class="text-muted">{{ $alamat->detail_alamat }}, {{ $alamat->kecamatan }},
+                                            {{ $alamat->kota }}, {{ $alamat->provinsi }} {{ $alamat->kode_pos }}</small>
                                         @if (!$alamat->id_kecamatan)
                                             <span class="badge text-bg-warning ms-1">Lengkapi kecamatan (Klikresi)</span>
                                         @endif
@@ -64,12 +67,24 @@
 
                     <div class="card-pink p-3">
                         <div class="form-label-pink mb-2">Kode Diskon</div>
-                        <div class="input-group">
+                        <div class="input-group mb-2">
                             <input type="text" name="kode_diskon" id="kode-diskon" class="form-control form-control-pink"
                                 placeholder="Masukkan kode diskon" value="{{ old('kode_diskon') }}" maxlength="10">
                             <button type="button" id="terapkan-diskon" class="btn btn-pink-outline">Terapkan</button>
                         </div>
-                        <div id="diskon-info" class="mt-2 small"></div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div id="diskon-info" class="small"></div>
+                            <button type="button" id="hapus-diskon" class="btn btn-sm btn-outline-danger"
+                                style="display:none;">
+                                <i class="fa-solid fa-xmark"></i> Hapus
+                            </button>
+                        </div>
+                        @if (isset($customer) && $customer->member === 'true')
+                            <div class="text-muted small mt-2">
+                                <i class="fa-solid fa-circle-info"></i> Saat memakai kode diskon, diskon member 10% tidak
+                                berlaku.
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -116,9 +131,16 @@
                         <input type="hidden" name="shipping_cost" id="shipping-cost">
                         <input type="hidden" id="subtotal-raw" value="{{ $subtotal }}">
                         <input type="hidden" id="ongkir-raw" value="0">
-                        <input type="hidden" id="diskon-raw" value="0">
+                        <input type="hidden" id="diskon-raw" value="{{ $memberDiskon }}">
+                        @if ($memberDiskon > 0)
+                            <div class="summary-row">
+                                <span>Diskon Member 10%</span>
+                                <span id="sum-member-diskon" class="text-success">- Rp
+                                    {{ number_format($memberDiskon, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
 
-                        <button type="submit" class="btn btn-pink w-100 mt-3">
+                        <button type="submit" id="bayar-submit" class="btn btn-pink w-100 mt-3">
                             <i class="fa-solid fa-receipt"></i> Bayar Sekarang
                         </button>
                     </div>

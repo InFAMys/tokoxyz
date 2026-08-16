@@ -51,7 +51,9 @@ document.addEventListener("click", (event) => {
 document.querySelectorAll(".live-search").forEach((input) => {
     const debounce = Number.parseInt(input.dataset.debounce ?? "800", 10);
     const target = document.getElementById(input.dataset.tbody);
-    const baseUrl = new URL(input.closest("form")?.action || window.location.href);
+    const baseUrl = new URL(
+        input.closest("form")?.action || window.location.href,
+    );
     let timer = null;
     let seq = 0;
 
@@ -94,35 +96,41 @@ if (ukuranSelect && priceDisplay) {
     ukuranSelect.addEventListener("change", () => {
         const selected = ukuranSelect.value;
         priceDisplay.textContent =
-            prices[selected] !== undefined ? formatPrice(prices[selected]) : defaultPrice;
+            prices[selected] !== undefined
+                ? formatPrice(prices[selected])
+                : defaultPrice;
     });
 }
 
 // Keranjang max-stok check (styled, replaces native 'max' bubble)
-document.querySelectorAll("form[novalidate] input[name='jumlah_barang']").forEach((input) => {
-    const error = input.closest("div")?.querySelector("[data-jumlah-error]");
-    const form = input.closest("form");
+document
+    .querySelectorAll("form[novalidate] input[name='jumlah_barang']")
+    .forEach((input) => {
+        const error = input
+            .closest("div")
+            ?.querySelector("[data-jumlah-error]");
+        const form = input.closest("form");
 
-    const validate = () => {
-        const val = Number(input.value);
-        const max = Number(input.max);
-        const tooHigh = max && val > max;
-        const tooLow = val < Number(input.min || 1);
-        let msg = "";
-        if (tooHigh) msg = "Maksimal stok " + max + " unit.";
-        else if (tooLow) msg = "Minimal 1 unit.";
-        if (error) {
-            error.textContent = msg;
-            error.classList.toggle("d-none", msg === "");
-        }
-        return tooHigh || tooLow;
-    };
+        const validate = () => {
+            const val = Number(input.value);
+            const max = Number(input.max);
+            const tooHigh = max && val > max;
+            const tooLow = val < Number(input.min || 1);
+            let msg = "";
+            if (tooHigh) msg = "Maksimal stok " + max + " unit.";
+            else if (tooLow) msg = "Minimal 1 unit.";
+            if (error) {
+                error.textContent = msg;
+                error.classList.toggle("d-none", msg === "");
+            }
+            return tooHigh || tooLow;
+        };
 
-    input.addEventListener("input", validate);
-    form.addEventListener("submit", (e) => {
-        if (validate()) e.preventDefault();
+        input.addEventListener("input", validate);
+        form.addEventListener("submit", (e) => {
+            if (validate()) e.preventDefault();
+        });
     });
-});
 
 // Keranjang checkout: require at least one checked item
 (() => {
@@ -146,9 +154,11 @@ document.querySelectorAll("form[novalidate] input[name='jumlah_barang']").forEac
             form.appendChild(hidden);
         });
     });
-    document.querySelectorAll(".keranjang-check").forEach((c) =>
-        c.addEventListener("change", () => err.classList.add("d-none"))
-    );
+    document
+        .querySelectorAll(".keranjang-check")
+        .forEach((c) =>
+            c.addEventListener("change", () => err.classList.add("d-none")),
+        );
 })();
 
 // Toast countdown progress (shrinks over the toast delay)
@@ -179,21 +189,23 @@ const moneyFormat = (raw) => {
     return digits === "" ? "" : Number(digits).toLocaleString("id-ID");
 };
 
-document.querySelectorAll("input[name='harga'], input[name='harga_ukuran']").forEach((el) => {
-    el.value = moneyFormat(el.value);
+document
+    .querySelectorAll("input[name='harga'], input[name='harga_ukuran']")
+    .forEach((el) => {
+        el.value = moneyFormat(el.value);
 
-    el.addEventListener("input", () => {
-        const formatted = moneyFormat(el.value);
-        if (el.value !== formatted) {
-            el.value = formatted;
-            el.scrollLeft = el.scrollWidth;
-        }
-    });
+        el.addEventListener("input", () => {
+            const formatted = moneyFormat(el.value);
+            if (el.value !== formatted) {
+                el.value = formatted;
+                el.scrollLeft = el.scrollWidth;
+            }
+        });
 
-    el.closest("form").addEventListener("submit", () => {
-        el.value = toIntegerDigits(el.value);
+        el.closest("form").addEventListener("submit", () => {
+            el.value = toIntegerDigits(el.value);
+        });
     });
-});
 
 // Berat input mask (digits + single separator , or ., up to 3 decimals)
 document.querySelectorAll("input[id='berat']").forEach((el) => {
@@ -233,9 +245,12 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         const p = provSel.selectedOptions[0];
         const c = citySel.selectedOptions[0];
         const d = distSel.selectedOptions[0];
-        if (labelFor("provinsi")) labelFor("provinsi").value = p && p.value ? p.textContent : "";
-        if (labelFor("kota")) labelFor("kota").value = c && c.value ? c.textContent : "";
-        if (labelFor("kecamatan")) labelFor("kecamatan").value = d && d.value ? d.textContent : "";
+        if (labelFor("provinsi"))
+            labelFor("provinsi").value = p && p.value ? p.textContent : "";
+        if (labelFor("kota"))
+            labelFor("kota").value = c && c.value ? c.textContent : "";
+        if (labelFor("kecamatan"))
+            labelFor("kecamatan").value = d && d.value ? d.textContent : "";
     };
 
     const fill = (sel, items, saved) => {
@@ -246,7 +261,9 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
     };
 
     const fetchList = (url) =>
-        fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } }).then((res) => res.json());
+        fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } }).then(
+            (res) => res.json(),
+        );
 
     const loadCities = () => {
         const id = provSel.value;
@@ -268,7 +285,9 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         syncLabels();
         if (!id || !distUrlTpl) return;
         fetchList(distUrlTpl.replace(":id", id))
-            .then((districts) => fill(distSel, districts, distSel.dataset.saved))
+            .then((districts) =>
+                fill(distSel, districts, distSel.dataset.saved),
+            )
             .catch(() => {});
     };
 
@@ -284,19 +303,34 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
     if (!form) return;
 
     const fmt = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
-    const subtotalRaw = () => Number(document.getElementById("subtotal-raw").value || 0);
-    const ongkirRaw = () => Number(document.getElementById("ongkir-raw").value || 0);
-    const diskonRaw = () => Number(document.getElementById("diskon-raw").value || 0);
+    const subtotalRaw = () =>
+        Number(document.getElementById("subtotal-raw").value || 0);
+    const ongkirRaw = () =>
+        Number(document.getElementById("ongkir-raw").value || 0);
+    const diskonRaw = () =>
+        Number(document.getElementById("diskon-raw").value || 0);
+    const memberDiskon = () => Number(form.dataset.memberDiskon || 0);
+    const memberRow = document.getElementById("sum-member-diskon");
+    const setMemberRow = (show) => {
+        if (memberRow)
+            memberRow.closest(".summary-row").style.display = show
+                ? ""
+                : "none";
+    };
 
     const refreshTotal = () => {
         const total = Math.max(0, subtotalRaw() - diskonRaw() + ongkirRaw());
-        document.getElementById("sum-subtotal").textContent = fmt(subtotalRaw());
-        document.getElementById("sum-diskon").textContent = diskonRaw() > 0 ? "- " + fmt(diskonRaw()) : "-";
-        document.getElementById("sum-ongkir").textContent = ongkirRaw() > 0 ? fmt(ongkirRaw()) : "-";
+        document.getElementById("sum-subtotal").textContent =
+            fmt(subtotalRaw());
+        document.getElementById("sum-diskon").textContent =
+            diskonRaw() > 0 ? "- " + fmt(diskonRaw()) : "-";
+        document.getElementById("sum-ongkir").textContent =
+            ongkirRaw() > 0 ? fmt(ongkirRaw()) : "-";
         document.getElementById("sum-total").textContent = fmt(total);
     };
 
-    const selectedAddress = () => form.querySelector("input[name='id_alamat']:checked")?.value;
+    const selectedAddress = () =>
+        form.querySelector("input[name='id_alamat']:checked")?.value;
 
     form.addEventListener("submit", (e) => {
         const service = document.getElementById("shipping-service")?.value;
@@ -307,6 +341,14 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
             const box = document.getElementById("shipping-error");
             box.textContent = "Pilih layanan ongkir terlebih dahulu.";
             box.style.display = "block";
+            return;
+        }
+
+        const btn = document.getElementById("bayar-submit");
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-1"></span> Memproses…';
         }
     });
 
@@ -314,7 +356,8 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         const id = selectedAddress();
         const box = document.getElementById("shipping-options");
         if (!id) {
-            box.innerHTML = '<span class="text-danger">Pilih alamat terlebih dahulu.</span>';
+            box.innerHTML =
+                '<span class="text-danger">Pilih alamat terlebih dahulu.</span>';
             return;
         }
         box.innerHTML = '<span class="text-muted">Menghitung ongkir…</span>';
@@ -322,12 +365,16 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         const rateUrl = form.dataset.rateUrl || "";
         fetch(rateUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrf },
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrf,
+            },
             body: JSON.stringify({ id_alamat: id }),
         })
             .then((res) => res.json())
             .then((data) => {
-                if (!data.options) throw new Error(data.message || "Tidak ada ongkir");
+                if (!data.options)
+                    throw new Error(data.message || "Tidak ada ongkir");
                 box.innerHTML = "";
                 data.options.forEach((o) => {
                     const el = document.createElement("label");
@@ -342,7 +389,10 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
                 });
             })
             .catch((err) => {
-                box.innerHTML = '<span class="text-danger">' + (err.message || "Gagal memuat ongkir.") + "</span>";
+                box.innerHTML =
+                    '<span class="text-danger">' +
+                    (err.message || "Gagal memuat ongkir.") +
+                    "</span>";
             });
     });
 
@@ -363,26 +413,70 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         const csrf = form.querySelector("input[name='_token']")?.value || "";
         const diskonUrl = form.dataset.diskonUrl || "";
 
+        const kode = input.value.trim();
+        if (!kode) {
+            document.getElementById("diskon-raw").value = memberDiskon();
+            setMemberRow(true);
+            info.innerHTML =
+                '<span class="text-danger">Masukkan kode diskon terlebih dahulu.</span>';
+            refreshTotal();
+            return;
+        }
+
         info.innerHTML = '<span class="text-muted">Memverifikasi…</span>';
 
         fetch(diskonUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrf },
-            body: JSON.stringify({ kode_diskon: input.value }),
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-CSRF-TOKEN": csrf,
+            },
+            body: JSON.stringify({ kode_diskon: kode }),
         })
-            .then((res) => res.json().then((data) => ({ ok: res.ok, data })))
+            .then((res) => {
+                const ct = res.headers.get("content-type") || "";
+                if (!ct.includes("application/json")) {
+                    throw new Error("Gagal memverifikasi diskon. Coba lagi.");
+                }
+                return res.json().then((data) => ({ ok: res.ok, data }));
+            })
             .then(({ ok, data }) => {
-                if (!ok || !data.code) throw new Error(data.message || "Kode diskon tidak valid.");
+                if (!ok || !data.code)
+                    throw new Error(data.message || "Kode diskon tidak valid.");
                 document.getElementById("diskon-raw").value = data.nominal;
-                info.innerHTML = '<span class="text-success">Diskon: ' + fmt(data.nominal) + "</span>";
+                setMemberRow(false);
+                document.getElementById("hapus-diskon").style.display = "";
+                info.innerHTML =
+                    '<span class="text-success">Diskon: ' +
+                    fmt(data.nominal) +
+                    "</span>";
                 refreshTotal();
             })
             .catch((err) => {
-                document.getElementById("diskon-raw").value = 0;
-                info.innerHTML = '<span class="text-danger">' + (err.message || "Gagal memverifikasi diskon.") + "</span>";
+                document.getElementById("diskon-raw").value = memberDiskon();
+                setMemberRow(true);
+                document.getElementById("hapus-diskon").style.display = "none";
+                info.innerHTML =
+                    '<span class="text-danger">' +
+                    (err.message || "Gagal memverifikasi diskon.") +
+                    "</span>";
                 refreshTotal();
             });
     });
+
+    const hapusBtn = document.getElementById("hapus-diskon");
+    if (hapusBtn) {
+        hapusBtn.addEventListener("click", () => {
+            document.getElementById("kode-diskon").value = "";
+            document.getElementById("diskon-raw").value = memberDiskon();
+            setMemberRow(true);
+            hapusBtn.style.display = "none";
+            document.getElementById("diskon-info").innerHTML =
+                '<span class="text-muted">Kode diskon dihapus.</span>';
+            refreshTotal();
+        });
+    }
 
     refreshTotal();
 })();
@@ -392,9 +486,11 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
     const btn = document.getElementById("bayar-button");
     if (!btn) return;
 
-    const token = btn.dataset.checkoutToken;
     const clientKey = btn.dataset.clientKey;
-    const sdkBase = btn.dataset.prod === "1" ? "https://app.midtrans.com" : "https://app.sandbox.midtrans.com";
+    const sdkBase =
+        btn.dataset.prod === "1"
+            ? "https://app.midtrans.com"
+            : "https://app.sandbox.midtrans.com";
 
     const loadSnap = () =>
         new Promise((resolve, reject) => {
@@ -408,16 +504,70 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         });
 
     btn.addEventListener("click", () => {
-        loadSnap().then(() => {
-            window.snap.pay(token, {
-                onSuccess: () => { window.location.reload(); },
-                onPending: () => { window.location.reload(); },
-                onError: () => { window.location.reload(); },
-                onClose: () => { window.location.reload(); },
+        const redirectUrl = btn.dataset.redirectUrl;
+        const done = () =>
+            redirectUrl
+                ? (window.location.href = redirectUrl)
+                : window.location.reload();
+        const form = btn.closest("form");
+        const tokenUrl = form ? form.dataset.tokenUrl : "";
+
+        const getToken = () =>
+            new Promise((resolve, reject) => {
+                if (btn.dataset.checkoutToken)
+                    return resolve(btn.dataset.checkoutToken);
+                if (!tokenUrl)
+                    return reject(new Error("Token tidak tersedia."));
+                const csrf =
+                    form.querySelector("input[name='_token']")?.value || "";
+                fetch(tokenUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        "X-CSRF-TOKEN": csrf,
+                    },
+                })
+                    .then((res) => {
+                        const ct = res.headers.get("content-type") || "";
+                        if (!ct.includes("application/json")) {
+                            throw new Error(
+                                "Gagal memuat pembayaran. Coba lagi.",
+                            );
+                        }
+                        return res
+                            .json()
+                            .then((data) => ({ ok: res.ok, data }));
+                    })
+                    .then(({ ok, data }) => {
+                        if (!ok || !data.token)
+                            throw new Error(
+                                data.message || "Gagal memuat pembayaran.",
+                            );
+                        resolve(data.token);
+                    })
+                    .catch(reject);
             });
-        }).catch(() => {
-            btn.closest("div").insertAdjacentHTML("beforeend",
-                '<p class="text-danger small mt-2">Gagal memuat pembayaran. Coba lagi.</p>');
-        });
+
+        const errBox = () =>
+            btn
+                .closest("div")
+                .insertAdjacentHTML(
+                    "beforeend",
+                    '<p class="text-danger small mt-2">Gagal memuat pembayaran. Coba lagi.</p>',
+                );
+
+        getToken()
+            .then((t) =>
+                loadSnap().then(() => {
+                    window.snap.pay(t, {
+                        onSuccess: done,
+                        onPending: done,
+                        onError: done,
+                        onClose: done,
+                    });
+                }),
+            )
+            .catch(() => errBox());
     });
 })();

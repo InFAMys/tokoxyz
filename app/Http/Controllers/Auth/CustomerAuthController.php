@@ -57,22 +57,22 @@ class CustomerAuthController extends Controller
             ],
             'password' => ['required', 'string', 'min:8'],
         ],
-        [   
-            'nama.required' => 'Masukkan Nama!',
-            'nama.max' => 'Panjang Nama Maksimal 64 Karakter!',
-            'username.required' => 'Masukkan Alamat Username!',
-            'username.max' => 'Panjang Username Maksimal 15 Karakter!',
-            'username.unique' => 'Username ' . $request->input('username') . ' Sudah Dipakai!',
-            'email.required' => 'Masukkan Alamat E-Mail!',
-            'email.unique' => 'E-Mail Sudah Dipakai!',
-            'no_telp.required' => 'Masukkan Aalamat No. Telepon!',
-            'no_telp.unique' => 'No. Telepon Sudah Dipakai!',
-            'no_telp.min' => 'No. Telepon Minimal 8 Karakter!',
-            'no_telp.max' => 'No. Telepon Melebihi 12 Karakter!',
-            'no_telp.regex' => 'No. Telepon Hanya Menerima Angka!',
-            'password.required' => 'Masukkan Password!',
-            'password.min' => 'Panjang Password Minimal 8 Karakter!',
-        ]);
+            [
+                'nama.required' => 'Masukkan Nama!',
+                'nama.max' => 'Panjang Nama Maksimal 64 Karakter!',
+                'username.required' => 'Masukkan Alamat Username!',
+                'username.max' => 'Panjang Username Maksimal 15 Karakter!',
+                'username.unique' => 'Username '.$request->input('username').' Sudah Dipakai!',
+                'email.required' => 'Masukkan Alamat E-Mail!',
+                'email.unique' => 'E-Mail Sudah Dipakai!',
+                'no_telp.required' => 'Masukkan Aalamat No. Telepon!',
+                'no_telp.unique' => 'No. Telepon Sudah Dipakai!',
+                'no_telp.min' => 'No. Telepon Minimal 8 Karakter!',
+                'no_telp.max' => 'No. Telepon Melebihi 12 Karakter!',
+                'no_telp.regex' => 'No. Telepon Hanya Menerima Angka!',
+                'password.required' => 'Masukkan Password!',
+                'password.min' => 'Panjang Password Minimal 8 Karakter!',
+            ]);
 
         $customer = Customer::create([
             'nama' => $data['nama'],
@@ -81,13 +81,12 @@ class CustomerAuthController extends Controller
             'no_telp' => $data['no_telp'],
             'password' => Hash::make($data['password']),
         ]);
-        
 
         Auth::guard('customer')->login($customer);
 
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        return redirect()->route('home');
     }
 
     public function logout(Request $request)

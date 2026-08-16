@@ -25,16 +25,14 @@ class Customer extends Authenticatable
 
     protected $hidden = [
         'password',
-        'member',
-        'member_since',
         'remember_token',
-
     ];
 
     protected function casts(): array
     {
         return [
             'password' => 'hashed',
+            'member_since' => 'datetime',
         ];
     }
 
@@ -51,5 +49,10 @@ class Customer extends Authenticatable
     public function checkouts(): HasMany
     {
         return $this->hasMany(Checkout::class, 'id_cst', 'id_cst');
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(Membership::class, 'id_cst', 'id_cst');
     }
 }

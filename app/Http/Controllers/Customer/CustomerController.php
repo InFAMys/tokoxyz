@@ -52,8 +52,18 @@ class CustomerController extends Controller
 
     public function profil()
     {
+        $customer = Auth::guard('customer')->user();
+
+        if ($customer->member === 'false') {
+            foreach ($customer->memberships()->where('status', 'pending')->get() as $membership) {
+                app(MemberController::class)->reconcile($membership);
+            }
+
+            $customer->refresh();
+        }
+
         return view('customer.profile.profil', [
-            'customer' => Auth::guard('customer')->user(),
+            'customer' => $customer,
         ]);
     }
 
@@ -68,19 +78,19 @@ class CustomerController extends Controller
     {
         /** @var Customer $customer */
         $customer = Auth::guard('customer')->user();
- 
+
         $data = $request->validate([
             'nama' => ['required', 'string', 'max:64'],
         ],
-        [
-            'nama.required' => 'Masukkan Nama!',
-            'nama.max' => 'Panjang Nama Maksimal 64 Karakter!',
-        ]);
- 
+            [
+                'nama.required' => 'Masukkan Nama!',
+                'nama.max' => 'Panjang Nama Maksimal 64 Karakter!',
+            ]);
+
         $customer->nama = $data['nama'];
- 
+
         $customer->save();
- 
+
         return back()->with('nstatus', 'Nama Berhasil Diubah!');
     }
 
@@ -88,22 +98,22 @@ class CustomerController extends Controller
     {
         /** @var Customer $customer */
         $customer = Auth::guard('customer')->user();
- 
+
         $data = $request->validate([
             'email' => [
                 'required', 'string', 'max:255',
                 Rule::unique('customers', 'email'),
             ],
         ],
-        [
-            'email.required' => 'Masukkan Alamat E-Mail!',
-            'email.unique' => 'E-Mail Sudah Dipakai!',
-        ]);
- 
+            [
+                'email.required' => 'Masukkan Alamat E-Mail!',
+                'email.unique' => 'E-Mail Sudah Dipakai!',
+            ]);
+
         $customer->email = $data['email'];
- 
+
         $customer->save();
- 
+
         return back()->with('estatus', 'Email Berhasil Diubah!');
     }
 
@@ -111,25 +121,25 @@ class CustomerController extends Controller
     {
         /** @var Customer $customer */
         $customer = Auth::guard('customer')->user();
- 
+
         $data = $request->validate([
             'no_telp' => [
                 'required', 'string', 'regex:/^[0-9\-]{9,12}$/', 'min:8', 'max:12',
                 Rule::unique('customers', 'no_telp'),
             ],
         ],
-        [
-            'no_telp.required' => 'Masukkan Aalamat No. Telepon!',
-            'no_telp.unique' => 'No. Telepon Sudah Dipakai!',
-            'no_telp.min' => 'No. Telepon Minimal 8 Karakter!',
-            'no_telp.max' => 'No. Telepon Melebihi 12 Karakter!',
-            'no_telp.regex' => 'No. Telepon Hanya Menerima Angka!',
-        ]);
- 
+            [
+                'no_telp.required' => 'Masukkan Aalamat No. Telepon!',
+                'no_telp.unique' => 'No. Telepon Sudah Dipakai!',
+                'no_telp.min' => 'No. Telepon Minimal 8 Karakter!',
+                'no_telp.max' => 'No. Telepon Melebihi 12 Karakter!',
+                'no_telp.regex' => 'No. Telepon Hanya Menerima Angka!',
+            ]);
+
         $customer->no_telp = $data['no_telp'];
- 
+
         $customer->save();
- 
+
         return back()->with('ntstatus', 'No. Telepon Berhasil Diubah!');
     }
 
@@ -137,23 +147,23 @@ class CustomerController extends Controller
     {
         /** @var Customer $customer */
         $customer = Auth::guard('customer')->user();
- 
+
         $data = $request->validate([
             'username' => [
                 'required', 'string', 'max:15',
                 Rule::unique('customers', 'username'),
             ],
         ],
-        [
-            'username.required' => 'Masukkan Alamat Username!',
-            'username.max' => 'Panjang Username Maksimal 15 Karakter!',
-            'username.unique' => 'Username ' . $request->input('username') . ' Sudah Dipakai!',
-        ]);
- 
+            [
+                'username.required' => 'Masukkan Alamat Username!',
+                'username.max' => 'Panjang Username Maksimal 15 Karakter!',
+                'username.unique' => 'Username '.$request->input('username').' Sudah Dipakai!',
+            ]);
+
         $customer->username = $data['username'];
- 
+
         $customer->save();
- 
+
         return back()->with('ustatus', 'Username Berhasil Diubah!');
     }
 
@@ -168,7 +178,7 @@ class CustomerController extends Controller
     {
         /** @var Customer $customer */
         $customer = Auth::guard('customer')->user();
- 
+
         $data = $request->validate([
             // Only required if they're actually trying to set a new password.
             'current_password' => ['required_with:password', 'string'],
@@ -176,7 +186,7 @@ class CustomerController extends Controller
         ], [
             'current_password.required_with' => 'Masukan password sekarang untuk merubah password!',
         ]);
- 
+
         // If they filled in a new password, verify the old one matches
         // what's actually stored before touching anything.
         if (! empty($data['password'])) {
@@ -190,13 +200,13 @@ class CustomerController extends Controller
             }
 
         }
- 
+
         if (! empty($data['password'])) {
             $customer->password = Hash::make($data['password']);
         }
- 
+
         $customer->save();
- 
+
         return back()->with('pstatus', 'Password Berhasil Diubah!');
     }
 }

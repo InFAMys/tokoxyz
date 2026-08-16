@@ -22,6 +22,7 @@ class Checkout extends Model
         'customer_telp',
         'subtotal',
         'diskon_nominal',
+        'member_diskon_nominal',
         'shipping_cost',
         'total_amount',
         'berat_total',
@@ -46,6 +47,7 @@ class Checkout extends Model
         return [
             'subtotal' => 'decimal:2',
             'diskon_nominal' => 'decimal:2',
+            'member_diskon_nominal' => 'decimal:2',
             'shipping_cost' => 'decimal:2',
             'total_amount' => 'decimal:2',
             'berat_total' => 'decimal:2',
