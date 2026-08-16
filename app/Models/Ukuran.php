@@ -20,6 +20,7 @@ class Ukuran extends Model
         'nama_ukuran',
         'ukuran',
         'harga_ukuran',
+        'stok_ukuran',
     ];
 
     protected function casts(): array
