@@ -24,27 +24,12 @@
                     <form method="GET" class="ms-auto search-wrapper" style="width: 230px">
                         <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" name="q" value="{{ request('q') }}"
-                            class="form-control form-control-pink live-search" data-tbody="rows-diskon"
+                            class="form-control form-control-pink live-search" data-target="rows-diskon"
                             placeholder="Cari Diskon..." />
                     </form>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Diskon</th>
-                            <th>Kode Diskon</th>
-                            <th>Jumlah Diskon</th>
-                            <th>Mulai-Akhir Diskon</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rows-diskon">
-                        @include('owner.kelola._diskon_rows')
-                    </tbody>
-                    </table>
+                <div id="rows-diskon">
+                    @include('owner.kelola._diskon_rows')
                 </div>
             </div>
         </div>

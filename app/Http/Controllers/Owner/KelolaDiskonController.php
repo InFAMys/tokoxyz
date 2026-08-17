@@ -18,7 +18,8 @@ class KelolaDiskonController extends Controller
             ->when($q, fn ($query) => $query
                 ->where('nama_diskon', 'like', "%$q%")
                 ->orWhere('kode_diskon', 'like', "%$q%"))
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         if ($request->ajax()) {
             return view('owner.kelola._diskon_rows', compact('diskon'))->render();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diskon;
+use App\Notifications\DiscountAvailable;
 use Illuminate\Http\RedirectResponse;
 
 class NotificationController extends Controller
@@ -18,11 +19,13 @@ class NotificationController extends Controller
 
         $notifications = auth('customer')->user()
             ->notifications()
+            ->where('type', DiscountAvailable::class)
+            ->whereIn('data->id_diskon', $activeIds)
             ->orderByDesc('created_at')
-            ->get()
-            ->filter(fn ($n) => in_array($n->data['id_diskon'] ?? null, $activeIds));
+            ->paginate(10)
+            ->withQueryString();
 
-        $notifications->markAsRead();
+        $notifications->getCollection()->markAsRead();
 
         return view('customer.notifikasi.index', compact('notifications'));
     }

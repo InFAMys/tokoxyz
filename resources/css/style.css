@@ -125,6 +125,36 @@ body {
     margin-bottom: 0.25rem;
 }
 
+/* Pagination */
+.pagination .page-link {
+    color: var(--pink-600);
+    border-color: var(--pink-100);
+}
+/* Tables: force horizontal scroll inside .table-responsive instead of squishing */
+.table-responsive {
+    overflow-x: auto;
+}
+.table-responsive > .table {
+    min-width: 760px;
+    margin-bottom: 0;
+}
+.table-responsive > .table > :not(caption) > * > * {
+    white-space: nowrap;
+}
+.pagination .page-link:hover {
+    color: var(--pink-700);
+    background: var(--pink-100);
+}
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+    border-color: var(--pink-600);
+    color: #fff;
+}
+.pagination .page-item.disabled .page-link {
+    color: var(--pink-100);
+    border-color: var(--pink-100);
+}
+
 .navbar .nav-link:hover,
 .navbar .nav-link.active-link {
     background: var(--pink-100);
@@ -197,6 +227,7 @@ body {
 /* ── MAIN CONTENT WRAPPER ── */
 .main-content {
     flex: 1;
+    min-width: 0;
     padding: 2rem 2.5rem;
     background: var(--pink-50);
 }

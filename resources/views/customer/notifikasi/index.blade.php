@@ -40,6 +40,7 @@
                     </div>
                 @endforeach
             </div>
+            <nav class="mt-4">{{ $notifications->links() }}</nav>
         @endif
     </div>
 @endsection

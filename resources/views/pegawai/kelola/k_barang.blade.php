@@ -24,29 +24,12 @@
                     <form method="GET" class="ms-auto search-wrapper" style="width: 230px">
                         <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" name="q" value="{{ request('q') }}"
-                            class="form-control form-control-pink live-search" data-tbody="rows-barang"
+                            class="form-control form-control-pink live-search" data-target="rows-barang"
                             placeholder="Cari barang..." />
                     </form>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Thumbnail</th>
-                                <th>Kode Barang</th>
-                                <th>Nama Barang</th>
-                                <th>Harga</th>
-                                <th>Berat</th>
-                                <th>Stok</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rows-barang">
-                            @include('pegawai.kelola._barang_rows')
-                        </tbody>
-                    </table>
+                <div id="rows-barang">
+                    @include('pegawai.kelola._barang_rows')
                 </div>
             </div>
         </div>

@@ -28,7 +28,8 @@ class BarangController extends Controller
         $barang = Barang::query()
             ->with('ukurans')
             ->when($q, $filter)
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         if ($request->ajax()) {
             return view('pegawai.kelola._barang_rows', compact('barang'))->render();

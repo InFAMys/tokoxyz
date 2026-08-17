@@ -24,24 +24,12 @@
                     <form method="GET" class="ms-auto search-wrapper" style="width: 230px">
                         <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" name="q" value="{{ request('q') }}"
-                            class="form-control form-control-pink live-search" data-tbody="rows-brand"
+                            class="form-control form-control-pink live-search" data-target="rows-brand"
                             placeholder="Cari Brand..." />
                     </form>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Logo Brand</th>
-                            <th>Nama Brand</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rows-brand">
-                        @include('pegawai.kelola._brand_rows')
-                    </tbody>
-                    </table>
+                <div id="rows-brand">
+                    @include('pegawai.kelola._brand_rows')
                 </div>
             </div>
         </div>

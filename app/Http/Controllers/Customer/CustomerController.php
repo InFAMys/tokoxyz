@@ -35,7 +35,8 @@ class CustomerController extends Controller
                 });
             })
             ->orderByDesc('id_barang')
-            ->get();
+            ->paginate(12)
+            ->withQueryString();
 
         return view('customer.barang.search', compact('barang', 'q'));
     }

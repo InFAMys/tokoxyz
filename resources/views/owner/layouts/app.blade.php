@@ -16,7 +16,7 @@
 
     <body>
         @include('components.toasts')
-    <nav class="navbar sticky-top navbar-expand-lg">
+    <nav class="navbar sticky-top navbar-expand-lg d-print-none">
         <div class="container-fluid">
             <span class="brand"><i class="fa-solid fa-shop"></i> {{ config('app.name', 'Laravel') }} </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -57,6 +57,18 @@
                         @else
                             <a href="{{ route('owner.kdiskon') }}" class="nav-link">
                                 <i class="fa-solid fa-tags"></i> Kelola Diskon
+                            </a>
+                        @endif
+
+                    </li>
+                    <li class="nav-item mx-1">
+                        @if ($activ == 'laporan')
+                            <a href="{{ route('owner.laporan') }}" class="nav-link active-link">
+                                <i class="fa-solid fa-chart-line"></i> Laporan
+                            </a>
+                        @else
+                            <a href="{{ route('owner.laporan') }}" class="nav-link">
+                                <i class="fa-solid fa-chart-line"></i> Laporan
                             </a>
                         @endif
 

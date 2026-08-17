@@ -50,7 +50,7 @@ document.addEventListener("click", (event) => {
 // Live Search (debounced) — swaps table rows from an AJAX fragment
 document.querySelectorAll(".live-search").forEach((input) => {
     const debounce = Number.parseInt(input.dataset.debounce ?? "800", 10);
-    const target = document.getElementById(input.dataset.tbody);
+    const target = document.getElementById(input.dataset.target);
     const baseUrl = new URL(
         input.closest("form")?.action || window.location.href,
     );

@@ -42,7 +42,7 @@
                         <tbody>
                             @forelse ($pesanan as $po)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $pesanan->firstItem() + $loop->index }}</td>
                                     <td>{{ $po->order_id }}</td>
                                     <td>{{ $po->customer_name }}</td>
                                     <td>{{ $po->created_at->format('d M Y H:i') }}</td>
@@ -76,6 +76,7 @@
                         </tbody>
                     </table>
                 </div>
+                <nav class="mt-3">{{ $pesanan->links() }}</nav>
             </div>
         </div>
     </div>

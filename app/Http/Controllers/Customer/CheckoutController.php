@@ -263,27 +263,25 @@ class CheckoutController extends Controller
     {
         $customer = $this->customer();
 
-        $checkouts = $customer->checkouts()
-            ->with('items')
-            ->latest('id_checkout')
-            ->get();
+        $all = $customer->checkouts()->with('items')->latest('id_checkout')->get();
 
-        foreach ($checkouts->where('status', 'pending') as $checkout) {
+        foreach ($all->where('status', 'pending') as $checkout) {
             $this->reconcileMidtrans($checkout);
         }
 
-        foreach ($checkouts->whereIn('status', ['shipping', 'delivered']) as $checkout) {
+        foreach ($all->whereIn('status', ['shipping', 'delivered']) as $checkout) {
             $this->reconcileShipping($checkout);
         }
 
-        foreach ($checkouts as $checkout) {
+        foreach ($all as $checkout) {
             $this->reconcileAutoStatuses($checkout);
         }
 
         $checkouts = $customer->checkouts()
             ->with('items')
             ->latest('id_checkout')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('customer.checkout.history', compact('checkouts'));
     }

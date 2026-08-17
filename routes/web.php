@@ -11,6 +11,7 @@ use App\Http\Controllers\Customer\MemberController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Owner\KelolaDiskonController;
 use App\Http\Controllers\Owner\KelolaPegawaiController;
+use App\Http\Controllers\Owner\LaporanController;
 use App\Http\Controllers\Owner\OwnerController;
 use App\Http\Controllers\Pegawai\BarangController;
 use App\Http\Controllers\Pegawai\BrandController;
@@ -20,6 +21,8 @@ use App\Http\Controllers\Pegawai\PesananController;
 use App\Http\Controllers\Pegawai\StokController;
 use App\Http\Controllers\Pegawai\UkuranController;
 use App\Models\Checkout;
+use App\Models\Diskon;
+use App\Models\Pegawai;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -47,7 +50,14 @@ Route::prefix('owner')->name('owner.')->group(function () {
 
     Route::middleware('auth:owner')->group(function () {
         Route::get('/', fn () => redirect()->route('owner.dashboard'));
-        Route::get('dashboard', fn () => view('owner.dashboard'))->name('dashboard');
+        Route::get('dashboard', function () {
+            $stats = LaporanController::monthlySummary();
+            $totalPegawai = Pegawai::count();
+            $activeDiskons = Diskon::where('status_diskon', 'aktif')->count();
+
+            return view('owner.dashboard', compact('stats', 'totalPegawai', 'activeDiskons'));
+        })->name('dashboard');
+        Route::get('laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('profile', [OwnerController::class, 'editProfile'])->name('profile.edit');
         Route::put('updUsername', [OwnerController::class, 'updateUsername'])->name('update.username');
         Route::put('updPassword', [OwnerController::class, 'updatePassword'])->name('update.password');

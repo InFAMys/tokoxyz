@@ -24,23 +24,12 @@
                     <form method="GET" class="ms-auto search-wrapper" style="width: 230px">
                         <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" name="q" value="{{ request('q') }}"
-                            class="form-control form-control-pink live-search" data-tbody="rows-kategori"
+                            class="form-control form-control-pink live-search" data-target="rows-kategori"
                             placeholder="Cari Kategori..." />
                     </form>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nama Kategori</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rows-kategori">
-                        @include('pegawai.kelola._kategori_rows')
-                    </tbody>
-                    </table>
+                <div id="rows-kategori">
+                    @include('pegawai.kelola._kategori_rows')
                 </div>
             </div>
         </div>

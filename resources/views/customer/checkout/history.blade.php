@@ -29,7 +29,7 @@
                         <tbody>
                             @foreach ($checkouts as $i => $checkout)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $checkouts->firstItem() + $loop->index }}</td>
                                     <td>{{ $checkout->order_id }}</td>
                                     <td>{{ $checkout->created_at->format('d M Y H:i') }}</td>
                                     <td>Rp {{ number_format($checkout->total_amount, 0, ',', '.') }}</td>
@@ -48,6 +48,7 @@
                         </tbody>
                     </table>
                 </div>
+                <nav class="mt-3">{{ $checkouts->links() }}</nav>
             @endif
         </div>
     </div>

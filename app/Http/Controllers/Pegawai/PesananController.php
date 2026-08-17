@@ -26,7 +26,8 @@ class PesananController extends Controller
             ->with(['items', 'pegawai'])
             ->when($filter !== '' && array_key_exists($filter, Checkout::STATUSES), fn ($q) => $q->where('status', $filter))
             ->latest('id_checkout')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('pegawai.pesanan.k_pesanan', compact('pesanan', 'filter'));
     }

@@ -47,6 +47,7 @@
                     </a>
                 @endforeach
             </div>
+            <nav class="mt-4">{{ $barang->links() }}</nav>
         @endif
     </div>
 @endsection
