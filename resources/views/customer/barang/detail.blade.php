@@ -13,7 +13,7 @@
     $hasUkuran = $barang->ukurans->isNotEmpty();
     $stokReady = $hasUkuran ? $barang->ukurans->sum('stok_ukuran') : $barang->stok;
     $formattedBerat = !is_null($barang->berat)
-        ? rtrim(rtrim(number_format((float) $barang->berat, 3, ',', '.'), '0'), ',') . ' kg'
+        ? rtrim(rtrim(number_format((float) $barang->berat, 1, ',', '.'), '0'), ',') . ' kg'
         : '-';
 @endphp
 

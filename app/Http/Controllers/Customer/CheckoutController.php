@@ -215,7 +215,7 @@ class CheckoutController extends Controller
         return view('customer.checkout.show', compact('checkout'));
     }
 
-    public function confirm(int $id): RedirectResponse
+    public function confirm(Request $request, int $id): RedirectResponse
     {
         $checkout = $this->ownedCheckout($id);
         $this->reconcileShipping($checkout);
@@ -224,7 +224,14 @@ class CheckoutController extends Controller
             return back()->withErrors(['status' => 'Pesanan belum sampai di tujuan.']);
         }
 
-        $checkout->update(['status' => 'completed']);
+        $data = $request->validate([
+            'kritik_saran' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $checkout->update([
+            'status' => 'completed',
+            'kritik_saran' => trim($data['kritik_saran'] ?? '') !== '' ? trim($data['kritik_saran']) : null,
+        ]);
 
         return redirect()->route('checkout.show', $checkout->id_checkout)->with('status', 'Pesanan diselesaikan. Terima kasih!');
     }

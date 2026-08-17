@@ -138,6 +138,7 @@
                             <th>Total</th>
                             <th class="print-hide">Tipe</th>
                             <th class="print-hide">Status</th>
+                            <th class="print-hide">Kritik & Saran</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -163,10 +164,11 @@
                                         {{ $s->statusLabel() }}
                                     </span>
                                 </td>
+                                <td class="print-hide">{{ $s->kritik_saran ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center py-4 text-muted">Tidak ada pesanan pada rentang
+                                <td colspan="11" class="text-center py-4 text-muted">Tidak ada pesanan pada rentang
                                     tanggal ini.</td>
                             </tr>
                         @endforelse
@@ -180,6 +182,7 @@
         .laporan-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-auto-rows: 1fr;
             gap: 1rem;
         }
         @media print {
@@ -230,6 +233,12 @@
                 background: #fff !important;
                 color: #000 !important;
                 border-bottom: 2px solid #000 !important;
+            }
+            .table-responsive {
+                overflow: visible !important;
+            }
+            .table-responsive > .table {
+                min-width: 0 !important;
             }
             .table-pink tbody tr {
                 border-bottom: 1px solid #ccc !important;

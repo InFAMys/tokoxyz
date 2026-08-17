@@ -32,7 +32,7 @@
                         <td>{{ $brg->nama_barang }}</td>
                         <td>Rp {{ number_format($brg->harga, 0, ',', '.') }}</td>
                         <td>
-                            {{ !is_null($brg->berat) ? rtrim(rtrim(number_format((float) $brg->berat, 3, ',', '.'), '0'), ',') . ' kg' : '-' }}
+                            {{ !is_null($brg->berat) ? rtrim(rtrim(number_format((float) $brg->berat, 1, ',', '.'), '0'), ',') . ' kg' : '-' }}
                         </td>
                         <td>{{ $brg->stokReady() }}</td>
                         @if ($brg->status == 'Disembunyikan')

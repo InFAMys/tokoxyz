@@ -49,7 +49,7 @@
                     <div class="small text-muted">
                         {{ $checkout->shipping_courier }} {{ $checkout->shipping_service }}
                         @if ($checkout->berat_total > 0)
-                            · {{ rtrim(rtrim(number_format($checkout->berat_total, 3, ',', '.'), '0'), ',') }} kg
+                            · {{ rtrim(rtrim(number_format($checkout->berat_total, 1, ',', '.'), '0'), ',') }} kg
                         @endif
                     </div>
                 </div>
@@ -92,6 +92,13 @@
                         <span>Rp {{ number_format($checkout->total_amount, 0, ',', '.') }}</span>
                     </div>
                 </div>
+
+                @if ($checkout->kritik_saran)
+                    <div class="summary-box mb-3">
+                        <div class="form-label-pink">Kritik & Saran</div>
+                        <div>{{ $checkout->kritik_saran }}</div>
+                    </div>
+                @endif
 
                 @if ($checkout->status === 'cancel_pending')
                     <div class="summary-box mb-3">

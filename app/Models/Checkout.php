@@ -40,6 +40,7 @@ class Checkout extends Model
         'cancel_from',
         'cancel_response',
         'cancel_requested_at',
+        'kritik_saran',
     ];
 
     protected function casts(): array

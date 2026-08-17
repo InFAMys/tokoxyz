@@ -822,6 +822,7 @@ body {
     font-size: 1.6rem;
     color: var(--pink-700);
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 .stat-card .stat-label {
     font-size: 0.82rem;

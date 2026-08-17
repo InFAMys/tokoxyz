@@ -108,7 +108,7 @@
                         <hr>
                         <div class="summary-row">
                             <span>Berat Total</span>
-                            <span>{{ rtrim(rtrim(number_format($beratTotal, 3, ',', '.'), '0'), ',') }} kg</span>
+                            <span>{{ rtrim(rtrim(number_format($beratTotal, 1, ',', '.'), '0'), ',') }} kg</span>
                         </div>
                         <div class="summary-row">
                             <span>Subtotal</span>

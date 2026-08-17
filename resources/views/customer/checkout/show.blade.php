@@ -31,10 +31,10 @@
                     $order = ['paid', 'processed', 'shipping', 'delivered', 'completed'];
                     $current = $checkout->status === 'completed' ? 5 : array_search($checkout->status, $order);
                 @endphp
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex flex-wrap justify-content-between mb-3">
                     @foreach ($order as $i => $state)
                         <div class="text-center {{ $i + 1 <= $current ? 'text-pink fw-bold' : 'text-muted' }}"
-                            style="flex:1">
+                            style="flex:1 1 0; min-width:max-content">
                             <div class="mb-1">{{ $steps[$state] }}</div>
                             <i class="fa-solid {{ $i + 1 <= $current ? 'fa-circle-check' : 'fa-regular fa-circle' }}"></i>
                         </div>
@@ -59,7 +59,7 @@
                 <div class="small text-muted">
                     {{ $checkout->shipping_courier }} {{ $checkout->shipping_service }}
                     @if ($checkout->berat_total > 0)
-                        · {{ rtrim(rtrim(number_format($checkout->berat_total, 3, ',', '.'), '0'), ',') }} kg
+                        · {{ rtrim(rtrim(number_format($checkout->berat_total, 1, ',', '.'), '0'), ',') }} kg
                     @endif
                 </div>
             </div>
@@ -101,6 +101,13 @@
                 </div>
             </div>
 
+            @if ($checkout->kritik_saran)
+                <div class="summary-box mb-3">
+                    <div class="form-label-pink">Kritik & Saran Anda</div>
+                    <div>{{ $checkout->kritik_saran }}</div>
+                </div>
+            @endif
+
             @if ($checkout->status === 'cancel_pending')
                 <div class="alert alert-warning mb-3">
                     <i class="fa-solid fa-clock"></i> Permintaan pembatalan sedang menunggu konfirmasi admin.
@@ -123,9 +130,10 @@
             @endif
 
             @if ($checkout->status === 'delivered')
-                <form method="POST" action="{{ route('checkout.confirm', $checkout->id_checkout) }}">
+                <form method="POST" action="{{ route('checkout.confirm', $checkout->id_checkout) }}" id="confirm-form">
                     @csrf
-                    <button type="submit" class="btn btn-pink w-100">
+                    <button type="button" class="btn btn-pink w-100" data-bs-toggle="modal"
+                        data-bs-target="#confirmModal">
                         <i class="fa-solid fa-check"></i> Konfirmasi Pesanan Diterima
                     </button>
                 </form>
@@ -136,6 +144,34 @@
                         WhatsApp
                     </a>. Pesanan otomatis selesai dalam 7 hari.
                 </p>
+
+                <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Konfirmasi Pesanan Diterima</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="mb-2">Yakin pesanan
+                                    <strong>{{ $checkout->order_id }}</strong> sudah diterima dengan baik?
+                                </p>
+                                <label class="form-label-pink">Kritik & Saran <span class="text-muted small">(opsional)</span></label>
+                                <textarea name="kritik_saran" form="confirm-form" rows="3" maxlength="2000"
+                                    class="form-control form-control-pink" placeholder="Tulis masukan Anda untuk kami..."></textarea>
+                                @error('kritik_saran')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-pink-outline" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" form="confirm-form" class="btn btn-pink">
+                                    <i class="fa-solid fa-check"></i> Ya, Selesaikan Pesanan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @elseif ($checkout->status === 'pending' && $checkout->snap_token)
                 <button type="button" id="bayar-button" class="btn btn-pink w-100"
                     data-checkout-token="{{ $checkout->snap_token }}"
