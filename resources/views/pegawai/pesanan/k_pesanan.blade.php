@@ -32,6 +32,7 @@
                                 <th>Customer</th>
                                 <th>Tanggal</th>
                                 <th>Total</th>
+                                <th>Tipe</th>
                                 <th>No Resi</th>
                                 <th>Status</th>
                                 <th>Pemroses</th>
@@ -46,6 +47,13 @@
                                     <td>{{ $po->customer_name }}</td>
                                     <td>{{ $po->created_at->format('d M Y H:i') }}</td>
                                     <td>Rp {{ number_format($po->total_amount, 0, ',', '.') }}</td>
+                                    <td>
+                                        @if ($po->items->contains('is_preorder', true))
+                                            <span class="badge rounded-pill text-bg-warning">Preorder</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $po->no_resi ?? '-' }}</td>
                                     <td>
                                         <span class="badge rounded-pill text-bg-{{ $po->statusColor() }}">
@@ -62,7 +70,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center py-4 text-muted">Tidak ada pesanan.</td>
+                                    <td colspan="10" class="text-center py-4 text-muted">Tidak ada pesanan.</td>
                                 </tr>
                             @endforelse
                         </tbody>

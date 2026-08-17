@@ -68,7 +68,15 @@
                 <div class="form-label-pink">Barang</div>
                 @foreach ($checkout->items as $item)
                     <div class="d-flex justify-content-between mb-1">
-                        <span>{{ $item->nama_barang }} × {{ $item->jumlah_barang }}</span>
+                        <span>{{ $item->nama_barang }} × {{ $item->jumlah_barang }}
+                            @if ($item->is_preorder)
+                                <span class="badge text-bg-warning ms-1">Preorder
+                                    @if ($item->estimasi_preorder)
+                                        ~{{ $item->estimasi_preorder }} hari
+                                    @endif
+                                </span>
+                            @endif
+                        </span>
                         <span>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                     </div>
                 @endforeach

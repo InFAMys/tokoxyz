@@ -99,11 +99,14 @@
                             <a href="{{ route('login') }}" class="btn btn-pink w-100">
                                 <i class="fa-solid fa-arrow-right-to-bracket"></i> Login untuk Masukkan Keranjang
                             </a>
-                        @elseif ($stokReady < 1)
+                        @elseif ($stokReady < 1 && $barang->preorder !== 'Tersedia')
                             <button type="button" class="btn btn-secondary w-100" disabled>
                                 Stok Tidak Tersedia
                             </button>
                         @else
+                            @php
+                                $isPreorder = $barang->preorder === 'Tersedia' && $stokReady === 0;
+                            @endphp
                             <form method="POST" action="{{ route('keranjang.store') }}" novalidate>
                                 @csrf
                                 <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
@@ -115,14 +118,18 @@
                                             class="form-select @error('id_ukuran') is-invalid @enderror" required>
                                             <option value="">Pilih Ukuran</option>
                                             @foreach ($barang->ukurans as $ukuran)
-                                                @if ($ukuran->stok_ukuran > 0)
+                                                @if ($isPreorder || $ukuran->stok_ukuran > 0)
                                                     <option value="{{ $ukuran->id_ukuran }}" @selected(old('id_ukuran') == $ukuran->id_ukuran)
                                                         @if (!is_null($ukuran->harga_ukuran)) data-harga="{{ $ukuran->harga_ukuran }}" @endif>
                                                         {{ $ukuran->nama_ukuran }}
                                                         @if ($ukuran->ukuran)
                                                             - {{ $ukuran->ukuran }}
                                                         @endif
-                                                        (Stok {{ $ukuran->stok_ukuran }})
+                                                        @if ($isPreorder)
+                                                            (Preorder)
+                                                        @else
+                                                            (Stok {{ $ukuran->stok_ukuran }})
+                                                        @endif
                                                     </option>
                                                 @endif
                                             @endforeach
@@ -136,7 +143,7 @@
                                 <div class="mb-3 position-relative">
                                     <label for="jumlah_barang" class="form-label-pink">Jumlah</label>
                                     <input id="jumlah_barang" type="number" name="jumlah_barang" min="1"
-                                        @if (!$hasUkuran) max="{{ $stokReady }}" @endif
+                                        @if (!$hasUkuran && !$isPreorder) max="{{ $stokReady }}" @endif
                                         value="{{ old('jumlah_barang', 1) }}"
                                         class="form-control @error('jumlah_barang') is-invalid @enderror" required>
                                     <small class="text-danger d-none d-block mt-2" data-jumlah-error></small>
@@ -146,8 +153,17 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-pink w-100">
-                                    <i class="fa-solid fa-cart-plus"></i> Masukkan Keranjang
+                                    <i class="fa-solid {{ $isPreorder ? 'fa-clock' : 'fa-cart-plus' }}"></i>
+                                    {{ $isPreorder ? 'Preorder' : 'Masukkan Keranjang' }}
                                 </button>
+                                @if ($isPreorder)
+                                    <p class="text-muted small mt-2 mb-0">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        Barang habis. Preorder dibayar penuh di muka dan dikirim
+                                        {{ $barang->estimasi_preorder ? 'sekitar '.$barang->estimasi_preorder.' hari' : 'setelah stok tersedia' }}
+                                        setelah stok tiba.
+                                    </p>
+                                @endif
                             </form>
                         @endif
                     </div>

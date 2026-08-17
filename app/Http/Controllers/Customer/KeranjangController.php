@@ -154,6 +154,10 @@ class KeranjangController extends Controller
 
     private function ensureStockIsAvailable(Barang $barang, ?Ukuran $ukuran, int $jumlahBarang): void
     {
+        if ($barang->preorder === 'Tersedia' && $barang->stokReady() === 0) {
+            return;
+        }
+
         $stokTersedia = $ukuran ? (int) $ukuran->stok_ukuran : (int) $barang->stok;
 
         if ($jumlahBarang > $stokTersedia) {

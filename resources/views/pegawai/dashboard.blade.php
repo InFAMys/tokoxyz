@@ -18,6 +18,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Kode Pesanan</th>
+                            <th>Tipe</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -27,6 +28,13 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $po->order_id }}</td>
+                                <td>
+                                    @if ($po->items->contains('is_preorder', true))
+                                        <span class="badge rounded-pill text-bg-warning">Preorder</span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <span class="badge rounded-pill text-bg-{{ $po->statusColor() }}">
                                         {{ $po->statusLabel() }}
@@ -41,7 +49,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">Tidak ada pesanan baru.</td>
+                                <td colspan="5" class="text-center py-4 text-muted">Tidak ada pesanan baru.</td>
                             </tr>
                         @endforelse
                     </tbody>

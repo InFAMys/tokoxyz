@@ -132,6 +132,10 @@ class Checkout extends Model
     public function restoreStock(): void
     {
         foreach ($this->items ?? collect() as $item) {
+            if ($item->is_preorder) {
+                continue;
+            }
+
             $jumlah = (int) $item->jumlah_barang;
 
             if ($item->id_ukuran) {

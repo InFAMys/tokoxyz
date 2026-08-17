@@ -174,6 +174,8 @@ class CheckoutController extends Controller
                         'jumlah_barang' => $item['jumlah_barang'],
                         'subtotal' => $item['subtotal'],
                         'berat' => $item['berat'],
+                        'is_preorder' => $item['is_preorder'],
+                        'estimasi_preorder' => $item['estimasi_preorder'],
                     ]);
                 }
 
@@ -343,6 +345,7 @@ class CheckoutController extends Controller
         return $cart->map(function (Keranjang $item): array {
             $unitPrice = (float) ($item->ukuran?->harga_ukuran ?? $item->barang->harga);
             $berat = $this->itemBerat($item);
+            $isPreorder = $item->barang->preorder === 'Tersedia' && $item->barang->stokReady() === 0;
 
             return [
                 'barang' => $item->barang,
@@ -354,6 +357,8 @@ class CheckoutController extends Controller
                 'jumlah_barang' => (int) $item->jumlah_barang,
                 'subtotal' => round($unitPrice * (int) $item->jumlah_barang, 2),
                 'berat' => round($berat * (int) $item->jumlah_barang, 3),
+                'is_preorder' => $isPreorder,
+                'estimasi_preorder' => $isPreorder ? (int) $item->barang->estimasi_preorder : null,
             ];
         })->all();
     }
@@ -561,6 +566,10 @@ class CheckoutController extends Controller
             $idUkuran = $item['id_ukuran'] ?? $item->id_ukuran ?? null;
             $idBarang = $item['id_barang'] ?? $item->id_barang;
             $jumlah = (int) ($item['jumlah_barang'] ?? $item->jumlah_barang);
+
+            if ($item['is_preorder'] ?? $item->is_preorder ?? false) {
+                continue;
+            }
 
             if ($idUkuran) {
                 $ukuran = Ukuran::where('id_ukuran', $idUkuran)->first();

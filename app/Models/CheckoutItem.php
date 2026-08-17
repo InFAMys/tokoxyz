@@ -21,6 +21,8 @@ class CheckoutItem extends Model
         'jumlah_barang',
         'subtotal',
         'berat',
+        'is_preorder',
+        'estimasi_preorder',
     ];
 
     protected function casts(): array
@@ -30,6 +32,7 @@ class CheckoutItem extends Model
             'subtotal' => 'decimal:2',
             'berat' => 'decimal:2',
             'jumlah_barang' => 'integer',
+            'is_preorder' => 'boolean',
         ];
     }
 
