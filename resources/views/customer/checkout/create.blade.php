@@ -114,8 +114,9 @@
                             <span>Subtotal</span>
                             <span id="sum-subtotal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
                         </div>
+
                         <div class="summary-row" id="row-diskon">
-                            <span>Diskon</span>
+                            <span><span id="diskon-label">{{ $memberDiskon > 0 ? 'Diskon Member' : 'Diskon' }}</span> <span id="diskon-persen-label">{{ $memberDiskon > 0 ? '(10%)' : '' }}</span></span>
                             <span id="sum-diskon" class="text-success">-</span>
                         </div>
                         <div class="summary-row" id="row-ongkir">
@@ -132,14 +133,6 @@
                         <input type="hidden" id="subtotal-raw" value="{{ $subtotal }}">
                         <input type="hidden" id="ongkir-raw" value="0">
                         <input type="hidden" id="diskon-raw" value="{{ $memberDiskon }}">
-                        @if ($memberDiskon > 0)
-                            <div class="summary-row">
-                                <span>Diskon Member 10%</span>
-                                <span id="sum-member-diskon" class="text-success">- Rp
-                                    {{ number_format($memberDiskon, 0, ',', '.') }}</span>
-                            </div>
-                        @endif
-
                         <button type="submit" id="bayar-submit" class="btn btn-pink w-100 mt-3">
                             <i class="fa-solid fa-receipt"></i> Bayar Sekarang
                         </button>

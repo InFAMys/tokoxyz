@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('checkouts', function (Blueprint $table) {
+        Schema::create('pesanan', function (Blueprint $table) {
             $table->id('id_checkout');
             $table->foreignId('id_cst')->constrained('customers', 'id_cst')->cascadeOnDelete();
             $table->foreignId('id_alamat')->constrained('alamat', 'id_alamat');
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('checkouts');
+        Schema::dropIfExists('pesanan');
     }
 };

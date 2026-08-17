@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Table(key: 'id_membership')]
 class Membership extends Model
 {
-    protected $table = 'memberships';
+    protected $table = 'member';
 
     protected $fillable = [
         'id_cst',

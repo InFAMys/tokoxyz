@@ -8,6 +8,7 @@ use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\KeranjangController;
 use App\Http\Controllers\Customer\MemberController;
+use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Owner\KelolaDiskonController;
 use App\Http\Controllers\Owner\KelolaPegawaiController;
 use App\Http\Controllers\Owner\OwnerController;
@@ -177,6 +178,10 @@ Route::prefix('/')->group(function () {
         Route::get('member', [MemberController::class, 'show'])->name('membership.index');
         Route::get('member/mendaftar', [MemberController::class, 'subscribe'])->name('membership.subscribe');
         Route::post('member/token', [MemberController::class, 'token'])->name('membership.token');
+
+        // Notifikasi diskon
+        Route::get('notifikasi', [NotificationController::class, 'index'])->name('notifikasi.index');
+        Route::post('notifikasi/baca', [NotificationController::class, 'markAllRead'])->name('notifikasi.read');
 
         // Keranjang
         Route::get('keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Table(key: 'id_checkout')]
 class Checkout extends Model
 {
-    protected $table = 'checkouts';
+    protected $table = 'pesanan';
 
     protected $fillable = [
         'id_cst',

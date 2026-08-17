@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Owner;
 
+use App\Console\Commands\NotifyActiveDiscounts;
 use App\Http\Controllers\Controller;
 use App\Models\Diskon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class KelolaDiskonController extends Controller
 {
-    public function listDiskons(Request $request) {
+    public function listDiskons(Request $request)
+    {
         $q = trim($request->query('q', ''));
 
         $diskon = Diskon::query()
@@ -26,13 +27,15 @@ class KelolaDiskonController extends Controller
         return view('owner.kelola.k_diskon', compact('diskon'));
     }
 
-    public function tambahDiskon() {
-    
+    public function tambahDiskon()
+    {
+
         return view('owner.kelola.tambah.tambahDiskon');
     }
 
-    public function addDiskon(Request $request) {
-            
+    public function addDiskon(Request $request)
+    {
+
         $data = $request->validate([
             'nama_diskon' => ['required', 'string', 'max:30'],
             'jumlah_diskon' => ['required', 'numeric', 'min:1', 'max:95'],
@@ -40,19 +43,19 @@ class KelolaDiskonController extends Controller
             'mulai_diskon' => ['required', 'date'],
             'akhir_diskon' => ['required', 'date'],
         ],
-        [   
-            'nama_diskon.required' => 'Masukkan Nama Diskon!',
-            'nama_diskon.max' => 'Panjang Nama Diskon Maksimal 30 Karakter!',
-            'jumlah_diskon.required' => 'Masukkan Jumlah Diskon!',
-            'jumlah_diskon.max' => 'Jumlah Diskon Maksimal 95% !',
-            'jumlah_diskon.min' => 'Jumlah Diskon Minimal 1% !',
-            'kode_diskon.required' => 'Masukkan Kode Diskon!',
-            'kode_diskon.max' => 'Panjang Kode Diskon Maksimal 10 Karakter!',
-            'kode_diskon.maxregex' => 'Hanya huruf dan angka yang diperbolehkan untuk Username.!',
-            'mulai_diskon.required' => 'Masukkan Mulai Diskon!',
-            'akhir_diskon.required' => 'Masukkan Akhir Diskon!',
-        ]);
-        
+            [
+                'nama_diskon.required' => 'Masukkan Nama Diskon!',
+                'nama_diskon.max' => 'Panjang Nama Diskon Maksimal 30 Karakter!',
+                'jumlah_diskon.required' => 'Masukkan Jumlah Diskon!',
+                'jumlah_diskon.max' => 'Jumlah Diskon Maksimal 95% !',
+                'jumlah_diskon.min' => 'Jumlah Diskon Minimal 1% !',
+                'kode_diskon.required' => 'Masukkan Kode Diskon!',
+                'kode_diskon.max' => 'Panjang Kode Diskon Maksimal 10 Karakter!',
+                'kode_diskon.maxregex' => 'Hanya huruf dan angka yang diperbolehkan untuk Username.!',
+                'mulai_diskon.required' => 'Masukkan Mulai Diskon!',
+                'akhir_diskon.required' => 'Masukkan Akhir Diskon!',
+            ]);
+
         $diskon = Diskon::create([
             'nama_diskon' => $data['nama_diskon'],
             'jumlah_diskon' => $data['jumlah_diskon'],
@@ -62,10 +65,11 @@ class KelolaDiskonController extends Controller
         ]);
 
         return back()->with('astatus', 'Diskon Berhasil Ditambahkan!');
-        
+
     }
-    
-    public function editDiskon($id) {
+
+    public function editDiskon($id)
+    {
         $diskon = Diskon::where('id_diskon', $id)->first();
         $statusOptions = Diskon::statusOptions();
 
@@ -84,19 +88,19 @@ class KelolaDiskonController extends Controller
             'akhir_diskon' => ['required', 'date'],
             'status_diskon' => ['required', Rule::in(Diskon::statusOptions())],
         ],
-        [   
-            'nama_diskon.required' => 'Masukkan Nama Diskon!',
-            'nama_diskon.max' => 'Panjang Nama Diskon Maksimal 30 Karakter!',
-            'jumlah_diskon.required' => 'Masukkan Jumlah Diskon!',
-            'jumlah_diskon.max' => 'Jumlah Diskon Maksimal 95% !',
-            'jumlah_diskon.min' => 'Jumlah Diskon Minimal 1% !',
-            'kode_diskon.required' => 'Masukkan Kode Diskon!',
-            'kode_diskon.max' => 'Panjang Kode Diskon Maksimal 10 Karakter!',
-            'kode_diskon.maxregex' => 'Hanya huruf dan angka yang diperbolehkan untuk Username.!',
-            'mulai_diskon.required' => 'Masukkan Mulai Diskon!',
-            'akhir_diskon.required' => 'Masukkan Akhir Diskon!',
-        ]);
-    
+            [
+                'nama_diskon.required' => 'Masukkan Nama Diskon!',
+                'nama_diskon.max' => 'Panjang Nama Diskon Maksimal 30 Karakter!',
+                'jumlah_diskon.required' => 'Masukkan Jumlah Diskon!',
+                'jumlah_diskon.max' => 'Jumlah Diskon Maksimal 95% !',
+                'jumlah_diskon.min' => 'Jumlah Diskon Minimal 1% !',
+                'kode_diskon.required' => 'Masukkan Kode Diskon!',
+                'kode_diskon.max' => 'Panjang Kode Diskon Maksimal 10 Karakter!',
+                'kode_diskon.maxregex' => 'Hanya huruf dan angka yang diperbolehkan untuk Username.!',
+                'mulai_diskon.required' => 'Masukkan Mulai Diskon!',
+                'akhir_diskon.required' => 'Masukkan Akhir Diskon!',
+            ]);
+
         $diskon->nama_diskon = $data['nama_diskon'];
         $diskon->jumlah_diskon = $data['jumlah_diskon'];
         $diskon->kode_diskon = strtoupper($data['kode_diskon']);
@@ -105,14 +109,16 @@ class KelolaDiskonController extends Controller
         $diskon->status_diskon = $data['status_diskon'];
         $diskon->update();
 
+        NotifyActiveDiscounts::notifyActive($diskon);
+
         return back()->with('estatus', 'Diskon Berhasil Di Edit!');
     }
 
-    public function deleteDiskon($id) 
+    public function deleteDiskon($id)
     {
         Diskon::where('id_diskon', $id)->first()->delete();
-        
-        ////// Pegawai::where('id', $id)->forceDelete();        // Delete Permanently
+
+        // //// Pegawai::where('id', $id)->forceDelete();        // Delete Permanently
 
         return back()->with('delStatus', 'Diskon Berhasil Di Hapus!');
     }

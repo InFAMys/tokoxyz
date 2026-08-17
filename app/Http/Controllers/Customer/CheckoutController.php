@@ -94,7 +94,9 @@ class CheckoutController extends Controller
             return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        return response()->json(['code' => $kode, 'nominal' => $nominal]);
+        $persen = Diskon::where('kode_diskon', $kode)->value('jumlah_diskon');
+
+        return response()->json(['code' => $kode, 'nominal' => $nominal, 'persen' => (int) $persen]);
     }
 
     public function store(Request $request): RedirectResponse

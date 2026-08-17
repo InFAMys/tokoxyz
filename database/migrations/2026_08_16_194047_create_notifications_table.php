@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pesanan', function (Blueprint $table) {
-            $table->decimal('member_diskon_nominal', 12, 2)->nullable()->after('diskon_nominal');
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pesanan', function (Blueprint $table) {
-            $table->dropColumn('member_diskon_nominal');
-        });
+        Schema::dropIfExists('notifications');
     }
 };

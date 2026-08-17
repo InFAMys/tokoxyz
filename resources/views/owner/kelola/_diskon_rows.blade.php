@@ -3,24 +3,31 @@
         <td>{{ $loop->iteration }}</td>
         <td>{{ $ds->nama_diskon }}</td>
         <td>{{ $ds->kode_diskon }}</td>
-        <td class="text-center">{{ $ds->jumlah_diskon }}%</td>
+        <td class="text-center">{{ (int) $ds->jumlah_diskon }}%</td>
         <td>
             <span class="badge rounded-pill text-bg-success"
-                style="font-size: 0.7rem">{{ $ds->mulai_diskon }}</span>
+                style="font-size: 0.7rem">{{ \Carbon\Carbon::parse($ds->mulai_diskon)->format('d-m-Y H:i') }}</span>
             -
             <span class="badge rounded-pill text-bg-warning"
-                style="font-size: 0.7rem">{{ $ds->akhir_diskon }}</span>
+                style="font-size: 0.7rem">{{ \Carbon\Carbon::parse($ds->akhir_diskon)->format('d-m-Y H:i') }}</span>
         </td>
         <td>
-            @if ($ds->status_diskon == 'aktif')
+            @php
+                $now = now();
+                $expired = $ds->status_diskon == 'aktif' && ($now < $ds->mulai_diskon || $now > $ds->akhir_diskon);
+            @endphp
+            @if ($expired)
+                <span class="badge rounded-pill text-bg-danger">Kadaluarsa</span>
+            @elseif ($ds->status_diskon == 'aktif')
                 <span class="badge rounded-pill text-bg-primary">Aktif</span>
             @elseif ($ds->status_diskon == 'nonaktif')
                 <span class="badge rounded-pill text-bg-secondary">Nonaktif</span>
+            @elseif ($ds->status_diskon == 'kadaluarsa')
+                <span class="badge rounded-pill text-bg-danger">Kadaluarsa</span>
             @endif
         </td>
         <td>
-            <a href="{{ route('owner.ediskon', $ds->id_diskon) }}"
-                class="btn btn-edit-outline btn-sm me-1">
+            <a href="{{ route('owner.ediskon', $ds->id_diskon) }}" class="btn btn-edit-outline btn-sm me-1">
                 <i class="fa-solid fa-pen-to-square"></i> Edit
             </a>
             <button class="btn btn-delete-outline btn-sm" data-bs-toggle="modal"
@@ -28,13 +35,11 @@
                 <i class="fa-solid fa-trash"></i> Hapus
             </button>
             <div class="modal fade" id="deleteModal-{{ $ds->id_diskon }}" tabindex="-1"
-                aria-labelledby="deleteModal-{{ $ds->id_diskon }}Label" aria-hidden="true"
-                data-bs-backdrop="static">
+                aria-labelledby="deleteModal-{{ $ds->id_diskon }}Label" aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content bg-pink">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-4"
-                                id="deleteModal-{{ $ds->id_diskon }}Label">
+                            <h1 class="modal-title fs-4" id="deleteModal-{{ $ds->id_diskon }}Label">
                                 Hapus Kategori ?
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -44,8 +49,7 @@
                             Hapus Kategori {{ $ds->nama_diskon }} ?
                         </div>
                         <div class="modal-footer mx-auto">
-                            <form action="{{ route('owner.deldiskon', $ds->id_diskon) }}"
-                                method="post">
+                            <form action="{{ route('owner.deldiskon', $ds->id_diskon) }}" method="post">
                                 @csrf
                                 <button class="btn btn-delete btn-sm" type="submit">
                                     <i class="fa-solid fa-trash"></i> HAPUS

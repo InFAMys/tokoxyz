@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('checkouts', function (Blueprint $table) {
+        Schema::table('pesanan', function (Blueprint $table) {
             $table->string('no_resi', 50)->nullable()->after('snap_token');
             $table->timestamp('delivered_at')->nullable()->after('no_resi');
 
@@ -27,7 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('checkouts', function (Blueprint $table) {
+        Schema::table('pesanan', function (Blueprint $table) {
             $table->enum('status', ['pending', 'paid', 'expired', 'cancelled', 'refunded', 'partially_refunded', 'deny'])
                 ->default('pending')->change();
             $table->dropColumn(['no_resi', 'delivered_at']);

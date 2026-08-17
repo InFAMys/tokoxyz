@@ -9,7 +9,7 @@
             <a href="{{ route('profil') }}" class="btn btn-pink-outline position-absolute start-0 top-50 translate-middle-y">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
-            <h1 class="page-title mb-0">Member</h1>
+            <h1 class="page-title mb-0" style="padding-inline: 5.5rem;">Member</h1>
         </div>
 
         @if ($errors->any())

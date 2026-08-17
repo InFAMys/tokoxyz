@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pesanan', function (Blueprint $table) {
-            $table->decimal('member_diskon_nominal', 12, 2)->nullable()->after('diskon_nominal');
+        Schema::table('diskons', function (Blueprint $table) {
+            $table->timestamp('notified_at')->nullable()->after('status_diskon');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pesanan', function (Blueprint $table) {
-            $table->dropColumn('member_diskon_nominal');
+        Schema::table('diskons', function (Blueprint $table) {
+            //
         });
     }
 };

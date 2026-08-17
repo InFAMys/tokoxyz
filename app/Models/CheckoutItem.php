@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Table(key: 'id_checkout_item')]
 class CheckoutItem extends Model
 {
-    protected $table = 'checkout_items';
+    protected $table = 'detail_pesanan';
 
     protected $fillable = [
         'id_checkout',

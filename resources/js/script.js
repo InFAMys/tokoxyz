@@ -309,6 +309,15 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         Number(document.getElementById("ongkir-raw").value || 0);
     const diskonRaw = () =>
         Number(document.getElementById("diskon-raw").value || 0);
+    const diskonPersenLabel = document.getElementById("diskon-persen-label");
+    const diskonLabel = document.getElementById("diskon-label");
+    const setDiskonPersen = (persen) => {
+        if (diskonPersenLabel)
+            diskonPersenLabel.textContent = persen ? `(${persen}%)` : "";
+    };
+    const setDiskonLabel = (isMember) => {
+        if (diskonLabel) diskonLabel.textContent = isMember ? "Diskon Member" : "Diskon";
+    };
     const memberDiskon = () => Number(form.dataset.memberDiskon || 0);
     const memberRow = document.getElementById("sum-member-diskon");
     const setMemberRow = (show) => {
@@ -446,16 +455,22 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
                     throw new Error(data.message || "Kode diskon tidak valid.");
                 document.getElementById("diskon-raw").value = data.nominal;
                 setMemberRow(false);
+                setDiskonPersen(data.persen);
+                setDiskonLabel(false);
                 document.getElementById("hapus-diskon").style.display = "";
                 info.innerHTML =
                     '<span class="text-success">Diskon: ' +
+                    (data.persen ? data.persen + "% (" : "") +
                     fmt(data.nominal) +
+                    (data.persen ? ")" : "") +
                     "</span>";
                 refreshTotal();
             })
             .catch((err) => {
                 document.getElementById("diskon-raw").value = memberDiskon();
                 setMemberRow(true);
+                setDiskonPersen(memberDiskon() > 0 ? 10 : 0);
+                setDiskonLabel(memberDiskon() > 0);
                 document.getElementById("hapus-diskon").style.display = "none";
                 info.innerHTML =
                     '<span class="text-danger">' +
@@ -471,6 +486,8 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
             document.getElementById("kode-diskon").value = "";
             document.getElementById("diskon-raw").value = memberDiskon();
             setMemberRow(true);
+            setDiskonPersen(memberDiskon() > 0 ? 10 : 0);
+            setDiskonLabel(memberDiskon() > 0);
             hapusBtn.style.display = "none";
             document.getElementById("diskon-info").innerHTML =
                 '<span class="text-muted">Kode diskon dihapus.</span>';
