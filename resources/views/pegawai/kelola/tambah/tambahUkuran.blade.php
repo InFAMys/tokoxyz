@@ -15,12 +15,7 @@
                 @csrf
                 <div class="auth-titleA mb-3">Tambah Ukuran</div>
                 <div class="auth-subtitleA">{{ $brg->nama_barang }}</div>
-                {{--
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('astatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="nama_ukuran" class="form-label-pink">Nama Ukuran</label>
                     <input id='nama_ukuran' name="nama_ukuran" type="text" class="form-control form-control-pink"

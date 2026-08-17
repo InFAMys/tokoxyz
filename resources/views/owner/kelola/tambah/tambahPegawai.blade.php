@@ -11,12 +11,7 @@
             <form action="{{ route('owner.addpegawai') }}" method="post">
                 @csrf
                 <div class="auth-title">Tambah Akun Pegawai</div>
-                {{-- @if (session('regstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('regstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="nama_pegawai" class="form-label-pink">Nama Pegawai</label>
                     <input id='nama_pegawai' name="nama_pegawai" type="text" class="form-control form-control-pink"

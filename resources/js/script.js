@@ -163,6 +163,10 @@ document
 
 // Toast countdown progress (shrinks over the toast delay)
 document.querySelectorAll(".toast[data-bs-delay]").forEach((toast) => {
+    if (!window.bootstrap?.Toast) {
+        return;
+    }
+
     const bar = toast.querySelector(".toast-progress");
     const delay = Number(toast.dataset.bsDelay) || 5000;
 
@@ -387,13 +391,14 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
                 box.innerHTML = "";
                 data.options.forEach((o) => {
                     const el = document.createElement("label");
-                    el.className = "form-check d-block mb-1";
+                    el.className =
+                        "form-check d-flex align-items-start gap-2 mb-2";
                     el.innerHTML =
                         `<input class="form-check-input ship-opt" type="radio" name="shipping_service" ` +
                         `value="${o.id}" data-cost="${o.cost}"> ` +
-                        `<span>${o.service}</span> ` +
-                        `<small class="text-muted">${o.description || ""} ${o.etd ? "(" + o.etd + ")" : ""}</small> ` +
-                        `<strong class="float-end">${fmt(o.cost)}</strong>`;
+                        `<span class="flex-grow-1"><span class="d-block fw-semibold">${o.service}</span>` +
+                        `<small class="text-muted">${o.description || ""} ${o.etd ? "(" + o.etd + ")" : ""}</small></span>` +
+                        `<strong class="text-nowrap">${fmt(o.cost)}</strong>`;
                     box.appendChild(el);
                 });
             })

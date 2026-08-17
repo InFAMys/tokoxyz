@@ -12,12 +12,7 @@
             <form action="{{ route('pegawai.addbarang') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="auth-title">Tambah Barang</div>
-                {{-- @if (session('astatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('astatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="id_brand" class="form-label-pink">Brand</label>
                     <select id="id_brand" name="id_brand" class="form-select form-control-pink" required>

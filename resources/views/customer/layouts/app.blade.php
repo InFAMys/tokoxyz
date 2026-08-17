@@ -27,36 +27,35 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 @if (!auth('customer')->check())
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item mx-1">
-                                @if ($activ == 'home')
-                                    <a href="{{ route('home') }}" class="nav-link active-link"> <i
-                                            class="fa-solid fa-house"></i>
-                                        Home</a>
-                                @else
-                                    <a href="{{ route('home') }}" class="nav-link"> <i class="fa-solid fa-house"></i>
-                                        Home</a>
-                                @endif
-                            </li>
-                            <li class="nav-item mx-1">
-                                @if ($activ == 'register')
-                                    <a href="{{ route('register') }}" class="nav-link active-link">
-                                        <i class="fa-solid fa-user-plus"></i> Register</a>
-                                @else
-                                    <a href="{{ route('register') }}" class="nav-link">
-                                        <i class="fa-solid fa-user-plus"></i> Register</a>
-                                @endif
-                            </li>
-                            <li class="nav-item mx-1">
-                                @if ($activ == 'login')
-                                    <a href="{{ route('login') }}" class="nav-link active-link">
-                                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
-                                @else
-                                    <a href="{{ route('login') }}" class="nav-link">
-                                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
-                                @endif
-                            </li>
-                        </ul>
+                        <li class="nav-item mx-1">
+                            @if ($activ == 'home')
+                                <a href="{{ route('home') }}" class="nav-link active-link"> <i
+                                        class="fa-solid fa-house"></i>
+                                    Home</a>
+                            @else
+                                <a href="{{ route('home') }}" class="nav-link"> <i class="fa-solid fa-house"></i>
+                                    Home</a>
+                            @endif
+                        </li>
+                        <li class="nav-item mx-1">
+                            @if ($activ == 'register')
+                                <a href="{{ route('register') }}" class="nav-link active-link">
+                                    <i class="fa-solid fa-user-plus"></i> Register</a>
+                            @else
+                                <a href="{{ route('register') }}" class="nav-link">
+                                    <i class="fa-solid fa-user-plus"></i> Register</a>
+                            @endif
+                        </li>
+                        <li class="nav-item mx-1">
+                            @if ($activ == 'login')
+                                <a href="{{ route('login') }}" class="nav-link active-link">
+                                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
+                            @else
+                                <a href="{{ route('login') }}" class="nav-link">
+                                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
+                            @endif
+                        </li>
+                    </ul>
                     @elseif (auth('customer')->check())
 @php
     $unreadCount = auth('customer')->user()?->unreadNotifications()->count() ?? 0;
@@ -145,10 +144,10 @@
             </div>
     </nav>
     @yield('content')
-    @vite('resources/js/script.js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
+    @vite('resources/js/script.js')
 </body>
 
 </html>

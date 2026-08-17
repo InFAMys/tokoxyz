@@ -6,7 +6,7 @@
 @endphp
 
 @section('content')
-    <div class="main-content" style="max-width: 640px; margin: 0 auto">
+    <div class="main-content content-narrow">
         <div class="d-grid d-md-flex flex-wrap justify-content-md-between align-items-md-center mb-5 gap-2">
             <a class="btn btn-pink-outline flex-shrink-0" href="{{ route('profil') }}">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
@@ -17,12 +17,7 @@
             </a>
         </div>
 
-        {{-- @if (session('status'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('status') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif --}}
+        
 
         @forelse ($alamat as $item)
             <div class="card p-3 mb-3">
@@ -85,4 +80,3 @@
         @endforelse
     </div>
 @endsection
-

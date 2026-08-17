@@ -35,10 +35,10 @@
                     @if ($mainImage)
                         <div class="product-detail-img overflow-hidden">
                             <img id="detail-main-image" src="{{ asset('storage/' . $mainImage) }}"
-                                alt="{{ $barang->nama_barang }}" class="w-100" style="height: 420px; object-fit: cover;">
+                                alt="{{ $barang->nama_barang }}" class="w-100 h-100 object-fit-cover">
                         </div>
                     @else
-                        <div class="product-detail-img" style="height: 420px;">
+                        <div class="product-detail-img">
                             <i class="fa-solid fa-image"></i>
                         </div>
                     @endif
@@ -89,11 +89,7 @@
                         </h3>
                     @endif
                     <div class="summary-box mb-4">
-                        {{-- @if ($errors->any())
-                            <div class="alert alert-danger" role="alert">
-                                {{ $errors->first() }}
-                            </div>
-                        @endif --}}
+                        
 
                         @if (!auth('customer')->check())
                             <a href="{{ route('login') }}" class="btn btn-pink w-100">

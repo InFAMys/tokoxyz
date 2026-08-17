@@ -12,12 +12,7 @@
             <form action="{{ route('pegawai.abrand') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="auth-title">Tambah Brand</div>
-                {{--
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('astatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="logo" class="form-label-pink">Logo Brand</label>
                     <input id='logo' name="logo" type="file" class="form-control form-control-pink" required />

@@ -1,8 +1,8 @@
 @if ($diskon->isEmpty())
     <div class="text-center py-4 text-muted">Tidak ada hasil</div>
 @else
-    <div class="table-responsive">
-        <table class="table table-pink table-borderless text-center mb-0">
+    <div class="table-responsive mobile-card-responsive">
+        <table class="table table-pink table-borderless text-center mobile-card-table mb-0">
             <thead>
                 <tr>
                     <th>No</th>
@@ -17,18 +17,20 @@
             <tbody>
                 @foreach ($diskon as $ds)
                     <tr>
-                        <td>{{ $diskon->firstItem() + $loop->index }}</td>
-                        <td>{{ $ds->nama_diskon }}</td>
-                        <td>{{ $ds->kode_diskon }}</td>
-                        <td class="text-center">{{ (int) $ds->jumlah_diskon }}%</td>
-                        <td>
-                            <span class="badge rounded-pill text-bg-success"
-                                style="font-size: 0.7rem">{{ \Carbon\Carbon::parse($ds->mulai_diskon)->format('d-m-Y H:i') }}</span>
-                            -
-                            <span class="badge rounded-pill text-bg-warning"
-                                style="font-size: 0.7rem">{{ \Carbon\Carbon::parse($ds->akhir_diskon)->format('d-m-Y H:i') }}</span>
+                        <td data-label="No">{{ $diskon->firstItem() + $loop->index }}</td>
+                        <td data-label="Nama Diskon">{{ $ds->nama_diskon }}</td>
+                        <td data-label="Kode Diskon">{{ $ds->kode_diskon }}</td>
+                        <td data-label="Jumlah Diskon" class="text-center">{{ (int) $ds->jumlah_diskon }}%</td>
+                        <td data-label="Periode">
+                            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-1">
+                                <span class="badge rounded-pill text-bg-success"
+                                    style="font-size: 0.7rem; white-space: normal; overflow-wrap: anywhere">{{ \Carbon\Carbon::parse($ds->mulai_diskon)->format('d-m-Y H:i') }}</span>
+                                <span>-</span>
+                                <span class="badge rounded-pill text-bg-warning"
+                                    style="font-size: 0.7rem; white-space: normal; overflow-wrap: anywhere">{{ \Carbon\Carbon::parse($ds->akhir_diskon)->format('d-m-Y H:i') }}</span>
+                            </div>
                         </td>
-                        <td>
+                        <td data-label="Status">
                             @php
                                 $now = now();
                                 $expired = $ds->status_diskon == 'aktif' && ($now < $ds->mulai_diskon || $now > $ds->akhir_diskon);
@@ -43,7 +45,7 @@
                                 <span class="badge rounded-pill text-bg-danger">Kadaluarsa</span>
                             @endif
                         </td>
-                        <td>
+                        <td data-label="Aksi" class="mobile-card-actions">
                             <a href="{{ route('owner.ediskon', $ds->id_diskon) }}" class="btn btn-edit-outline btn-sm me-1">
                                 <i class="fa-solid fa-pen-to-square"></i> Edit
                             </a>

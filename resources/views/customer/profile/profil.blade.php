@@ -6,7 +6,7 @@
 @endphp
 
 @section('content')
-    <div class="main-content" style="max-width: 560px; margin: 0 auto">
+    <div class="main-content content-narrow-sm">
         <h1 class="page-title text-center">Profil Saya</h1>
         <div class="card p-4 text-center mb-3">
             <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>

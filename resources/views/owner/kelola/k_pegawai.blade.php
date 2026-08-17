@@ -13,13 +13,8 @@
                 <a class="btn btn-pink" href="{{ route('owner.addpegawai') }}">
                     <i class="fa-solid fa-plus"></i> Tambah Akun Pegawai
                 </a>
-                {{-- @if (session('delStatus'))
-                    <div class="alert alert-success alert-dismissible fade show mx-auto" role="alert">
-                        {{ session('delStatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
-                <form method="GET" class="ms-auto search-wrapper" style="width: 230px">
+
+                <form method="GET" class="ms-auto search-wrapper filter-search">
                     <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                     <input type="text" name="q" value="{{ request('q') }}"
                         class="form-control form-control-pink live-search" data-target="rows-pegawai"
@@ -32,4 +27,3 @@
         </div>
     </div>
 @endsection
-

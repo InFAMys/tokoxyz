@@ -13,12 +13,7 @@
                 @method('PUT')
                 <div class="auth-titleA">Kelola Stok</div>
                 <div class="auth-subtitleA mt-2">{{ $stokbrg->nama_barang }}</div>
-                {{-- @if (session('estatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('estatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="stok" class="form-label-pink">Stok</label>
                     <div class="input-group">

@@ -1,8 +1,8 @@
 @if ($barang->isEmpty())
     <div class="text-center py-4 text-muted">Tidak ada hasil</div>
 @else
-    <div class="table-responsive">
-        <table class="table table-pink table-borderless mb-0">
+    <div class="table-responsive mobile-card-responsive">
+        <table class="table table-pink table-borderless mobile-card-table mb-0">
             <thead>
                 <tr>
                     <th>No</th>
@@ -19,8 +19,8 @@
             <tbody>
                 @foreach ($barang as $brg)
                     <tr>
-                        <td>{{ $barang->firstItem() + $loop->index }}</td>
-                        <td>
+                        <td data-label="No">{{ $barang->firstItem() + $loop->index }}</td>
+                        <td data-label="Thumbnail">
                             @if ($brg->thumbnailPath())
                                 <img src="{{ asset('storage/' . $brg->thumbnailPath()) }}" alt="Thumbnail {{ $brg->nama_barang }}"
                                     class="rounded" style="width: 64px; height: 64px; object-fit: cover;">
@@ -28,19 +28,19 @@
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td>{{ $brg->kode_barang }}</td>
-                        <td>{{ $brg->nama_barang }}</td>
-                        <td>Rp {{ number_format($brg->harga, 0, ',', '.') }}</td>
-                        <td>
+                        <td data-label="Kode Barang">{{ $brg->kode_barang }}</td>
+                        <td data-label="Nama Barang">{{ $brg->nama_barang }}</td>
+                        <td data-label="Harga">Rp {{ number_format($brg->harga, 0, ',', '.') }}</td>
+                        <td data-label="Berat">
                             {{ !is_null($brg->berat) ? rtrim(rtrim(number_format((float) $brg->berat, 1, ',', '.'), '0'), ',') . ' kg' : '-' }}
                         </td>
-                        <td>{{ $brg->stokReady() }}</td>
+                        <td data-label="Stok">{{ $brg->stokReady() }}</td>
                         @if ($brg->status == 'Disembunyikan')
-                            <td><span class="badge rounded-pill text-bg-warning">{{ $brg->status }}</span></td>
+                            <td data-label="Status"><span class="badge rounded-pill text-bg-warning">{{ $brg->status }}</span></td>
                         @elseif($brg->status == 'Ditampilkan')
-                            <td><span class="badge rounded-pill text-bg-success">{{ $brg->status }}</span></td>
+                            <td data-label="Status"><span class="badge rounded-pill text-bg-success">{{ $brg->status }}</span></td>
                         @endif
-                        <td>
+                        <td data-label="Aksi" class="mobile-card-actions">
                             <a href="{{ route('pegawai.detailbarang', $brg->id_barang) }}" class="btn btn-detail-outline btn-sm mx-2">
                                 <i class="fa-solid fa-circle-info"></i> Detail
                             </a>

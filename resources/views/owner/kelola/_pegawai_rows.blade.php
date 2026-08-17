@@ -1,8 +1,8 @@
 @if ($pgw->isEmpty())
     <div class="text-center py-4 text-muted">Tidak ada hasil</div>
 @else
-    <div class="table-responsive">
-        <table class="table table-pink table-borderless mb-0">
+    <div class="table-responsive mobile-card-responsive">
+        <table class="table table-pink table-borderless mobile-card-table mb-0">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -14,10 +14,10 @@
             <tbody>
                 @foreach ($pgw as $pg)
                     <tr>
-                        <td>{{ $pg->id_pegawai }}</td>
-                        <td>{{ $pg->nama_pegawai }}</td>
-                        <td>{{ $pg->username_pegawai }}</td>
-                        <td class="d-flex gap-3">
+                        <td data-label="ID">{{ $pg->id_pegawai }}</td>
+                        <td data-label="Nama Pegawai">{{ $pg->nama_pegawai }}</td>
+                        <td data-label="Username">{{ $pg->username_pegawai }}</td>
+                        <td data-label="Aksi" class="d-flex gap-3 mobile-stack-actions mobile-card-actions">
                             <a href="{{ route('owner.epegawai', $pg->id_pegawai) }}"
                                 class="btn btn-edit-outline btn-sm">
                                 <i class="fa-solid fa-pen-to-square"></i> Edit</a>

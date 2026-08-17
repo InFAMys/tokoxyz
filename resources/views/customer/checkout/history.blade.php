@@ -14,8 +14,8 @@
                     <p class="text-muted">Mulai belanja dan buat pesanan pertamamu.</p>
                 </div>
             @else
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
+                <div class="table-responsive mobile-card-responsive">
+                    <table class="table table-pink table-borderless mobile-card-table mb-0">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -29,16 +29,16 @@
                         <tbody>
                             @foreach ($checkouts as $i => $checkout)
                                 <tr>
-                                    <td>{{ $checkouts->firstItem() + $loop->index }}</td>
-                                    <td>{{ $checkout->order_id }}</td>
-                                    <td>{{ $checkout->created_at->format('d M Y H:i') }}</td>
-                                    <td>Rp {{ number_format($checkout->total_amount, 0, ',', '.') }}</td>
-                                    <td>
+                                    <td data-label="No">{{ $checkouts->firstItem() + $loop->index }}</td>
+                                    <td data-label="Order ID">{{ $checkout->order_id }}</td>
+                                    <td data-label="Tanggal">{{ $checkout->created_at->format('d M Y H:i') }}</td>
+                                    <td data-label="Total">Rp {{ number_format($checkout->total_amount, 0, ',', '.') }}</td>
+                                    <td data-label="Status">
                                         <span class="badge rounded-pill text-bg-{{ $checkout->statusColor() }}">
                                             {{ $checkout->statusLabel() }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td data-label="Aksi" class="mobile-card-actions">
                                         <a href="{{ route('checkout.show', $checkout->id_checkout) }}" class="btn btn-edit-outline btn-sm">
                                             <i class="fa-solid fa-eye"></i> Detail
                                         </a>

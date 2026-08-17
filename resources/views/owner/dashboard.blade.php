@@ -46,8 +46,8 @@
                 <h5 class="mb-0 fw-bold text-pink me-auto">Laporan Penjualan</h5>
                 <a href="{{ route('owner.laporan') }}" class="btn btn-pink">Buka Laporan Lengkap</a>
             </div>
-            <div class="table-responsive">
-                <table class="table table-pink table-borderless mb-0">
+            <div class="table-responsive mobile-card-responsive">
+                <table class="table table-pink table-borderless mobile-card-table mb-0">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -61,12 +61,12 @@
                 <tbody>
                     @forelse ($stats['recentSales'] as $s)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $s->order_id }}</td>
-                            <td>{{ $s->paid_at?->format('d M Y H:i') }}</td>
-                            <td>{{ $s->customer_name }}</td>
-                            <td>Rp {{ number_format($s->total_amount, 0, ',', '.') }}</td>
-                            <td>
+                            <td data-label="No">{{ $loop->iteration }}</td>
+                            <td data-label="Order ID">{{ $s->order_id }}</td>
+                            <td data-label="Tanggal">{{ $s->paid_at?->format('d M Y H:i') }}</td>
+                            <td data-label="Customer">{{ $s->customer_name }}</td>
+                            <td data-label="Total">Rp {{ number_format($s->total_amount, 0, ',', '.') }}</td>
+                            <td data-label="Tipe">
                                 @if ($s->items->contains('is_preorder', true))
                                     <span class="badge rounded-pill text-bg-warning">Preorder</span>
                                 @else

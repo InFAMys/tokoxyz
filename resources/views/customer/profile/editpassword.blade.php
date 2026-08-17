@@ -15,12 +15,7 @@
             <form action="{{ route('password.update') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('pstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('pstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="current_password" class="form-label-pink">Password Sekarang</label>
                     <input id="current_password" name="current_password" type="password"

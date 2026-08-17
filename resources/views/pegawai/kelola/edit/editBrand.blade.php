@@ -12,12 +12,7 @@
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Brand</div>
-                {{-- @if (session('estatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('estatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="logo" class="form-label-pink">Logo Brand</label>
                     <input id='logo' name="logo" type="file" class="form-control form-control-pink" />

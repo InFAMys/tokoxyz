@@ -12,8 +12,8 @@
             <h1 class="page-title">Dashboard Pegawai</h1>
             <div class="card-pink p-3">
                 <h5 class="fw-bold text-pink mb-3">Pesanan Baru</h5>
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
+                <div class="table-responsive mobile-card-responsive">
+                    <table class="table table-pink table-borderless mobile-card-table mb-0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -26,21 +26,21 @@
                     <tbody>
                         @forelse ($pesananBaru as $po)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $po->order_id }}</td>
-                                <td>
+                                <td data-label="ID">{{ $loop->iteration }}</td>
+                                <td data-label="Kode Pesanan">{{ $po->order_id }}</td>
+                                <td data-label="Tipe">
                                     @if ($po->items->contains('is_preorder', true))
                                         <span class="badge rounded-pill text-bg-warning">Preorder</span>
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                     <span class="badge rounded-pill text-bg-{{ $po->statusColor() }}">
                                         {{ $po->statusLabel() }}
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Aksi" class="mobile-card-actions">
                                     <a href="{{ route('pegawai.detailpesanan', $po->id_checkout) }}"
                                         class="btn btn-pink-outline btn-sm">
                                         <i class="fa-solid fa-circle-info"></i> Detail

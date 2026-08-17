@@ -12,12 +12,7 @@
             <form action="{{ route('owner.adddiskon') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="auth-title">Tambah Diskon</div>
-                {{-- @if (session('astatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('astatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="nama_diskon" class="form-label-pink">Nama Diskon</label>
                     <input id='nama_diskon' name="nama_diskon" type="text" class="form-control form-control-pink"

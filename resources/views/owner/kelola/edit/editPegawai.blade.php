@@ -13,12 +13,7 @@
                 @method('PUT')
                 <div class="auth-titleA">Edit Akun Pegawai</div>
                 <div class="auth-pgw-name my-3">{{ $pgw->nama_pegawai }}</div>
-                {{-- @if (session('status'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('status') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="nama_pegawai" class="form-label-pink">Nama Pegawai</label>
                     <input id='nama_pegawai' name="nama_pegawai" type="text" class="form-control form-control-pink"

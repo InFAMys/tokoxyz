@@ -14,8 +14,8 @@
             <h1 class="page-title my-4">Kelola Stok Ukuran Barang: {{ $stokbrg->nama_barang }}</h1>
             <div class="card-pink p-3">
 
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
+                <div class="table-responsive mobile-card-responsive">
+                    <table class="table table-pink table-borderless mobile-card-table mb-0">
                     <thead>
                         <tr>
                             <th class="text-center">Nama Ukuran</th>
@@ -26,9 +26,9 @@
                     <tbody>
                         @foreach ($stok as $sk)
                             <tr>
-                                <td class="text-center">{{ $sk->nama_ukuran }}</td>
-                                <td>{{ $sk->ukuran }}</td>
-                                <td>
+                                <td data-label="Nama Ukuran" class="text-center">{{ $sk->nama_ukuran }}</td>
+                                <td data-label="Ukuran">{{ $sk->ukuran }}</td>
+                                <td data-label="Aksi" class="mobile-card-actions mobile-card-form">
                                     <form action="{{ route('pegawai.ustoku', [$stokbrg->id_barang, $sk->id_ukuran]) }}"
                                         method="post" enctype="multipart/form-data">
                                         @csrf
@@ -38,7 +38,7 @@
                                             <div
                                                 class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-5">
 
-                                                <div class="input-group flex-grow-1" style="max-width: 220px;">
+                                                <div class="input-group flex-grow-1 stock-input-group">
                                                     <button type="button" class="btn btn-pink-outline qty-adjust-btn"
                                                         data-qty-delta="-1" aria-label="Kurangi stok">
                                                         <i class="fa-solid fa-minus"></i>
@@ -56,14 +56,7 @@
                                                     <i class="fa-solid fa-plus"></i> Ubah Stok
                                                 </button>
                                                 <div class="w-md-auto mb-0">
-                                                    {{-- @if (session('estatus-' . $sk->id_ukuran))
-                                                        <div class="alert alert-success alert-dismissible fade show"
-                                                            role="alert">
-                                                            {{ session('estatus-' . $sk->id_ukuran) }}
-                                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                                aria-label="Close"></button>
-                                                        </div>
-                                                    @endif --}}
+
                                                 </div>
                                             </div>
                                             @error('stok')
@@ -84,4 +77,3 @@
         </div>
     </div>
 @endsection
-

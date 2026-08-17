@@ -31,10 +31,10 @@
                     $order = ['paid', 'processed', 'shipping', 'delivered', 'completed'];
                     $current = $checkout->status === 'completed' ? 5 : array_search($checkout->status, $order);
                 @endphp
-                <div class="d-flex flex-wrap justify-content-between mb-3">
+                <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
                     @foreach ($order as $i => $state)
                         <div class="text-center {{ $i + 1 <= $current ? 'text-pink fw-bold' : 'text-muted' }}"
-                            style="flex:1 1 0; min-width:max-content">
+                            style="flex:1 1 8rem">
                             <div class="mb-1">{{ $steps[$state] }}</div>
                             <i class="fa-solid {{ $i + 1 <= $current ? 'fa-circle-check' : 'fa-regular fa-circle' }}"></i>
                         </div>
@@ -67,7 +67,7 @@
             <div class="summary-box mb-3">
                 <div class="form-label-pink">Barang</div>
                 @foreach ($checkout->items as $item)
-                    <div class="d-flex justify-content-between mb-1">
+                    <div class="d-flex justify-content-between gap-3 mb-1">
                         <span>{{ $item->nama_barang }} × {{ $item->jumlah_barang }}
                             @if ($item->is_preorder)
                                 <span class="badge text-bg-warning ms-1">Preorder

@@ -12,12 +12,7 @@
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Profil</div>
-                {{-- @if (session('ustatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('ustatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="username" class="form-label-pink">Username</label>
                     <input id='username' name="username" type="text" class="form-control form-control-pink"
@@ -40,12 +35,7 @@
             <form action="{{ route('owner.update.password') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('pstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('pstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="current_password" class="form-label-pink">Password Sekarang</label>
                     <input id="current_password" name="current_password" type="password"

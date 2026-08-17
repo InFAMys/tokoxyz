@@ -12,12 +12,7 @@
             <form action="{{ route('pegawai.update.nama') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('nstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('nstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="nama_pegawai" class="form-label-pink">Nama</label>
                     <input id='nama_pegawai' name="nama_pegawai" type="text" class="form-control form-control-pink"
@@ -36,12 +31,7 @@
             <form action="{{ route('pegawai.update.username') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('ustatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('ustatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="username_pegawai" class="form-label-pink">Username</label>
                     <input id='username_pegawai' name="username_pegawai" type="text"
@@ -65,12 +55,7 @@
             <form action="{{ route('pegawai.update.password') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('pstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('pstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="current_password" class="form-label-pink">Password Sekarang</label>
                     <input id="current_password" name="current_password" type="password"

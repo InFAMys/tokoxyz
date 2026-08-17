@@ -20,7 +20,7 @@
             </a>
         </div>
 
-        <form method="GET" action="{{ route('barang.search') }}" class="d-flex gap-2 mb-4" role="search">
+            <form method="GET" action="{{ route('barang.search') }}" class="d-flex flex-column flex-sm-row gap-2 mb-4" role="search">
             <input class="form-control" type="search" name="q" value="{{ $q }}"
                 placeholder="Cari produk..." aria-label="Cari produk">
             <button class="btn btn-pink" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Cari</button>
@@ -37,7 +37,7 @@
                         <div class="product-card">
                             <div class="product-img">
                                 <img class="img-fluid" src="{{ asset('storage/' . $b->thumbnailPath()) }}"
-                                    alt="{{ $b->nama_barang }}" style="width:8rem" />
+                                    alt="{{ $b->nama_barang }}" />
                             </div>
                             <div class="card-body">
                                 <div class="product-name">{{ $b->nama_barang }}</div>

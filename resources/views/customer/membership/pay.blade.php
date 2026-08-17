@@ -4,12 +4,13 @@
 @php $activ = 'profil'; @endphp
 
 @section('content')
-    <div class="main-content" style="max-width: 480px; margin: 0 auto">
-        <div class="position-relative text-center mb-4">
-            <a href="{{ route('membership.index') }}" class="btn btn-pink-outline position-absolute start-0 top-50 translate-middle-y">
+    <div class="main-content content-narrow-xs">
+        <div class="mobile-page-head">
+            <a href="{{ route('membership.index') }}" class="btn btn-pink-outline">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
-            <h1 class="page-title mb-0" style="padding-inline: 5.5rem;">Daftar Member</h1>
+            <h1 class="page-title mb-0">Daftar Member</h1>
+            <span class="d-none d-md-block" aria-hidden="true"></span>
         </div>
 
         @if ($errors->any())

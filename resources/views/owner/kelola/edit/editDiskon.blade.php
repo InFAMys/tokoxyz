@@ -14,12 +14,7 @@
                 <div class="auth-titleA">Edit Diskon</div>
                 <div class="auth-subtitleA">{{ $diskon->nama_diskon }}</div>
                 <div class="auth-pgw-name my-3">{{ $diskon->nama_pegawai }}</div>
-                {{-- @if (session('estatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('estatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="nama_diskon" class="form-label-pink">Nama Diskon</label>
                     <input id='nama_diskon' name="nama_diskon" type="text" class="form-control form-control-pink"

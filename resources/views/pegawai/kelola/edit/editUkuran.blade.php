@@ -13,12 +13,7 @@
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Ukuran</div>
-                {{-- @if (session('estatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('estatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-2">
                     <label for="nama_ukuran" class="form-label-pink">Nama Ukuran</label>
                     <input id='nama_ukuran' name="nama_ukuran" type="text" class="form-control form-control-pink"

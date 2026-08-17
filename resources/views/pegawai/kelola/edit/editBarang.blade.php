@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="auth-wrapper">
-        <div class="auth-card" style="max-width: 720px;">
+        <div class="auth-card auth-card-wide">
             <form action="{{ route('pegawai.ubarang', $barang->id_barang) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -75,8 +75,7 @@
                     @if ($barang->thumbnailPath())
                         <div class="mb-2">
                             <img src="{{ asset('storage/' . $barang->thumbnailPath()) }}"
-                                alt="Thumbnail {{ $barang->nama_barang }}" class="rounded"
-                                style="width: 160px; height: 160px; object-fit: cover;">
+                                alt="Thumbnail {{ $barang->nama_barang }}" class="rounded edit-thumbnail-preview">
                         </div>
                     @else
                         <p class="form-label-rememberme mb-2">Belum ada thumbnail.</p>
@@ -97,8 +96,7 @@
                         @foreach ($barang->foto as $foto)
                             <label class="position-relative" style="cursor: pointer;">
                                 <img src="{{ asset('storage/' . $foto) }}"
-                                    alt="Foto {{ $loop->iteration }} {{ $barang->nama_barang }}" class="rounded"
-                                    style="width: 120px; height: 120px; object-fit: cover;">
+                                    alt="Foto {{ $loop->iteration }} {{ $barang->nama_barang }}" class="rounded edit-photo-preview">
                                 <span class="d-block mt-1 form-label-rememberme">
                                     <input type="checkbox" name="hapus_foto[]" value="{{ $foto }}"
                                         @checked(in_array($foto, old('hapus_foto', [])))>

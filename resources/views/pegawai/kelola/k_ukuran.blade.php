@@ -22,15 +22,10 @@
                         <i class="fa-solid fa-plus"></i> Tambah Ukuran
                     </a>
 
-                    {{-- @if (session('delStatus'))
-                        <div class="alert alert-success alert-dismissible fade show mx-auto" role="alert">
-                            {{ session('delStatus') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif --}}
+
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-pink table-borderless mb-0">
+                <div class="table-responsive mobile-card-responsive">
+                    <table class="table table-pink table-borderless mobile-card-table mb-0">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -52,10 +47,10 @@
                         @else
                             @foreach ($stok as $uk)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $uk->nama_ukuran }}</td>
-                                    <td>{{ $uk->ukuran }}</td>
-                                    <td>
+                                    <td data-label="No">{{ $loop->iteration }}</td>
+                                    <td data-label="Nama Ukuran">{{ $uk->nama_ukuran }}</td>
+                                    <td data-label="Ukuran">{{ $uk->ukuran }}</td>
+                                    <td data-label="Harga" class="mobile-card-form">
                                         <form action="{{ route('pegawai.uhargau', [$uk->id_barang, $uk->id_ukuran]) }}"
                                             method="post">
                                             @csrf
@@ -65,7 +60,7 @@
                                                 <input type="text" inputmode="numeric" autocomplete="off"
                                                     name="harga_ukuran"
                                                     value="{{ old('harga_ukuran', $uk->harga_ukuran) }}"
-                                                    class="form-control form-control-pink" style="max-width: 140px"
+                                                    class="form-control form-control-pink price-input-compact"
                                                     required>
                                                 <button type="submit" class="btn btn-pink">
                                                     <i class="fa-solid fa-floppy-disk"></i>
@@ -76,8 +71,8 @@
                                             <small class="text-success">{{ session('ehargastatus-' . $uk->id_ukuran) }}</small>
                                         @endif --}}
                                     </td>
-                                    <td>{{ $uk->stok_ukuran }}</td>
-                                    <td>
+                                    <td data-label="Stok Ukuran">{{ $uk->stok_ukuran }}</td>
+                                    <td data-label="Aksi" class="mobile-card-actions">
                                         <a href="{{ route('pegawai.eukuran', [$uk->id_barang, $uk->id_ukuran]) }}"
                                             class="btn btn-edit-outline btn-sm me-1">
                                             <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -130,4 +125,3 @@
         </div>
     </div>
 @endsection
-

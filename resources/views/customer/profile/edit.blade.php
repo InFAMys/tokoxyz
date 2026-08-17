@@ -15,12 +15,7 @@
             <form action="{{ route('profil.update.nama') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('nstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('nstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="nama" class="form-label-pink">Nama Lengkap</label>
                     <input id='nama' name="nama" type="text" class="form-control form-control-pink"
@@ -39,12 +34,7 @@
             <form action="{{ route('profil.update.email') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('estatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('estatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="email" class="form-label-pink">E-Mail</label>
                     <input id='email' name="email" type="email" class="form-control form-control-pink"
@@ -63,12 +53,7 @@
             <form action="{{ route('profil.update.telp') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('ntstatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('ntstatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="no_telp" class="form-label-pink">No. Telepon</label>
                     <input id="no_telp" name="no_telp" type="tel" class="form-control form-control-pink"
@@ -89,12 +74,7 @@
             <form action="{{ route('profil.update.username') }}" method="post">
                 @csrf
                 @method('PUT')
-                {{-- @if (session('ustatus'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('ustatus') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif --}}
+                
                 <div class="mb-4">
                     <label for="username" class="form-label-pink">Username</label>
                     <input id='username' name="username" type="text" class="form-control form-control-pink"

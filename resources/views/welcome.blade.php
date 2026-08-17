@@ -15,7 +15,7 @@
             </p>
             <form method="GET" action="{{ route('barang.search') }}" class="d-flex gap-2 mb-3" role="search">
                 <input class="form-control" type="search" name="q" placeholder="Cari produk..."
-                    aria-label="Cari produk" style="max-width: 20rem;">
+                    aria-label="Cari produk">
                 <button class="btn" type="submit"
                     style="background:#fff;color:var(--pink-600);font-weight:700;border-radius:25px">Cari</button>
             </form>
@@ -39,7 +39,7 @@
                     <div class="product-card">
                         <div class="product-img position-relative">
                             <img class="img-fluid" src="{{ asset('storage/' . $bn->thumbnailPath()) }}"
-                                alt="{{ $bn->nama_barang }}" style="width:8rem" />
+                                alt="{{ $bn->nama_barang }}" />
                             @if ($bn->stokReady() < 1)
                                 <span class="position-absolute top-0 start-0 badge text-bg-secondary"
                                     style="opacity:.85">Habis</span>
@@ -67,7 +67,7 @@
                     <div class="product-card">
                         <div class="product-img position-relative">
                             <img class="img-fluid" src="{{ asset('storage/' . $br->thumbnailPath()) }}"
-                                alt="{{ $br->nama_barang }}" style="width:8rem" />
+                                alt="{{ $br->nama_barang }}" />
                             @if ($br->stokReady() < 1)
                                 <span class="position-absolute top-0 start-0 badge text-bg-secondary"
                                     style="opacity:.85">Habis</span>
