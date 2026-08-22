@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Owner;
 
-use App\Console\Commands\NotifyActiveDiscounts;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Diskon;
+use App\Notifications\DiscountAvailable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -72,7 +73,10 @@ class KelolaDiskonController extends Controller
     public function editDiskon($id)
     {
         $diskon = Diskon::where('id_diskon', $id)->first();
-        $statusOptions = Diskon::statusOptions();
+        $statusOptions = array_values(array_filter(
+            Diskon::statusOptions(),
+            fn ($status) => $status !== 'kadaluarsa'
+        ));
 
         return view('owner.kelola.edit.editDiskon', compact('diskon', 'statusOptions'));
     }
@@ -110,9 +114,31 @@ class KelolaDiskonController extends Controller
         $diskon->status_diskon = $data['status_diskon'];
         $diskon->update();
 
-        NotifyActiveDiscounts::notifyActive($diskon);
-
         return back()->with('estatus', 'Diskon Berhasil Di Edit!');
+    }
+
+    public function sendDiskon($id)
+    {
+        $diskon = Diskon::findOrFail($id);
+
+        if ($diskon->status_diskon !== 'aktif') {
+            return back()->with('sStatus', 'Diskon tidak aktif, tidak bisa mengirim notifikasi.');
+        }
+
+        Customer::all()->each(function (Customer $customer) use ($diskon): void {
+            $alreadyNotified = $customer->notifications()
+                ->where('type', 'discount-available')
+                ->get()
+                ->contains(fn ($n) => ($n->data['id_diskon'] ?? null) == $diskon->id_diskon);
+
+            if (! $alreadyNotified) {
+                $customer->notify(new DiscountAvailable($diskon));
+            }
+        });
+
+        $diskon->fill(['notified_at' => now()])->save();
+
+        return back()->with('sStatus', 'Notifikasi diskon terkirim ke semua customer.');
     }
 
     public function deleteDiskon($id)

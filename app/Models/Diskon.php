@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-
 
 #[Table(key: 'id_diskon')]
 class Diskon extends Model
 {
     use HasFactory, Notifiable, SoftDeletes;
-    
+
     protected $table = 'diskons';
-    
+
     protected $fillable = [
         'nama_diskon',
         'jumlah_diskon',
@@ -25,6 +23,7 @@ class Diskon extends Model
         'mulai_diskon',
         'akhir_diskon',
         'status_diskon',
+        'notified_at',
     ];
 
     protected function casts(): array
@@ -41,8 +40,8 @@ class Diskon extends Model
 
     protected static function enumOptions(string $column): array
     {
-        $table = (new self())->getTable();
-        $row = DB::selectOne('SHOW COLUMNS FROM `'. $table .'` WHERE `Field` = ?', [$column]);
+        $table = (new self)->getTable();
+        $row = DB::selectOne('SHOW COLUMNS FROM `'.$table.'` WHERE `Field` = ?', [$column]);
 
         if (! $row || ! preg_match("/^enum\((.*)\)$/", $row->Type, $matches)) {
             return [];

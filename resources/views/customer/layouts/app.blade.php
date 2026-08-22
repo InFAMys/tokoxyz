@@ -57,9 +57,13 @@
                         </li>
                     </ul>
                     @elseif (auth('customer')->check())
-@php
-    $unreadCount = auth('customer')->user()?->unreadNotifications()->count() ?? 0;
-@endphp
+                        @php
+                            $notifCount = auth('customer')->user()
+                                ?->notifications()
+                                ->where('type', 'discount-available')
+                                ->whereNull('read_at')
+                                ->count() ?? 0;
+                        @endphp
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li class="nav-item mx-1">
                                 @if ($activ == 'home')
@@ -99,9 +103,9 @@
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-circle-user"></i>
                                         {{ Str::limit(auth('customer')->user()->nama, 10) }}
-                                        @if ($unreadCount > 0)
+                                        @if ($notifCount > 0)
                                             <span class="position-absolute badge rounded-pill bg-danger"
-                                                style="top:-4px; right:0; font-size:0.65rem">{{ $unreadCount }}</span>
+                                                style="top:-4px; right:0; font-size:0.65rem">{{ $notifCount }}</span>
                                         @endif
                                     </a>
                                 @else
@@ -109,24 +113,24 @@
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-circle-user"></i>
                                         {{ Str::limit(auth('customer')->user()->nama, 10) }}
-                                        @if ($unreadCount > 0)
+                                        @if ($notifCount > 0)
                                             <span class="position-absolute badge rounded-pill bg-danger"
-                                                style="top:-4px; right:0; font-size:0.65rem">{{ $unreadCount }}</span>
+                                                style="top:-4px; right:0; font-size:0.65rem">{{ $notifCount }}</span>
                                         @endif
                                     </a>
                                 @endif
 
                                 <ul class="dropdown-menu dropdown-menu-end drop-pink">
+                                    <li><a href="{{ route('profil') }}" class="dropdown-item nav-link-drop">
+                                            <i class="fa-solid fa-user-pen"></i> Profil Saya</a></li>
                                     <li>
-                                        <a href="{{ route('notifikasi.index') }}" class="dropdown-item nav-link-drop">
-                                            <i class="fa-regular fa-bell"></i> Notifikasi
-                                            @if ($unreadCount > 0)
-                                                <span class="badge rounded-pill bg-danger ms-1">{{ $unreadCount }}</span>
+                                        <a href="{{ route('diskon.index') }}" class="dropdown-item nav-link-drop">
+                                            <i class="fa-solid fa-tag"></i> Diskon
+                                            @if ($notifCount > 0)
+                                                <span class="badge rounded-pill bg-danger ms-1">{{ $notifCount }}</span>
                                             @endif
                                         </a>
                                     </li>
-                                    <li><a href="{{ route('profil') }}" class="dropdown-item nav-link-drop">
-                                            <i class="fa-solid fa-user-pen"></i> Profil Saya</a></li>
                                     <li><a href="{{ route('membership.index') }}" class="dropdown-item nav-link-drop">
                                             <i class="fa-solid fa-id-card"></i> Member</a></li>
                                     <li>

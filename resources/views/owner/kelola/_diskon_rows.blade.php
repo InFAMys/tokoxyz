@@ -18,7 +18,12 @@
                 @foreach ($diskon as $ds)
                     <tr>
                         <td data-label="No">{{ $diskon->firstItem() + $loop->index }}</td>
-                        <td data-label="Nama Diskon">{{ $ds->nama_diskon }}</td>
+                        <td data-label="Nama Diskon">
+                            {{ $ds->nama_diskon }}
+                            @if ($ds->notified_at)
+                                <span class="badge rounded-pill text-bg-success ms-1">Terkirim</span>
+                            @endif
+                        </td>
                         <td data-label="Kode Diskon">{{ $ds->kode_diskon }}</td>
                         <td data-label="Jumlah Diskon" class="text-center">{{ (int) $ds->jumlah_diskon }}%</td>
                         <td data-label="Periode">
@@ -33,7 +38,9 @@
                         <td data-label="Status">
                             @php
                                 $now = now();
-                                $expired = $ds->status_diskon == 'aktif' && ($now < $ds->mulai_diskon || $now > $ds->akhir_diskon);
+                                $expired =
+                                    $ds->status_diskon == 'aktif' &&
+                                    ($now < $ds->mulai_diskon || $now > $ds->akhir_diskon);
                             @endphp
                             @if ($expired)
                                 <span class="badge rounded-pill text-bg-danger">Kadaluarsa</span>
@@ -46,7 +53,16 @@
                             @endif
                         </td>
                         <td data-label="Aksi" class="mobile-card-actions">
-                            <a href="{{ route('owner.ediskon', $ds->id_diskon) }}" class="btn btn-edit-outline btn-sm me-1">
+                            <form action="{{ route('owner.senddiskon', $ds->id_diskon) }}" method="post"
+                                class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-green btn-sm me-1"
+                                    @disabled($ds->status_diskon !== 'aktif' || $expired || $ds->notified_at)>
+                                    <i class="fa-solid fa-bell"></i> Kirim
+                                </button>
+                            </form>
+                            <a href="{{ route('owner.ediskon', $ds->id_diskon) }}"
+                                class="btn btn-edit-outline btn-sm me-1">
                                 <i class="fa-solid fa-pen-to-square"></i> Edit
                             </a>
                             <button class="btn btn-delete-outline btn-sm" data-bs-toggle="modal"
@@ -54,7 +70,8 @@
                                 <i class="fa-solid fa-trash"></i> Hapus
                             </button>
                             <div class="modal fade" id="deleteModal-{{ $ds->id_diskon }}" tabindex="-1"
-                                aria-labelledby="deleteModal-{{ $ds->id_diskon }}Label" aria-hidden="true" data-bs-backdrop="static">
+                                aria-labelledby="deleteModal-{{ $ds->id_diskon }}Label" aria-hidden="true"
+                                data-bs-backdrop="static">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content bg-pink">
                                         <div class="modal-header">
@@ -68,7 +85,8 @@
                                             Hapus Kategori {{ $ds->nama_diskon }} ?
                                         </div>
                                         <div class="modal-footer mx-auto">
-                                            <form action="{{ route('owner.deldiskon', $ds->id_diskon) }}" method="post">
+                                            <form action="{{ route('owner.deldiskon', $ds->id_diskon) }}"
+                                                method="post">
                                                 @csrf
                                                 <button class="btn btn-delete btn-sm" type="submit">
                                                     <i class="fa-solid fa-trash"></i> HAPUS

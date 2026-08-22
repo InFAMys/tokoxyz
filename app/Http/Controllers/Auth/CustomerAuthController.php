@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Diskon;
+use App\Notifications\DiscountAvailable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -81,6 +83,10 @@ class CustomerAuthController extends Controller
             'no_telp' => $data['no_telp'],
             'password' => Hash::make($data['password']),
         ]);
+
+        Diskon::whereNotNull('notified_at')->each(function (Diskon $diskon) use ($customer): void {
+            $customer->notify(new DiscountAvailable($diskon));
+        });
 
         Auth::guard('customer')->login($customer);
 

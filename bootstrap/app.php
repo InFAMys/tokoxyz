@@ -11,8 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        // An unauthenticated visitor hitting /admin/... goes to the admin
+    ->withMiddleware(function (Middleware $middleware) {        // An unauthenticated visitor hitting /admin/... goes to the admin
         // login, /employee/... to the employee login, everything else to
         // the customer login. This replaces the single default 'login'
         // redirect since we now have 3 separate guards/login pages.

@@ -263,7 +263,7 @@ class CheckoutController extends Controller
         ]);
 
         return redirect()->route('checkout.show', $checkout->id_checkout)
-            ->with('status', 'Permintaan pembatalan dikirim. Menunggu konfirmasi admin.');
+            ->with('status', 'Permintaan pembatalan dikirim. Menunggu konfirmasi pegawai.');
     }
 
     public function history(): View
@@ -375,7 +375,7 @@ class CheckoutController extends Controller
 
     protected function cartWeightKg(): int
     {
-        return max(1, (int) round($this->sum($this->cartItems($this->cart()), 'berat')));
+        return max(1, (int) floor($this->sum($this->cartItems($this->cart()), 'berat') + 0.6));
     }
 
     /**

@@ -7,13 +7,40 @@
 @endphp
 
 @section('content')
-    <div class="d-flex" style="flex: 1">
-        <div class="main-content">
-            <h1 class="page-title">Dashboard Pegawai</h1>
-            <div class="card-pink p-3">
-                <h5 class="fw-bold text-pink mb-3">Pesanan Baru</h5>
-                <div class="table-responsive mobile-card-responsive">
-                    <table class="table table-pink table-borderless mobile-card-table mb-0">
+    <div class="main-content">
+        <h1 class="page-title">Dashboard Pegawai</h1>
+        <!-- Stat Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="stat-value">{{ $newCount }}</div>
+                    <div class="stat-label">Pesanan Baru</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+                    <div class="stat-value">{{ $processedCount }}</div>
+                    <div class="stat-label">Pesanan Diproses</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-ban"></i></div>
+                    <div class="stat-value">{{ $cancelCount }}</div>
+                    <div class="stat-label">Menunggu Pembatalan</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-pink p-3">
+            <div class="filter-bar">
+                <h5 class="mb-0 fw-bold text-pink me-auto">Pesanan</h5>
+                <a href="{{ route('pegawai.pesanan') }}" class="btn btn-pink">Buka Semua Pesanan</a>
+            </div>
+            <div class="table-responsive mobile-card-responsive">
+                <table class="table table-pink table-borderless mobile-card-table mb-0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -53,8 +80,7 @@
                             </tr>
                         @endforelse
                     </tbody>
-                    </table>
-                </div>
+                </table>
             </div>
         </div>
     </div>

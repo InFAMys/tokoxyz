@@ -110,7 +110,7 @@
 
             @if ($checkout->status === 'cancel_pending')
                 <div class="alert alert-warning mb-3">
-                    <i class="fa-solid fa-clock"></i> Permintaan pembatalan sedang menunggu konfirmasi admin.
+                    <i class="fa-solid fa-clock"></i> Permintaan pembatalan sedang menunggu konfirmasi pegawai.
                     <div class="small mt-1">Alasan: {{ $checkout->cancel_reason ?? '-' }}</div>
                 </div>
             @endif
@@ -230,7 +230,7 @@
                                         @if ($checkout->status === 'pending')
                                             Pesanan akan langsung dibatalkan.
                                         @else
-                                            Admin akan memverifikasi permintaan Anda.
+                                            Pegawai akan memverifikasi permintaan Anda.
                                         @endif
                                     </span>
                                 </p>

@@ -6,9 +6,9 @@ use App\Http\Controllers\Auth\PegawaiAuthController;
 use App\Http\Controllers\Customer\AlamatController;
 use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Customer\DiskonController;
 use App\Http\Controllers\Customer\KeranjangController;
 use App\Http\Controllers\Customer\MemberController;
-use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Owner\KelolaDiskonController;
 use App\Http\Controllers\Owner\KelolaPegawaiController;
 use App\Http\Controllers\Owner\LaporanController;
@@ -77,6 +77,7 @@ Route::prefix('owner')->name('owner.')->group(function () {
         Route::get('edit-diskon/{id}', [KelolaDiskonController::class, 'editdiskon'])->name('ediskon');
         Route::put('update-diskon/{id}', [KelolaDiskonController::class, 'updateDiskon'])->name('eddiskon');
         Route::post('delete-diskon/{id}', [KelolaDiskonController::class, 'deleteDiskon'])->name('deldiskon');
+        Route::post('send-diskon/{id}', [KelolaDiskonController::class, 'sendDiskon'])->name('senddiskon');
 
     });
 });
@@ -98,11 +99,15 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('/', fn () => redirect()->route('pegawai.dashboard'));
         Route::get('dashboard', function () {
             $pesananBaru = Checkout::with('items')
-                ->where('status', 'paid')
+                ->whereIn('status', ['paid', 'processed', 'cancel_pending'])
                 ->latest('id_checkout')
                 ->get();
 
-            return view('pegawai.dashboard', compact('pesananBaru'));
+            $newCount = $pesananBaru->where('status', 'paid')->count();
+            $processedCount = $pesananBaru->where('status', 'processed')->count();
+            $cancelCount = $pesananBaru->where('status', 'cancel_pending')->count();
+
+            return view('pegawai.dashboard', compact('pesananBaru', 'newCount', 'processedCount', 'cancelCount'));
         })->name('dashboard');
         Route::post('logout', [PegawaiAuthController::class, 'logout'])->name('logout');
         Route::get('profile', [PegawaiController::class, 'editProfile'])->name('profile.edit');
@@ -189,9 +194,8 @@ Route::prefix('/')->group(function () {
         Route::get('member/mendaftar', [MemberController::class, 'subscribe'])->name('membership.subscribe');
         Route::post('member/token', [MemberController::class, 'token'])->name('membership.token');
 
-        // Notifikasi diskon
-        Route::get('notifikasi', [NotificationController::class, 'index'])->name('notifikasi.index');
-        Route::post('notifikasi/baca', [NotificationController::class, 'markAllRead'])->name('notifikasi.read');
+        // Diskon
+        Route::get('diskon', [DiskonController::class, 'index'])->name('diskon.index');
 
         // Keranjang
         Route::get('keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');

@@ -128,7 +128,7 @@
                 <table class="table table-pink table-borderless mobile-card-table mb-0">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            <th class="col-no">No</th>
                             <th>Order ID</th>
                             <th>Tanggal</th>
                             <th>Customer</th>
@@ -144,7 +144,7 @@
                     <tbody>
                         @forelse ($sales as $s)
                             <tr>
-                                <td data-label="No">{{ $loop->iteration }}</td>
+                                <td data-label="No" class="col-no">{{ $loop->iteration }}</td>
                                 <td data-label="Order ID">{{ $s->order_id }}</td>
                                 <td data-label="Tanggal">{{ $s->paid_at?->format('d M Y H:i') }}</td>
                                 <td data-label="Customer">{{ $s->customer_name }}</td>
@@ -184,6 +184,10 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             grid-auto-rows: 1fr;
             gap: 1rem;
+        }
+        .col-no {
+            width: 3rem;
+            text-align: center;
         }
         @media print {
             body {
@@ -250,6 +254,43 @@
                 border: none !important;
                 background: #fff !important;
                 color: #000 !important;
+            }
+            .mobile-card-table,
+            .mobile-card-table tbody,
+            .mobile-card-table tr,
+            .mobile-card-table td {
+                display: table !important;
+            }
+            .mobile-card-table thead {
+                display: table-header-group !important;
+            }
+            .mobile-card-table tbody {
+                display: table-row-group !important;
+            }
+            .mobile-card-table tr {
+                display: table-row !important;
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .mobile-card-table tbody td {
+                display: table-cell !important;
+                text-align: left !important;
+                border-bottom: 1px solid #ccc !important;
+                padding: 0.5rem !important;
+            }
+            .mobile-card-table tbody td::before {
+                content: none !important;
+                display: none !important;
+            }
+            .col-no {
+                width: 2rem !important;
+                max-width: 2rem !important;
+            }
+            .print-hide,
+            .mobile-card-table .print-hide {
+                display: none !important;
             }
         }
     </style>

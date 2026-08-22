@@ -1,6 +1,6 @@
 @extends('customer.layouts.app')
 
-@section('title', 'Notifikasi Diskon - Toko XYZ')
+@section('title', 'Diskon - Toko XYZ')
 @php $activ = 'profil'; @endphp
 
 @section('content')
@@ -9,39 +9,42 @@
             <a href="{{ route('profil') }}" class="btn btn-pink-outline">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
-            <h1 class="page-title mb-0">Notifikasi Diskon</h1>
+            <h1 class="page-title mb-0">Diskon</h1>
             <span class="d-none d-md-block" aria-hidden="true"></span>
         </div>
 
-        @if ($notifications->isEmpty())
+        @if ($diskons->isEmpty())
             <div class="card-pink p-4 text-center">
-                <i class="fa-solid fa-bell-slash fa-2x text-muted mb-2"></i>
+                <i class="fa-solid fa-tag fa-2x text-muted mb-2"></i>
                 <p class="mb-0 text-muted">Tidak ada diskon aktif saat ini.</p>
             </div>
         @else
             <div class="vstack gap-3">
-                @foreach ($notifications as $n)
-                    <div class="card-pink p-4">
+                @foreach ($diskons as $ds)
+                    <div class="card-pink p-4 position-relative">
+                        @if (in_array($ds->id_diskon, $notifiedIds, true))
+                            <span class="position-absolute rounded-circle" title="Baru untuk Anda"
+                                style="top:0.6rem; left:0.6rem; width:0.7rem; height:0.7rem; background:#dc3545; box-shadow:0 0 0 2px #fff;"></span>
+                        @endif
                         <div class="d-flex justify-content-between align-items-start mb-1">
                             <h6 class="fw-bold mb-0">
                                 <i class="fa-solid fa-tag text-warning"></i>
-                                {{ $n->data['nama_diskon'] }}
+                                {{ $ds->nama_diskon }}
                             </h6>
-                            <span class="badge text-bg-success">Diskon {{ (int) $n->data['jumlah_diskon'] }}%</span>
+                            <span class="badge text-bg-success">Diskon {{ (int) $ds->jumlah_diskon }}%</span>
                         </div>
                         <p class="mb-2 small text-muted">
-                            Pakai kode <code class="fw-bold text-danger">{{ $n->data['kode_diskon'] }}</code> saat checkout.
+                            Pakai kode <code class="fw-bold text-danger">{{ $ds->kode_diskon }}</code> saat checkout.
                         </p>
                         <p class="mb-0 small">
                             <i class="fa-regular fa-calendar me-1"></i>
-                            {{ \Carbon\Carbon::parse($n->data['mulai_diskon'])->translatedFormat('d F Y') }}
+                            {{ \Carbon\Carbon::parse($ds->mulai_diskon)->translatedFormat('d F Y') }}
                             &ndash;
-                            {{ \Carbon\Carbon::parse($n->data['akhir_diskon'])->translatedFormat('d F Y') }}
+                            {{ \Carbon\Carbon::parse($ds->akhir_diskon)->translatedFormat('d F Y') }}
                         </p>
                     </div>
                 @endforeach
             </div>
-            <nav class="mt-4">{{ $notifications->links() }}</nav>
         @endif
     </div>
 @endsection

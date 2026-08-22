@@ -91,7 +91,7 @@ class Checkout extends Model
 
     public const STATUSES = [
         'pending' => 'Menunggu Pembayaran',
-        'paid' => 'Menunggu Diproses',
+        'paid' => 'Menunggu Konfirmasi',
         'expired' => 'Kadaluarsa',
         'cancelled' => 'Dibatalkan',
         'refunded' => 'Dana Dikembalikan',
