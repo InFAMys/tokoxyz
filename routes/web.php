@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CustomerController::class, 'home'])->name('home');
 Route::get('barang/{id}', [CustomerController::class, 'detailBarang'])->name('barang.detail');
 Route::get('cari', [CustomerController::class, 'cari'])->name('barang.search');
+Route::get('kategori/{id}', [CustomerController::class, 'kategori'])->name('kategori');
+Route::get('brand/{id}', [CustomerController::class, 'brand'])->name('brand');
 
 /*
 |--------------------------------------------------------------------------
@@ -54,8 +56,12 @@ Route::prefix('owner')->name('owner.')->group(function () {
             $stats = LaporanController::monthlySummary();
             $totalPegawai = Pegawai::count();
             $activeDiskons = Diskon::where('status_diskon', 'aktif')->count();
+            $failedRefunds = Checkout::with('items')
+                ->whereNotNull('refund_failed_at')
+                ->latest('id_checkout')
+                ->get();
 
-            return view('owner.dashboard', compact('stats', 'totalPegawai', 'activeDiskons'));
+            return view('owner.dashboard', compact('stats', 'totalPegawai', 'activeDiskons', 'failedRefunds'));
         })->name('dashboard');
         Route::get('laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('profile', [OwnerController::class, 'editProfile'])->name('profile.edit');
@@ -106,8 +112,9 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
             $newCount = $pesananBaru->where('status', 'paid')->count();
             $processedCount = $pesananBaru->where('status', 'processed')->count();
             $cancelCount = $pesananBaru->where('status', 'cancel_pending')->count();
+            $failedRefundCount = Checkout::whereNotNull('refund_failed_at')->count();
 
-            return view('pegawai.dashboard', compact('pesananBaru', 'newCount', 'processedCount', 'cancelCount'));
+            return view('pegawai.dashboard', compact('pesananBaru', 'newCount', 'processedCount', 'cancelCount', 'failedRefundCount'));
         })->name('dashboard');
         Route::post('logout', [PegawaiAuthController::class, 'logout'])->name('logout');
         Route::get('profile', [PegawaiController::class, 'editProfile'])->name('profile.edit');
@@ -123,6 +130,7 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('edit-barang/{id}', [BarangController::class, 'editBarang'])->name('ebarang');
         Route::put('update-barang/{id}', [BarangController::class, 'updateBarang'])->name('ubarang');
         Route::post('delete-barang/{id}', [BarangController::class, 'deleteBarang'])->name('delbarang');
+        Route::get('check-kode-barang', [BarangController::class, 'checkKodeBarang'])->name('checkkodebarang');
 
         Route::get('kelola-kategori', [KategoriController::class, 'listKategoris'])->name('kategori');
         Route::get('add-kategori', [KategoriController::class, 'tambahKategori'])->name('akategori');
@@ -224,6 +232,7 @@ Route::prefix('/')->group(function () {
         Route::get('checkout/riwayat', [CheckoutController::class, 'history'])->name('checkout.history');
         Route::post('checkout/{id}/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
         Route::post('checkout/{id}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+        Route::get('checkout/{id}/status', [CheckoutController::class, 'status'])->name('checkout.status');
         Route::get('checkout/{id}', [CheckoutController::class, 'show'])->name('checkout.show');
     });
 });

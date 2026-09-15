@@ -46,7 +46,9 @@
                     <label for="kode_barang" class="form-label-pink">Kode Barang</label>
                     <input id="kode_barang" name="kode_barang" type="text" maxlength="15"
                         class="form-control form-control-pink" value="{{ old('kode_barang', $barang->kode_barang) }}"
+                        data-check-url="{{ route('pegawai.checkkodebarang') }}" data-exclude="{{ $barang->kode_barang }}"
                         required>
+                    <div class="form-label-pink text-danger mt-2" id="kode_barang_feedback"></div>
                     @error('kode_barang')
                         <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
                     @enderror

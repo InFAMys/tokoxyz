@@ -26,7 +26,7 @@
                         </label>
                     @enderror
                 </div>
-                <div class="mb-4">
+                <div class="mb-2">
                     <label for="ukuran" class="form-label-pink">Ukuran</label>
                     <input id='ukuran' name="ukuran" type="text" class="form-control form-control-pink"
                         value="{{ old('ukuran') }}" placeholder="Ukuran" required autofocus />
@@ -34,6 +34,19 @@
                         <label for="ukuran" class="form-label-pink text-danger">
                             {{ $message }}
                         </label>
+                    @enderror
+                </div>
+                <div class="mb-4">
+                    <label for="harga_ukuran" class="form-label-pink">Harga Ukuran</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="harga_ukuran-addon1">Rp</span>
+                        <input type="text" inputmode="numeric" autocomplete="off" class="form-control form-control-pink"
+                            name="harga_ukuran" placeholder="Harga Ukuran"
+                            aria-label="Harga Ukuran" aria-describedby="harga_ukuran-addon1"
+                            value="{{ old('harga_ukuran') }}" required>
+                    </div>
+                    @error('harga_ukuran')
+                        <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
                     @enderror
                 </div>
 

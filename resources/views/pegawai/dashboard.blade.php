@@ -34,6 +34,13 @@
             </div>
         </div>
 
+        @if ($failedRefundCount > 0)
+            <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ $failedRefundCount }} pesanan gagal refund otomatis — lihat di Kelola Pesanan.</span>
+            </div>
+        @endif
+
         <div class="card-pink p-3">
             <div class="filter-bar">
                 <h5 class="mb-0 fw-bold text-pink me-auto">Pesanan</h5>

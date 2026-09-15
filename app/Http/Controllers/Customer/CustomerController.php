@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Brand;
 use App\Models\Customer;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +19,47 @@ class CustomerController extends Controller
         $barangRand = Barang::with('ukurans')->where('status', 'Ditampilkan')->inRandomOrder()->get();
         $barangNew = Barang::with('ukurans')->where('status', 'Ditampilkan')->latest()->get();
 
-        return view('welcome', compact('barangRand', 'barangNew'));
+        $kategoriIds = Barang::where('status', 'Ditampilkan')->distinct()->pluck('id_kategori');
+        $kategoris = Kategori::whereIn('id_kategori', $kategoriIds)->get();
+
+        $brandIds = Barang::where('status', 'Ditampilkan')->distinct()->pluck('id_brand');
+        $brands = Brand::whereIn('id_brand', $brandIds)->get();
+
+        return view('welcome', compact('barangRand', 'barangNew', 'kategoris', 'brands'));
+    }
+
+    public function kategori(int $id)
+    {
+        $kategori = Kategori::findOrFail($id);
+
+        $barang = Barang::with(['brand', 'kategori', 'ukurans'])
+            ->where('status', 'Ditampilkan')
+            ->where('id_kategori', $id)
+            ->orderByDesc('id_barang')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('customer.barang.filter', [
+            'title' => $kategori->nama_kategori,
+            'barang' => $barang,
+        ]);
+    }
+
+    public function brand(int $id)
+    {
+        $brand = Brand::findOrFail($id);
+
+        $barang = Barang::with(['brand', 'kategori', 'ukurans'])
+            ->where('status', 'Ditampilkan')
+            ->where('id_brand', $id)
+            ->orderByDesc('id_barang')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('customer.barang.filter', [
+            'title' => $brand->nama_brand,
+            'barang' => $barang,
+        ]);
     }
 
     public function cari(Request $request)
@@ -186,6 +228,8 @@ class CustomerController extends Controller
             'password' => ['string', 'min:8', 'required'],
         ], [
             'current_password.required_with' => 'Masukan password sekarang untuk merubah password!',
+            'password.required' => 'Password baru wajib diisi!',
+            'password.min' => 'Password baru minimal 8 karakter!',
         ]);
 
         // If they filled in a new password, verify the old one matches

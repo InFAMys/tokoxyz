@@ -42,7 +42,8 @@
                     <label for="kode_diskon" class="form-label-pink">Kode Diskon</label>
                     <input id='kode_diskon' name="kode_diskon" type="text" class="form-control form-control-pink"
                         value="{{ old('kode_diskon') }}" placeholder="Kode Diskon" maxlength="10"
-                        style="text-transform: uppercase;" required />
+                        style="text-transform: uppercase;" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();"
+                        required />
                     @error('kode_diskon')
                         <label for="kode_diskon" class="form-label-pink text-danger">
                             {{ $message }}

@@ -44,7 +44,7 @@
                                         <small class="text-muted">{{ $alamat->detail_alamat }}, {{ $alamat->kecamatan }},
                                             {{ $alamat->kota }}, {{ $alamat->provinsi }} {{ $alamat->kode_pos }}</small>
                                         @if (!$alamat->id_kecamatan)
-                                            <span class="badge text-bg-warning ms-1">Lengkapi kecamatan (Klikresi)</span>
+                                            <span class="badge text-bg-warning ms-1">Lengkapi kecamatan</span>
                                         @endif
                                     </label>
                                 </div>
@@ -54,14 +54,14 @@
 
                     <div class="card-pink p-3 mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="form-label-pink mb-0">Ongkir J&T</div>
+                            <div class="form-label-pink mb-0">Pengiriman (J&T)</div>
                             <button type="button" id="cek-ongkir" class="btn btn-pink btn-sm">
-                                <i class="fa-solid fa-truck-fast"></i> Cek Ongkir
+                                <i class="fa-solid fa-truck-fast"></i> Cek Ongkos Kirim
                             </button>
                         </div>
                         <div id="shipping-error" class="text-danger small mb-1" style="display:none;"></div>
                         <div id="shipping-options" class="mb-2 text-muted">
-                            Pilih alamat lalu klik "Cek Ongkir".
+                            Pilih alamat lalu klik "Cek Ongkos Kirim".
                         </div>
                     </div>
 
@@ -116,11 +116,12 @@
                         </div>
 
                         <div class="summary-row" id="row-diskon">
-                            <span><span id="diskon-label">{{ $memberDiskon > 0 ? 'Diskon Member' : 'Diskon' }}</span> <span id="diskon-persen-label">{{ $memberDiskon > 0 ? '(10%)' : '' }}</span></span>
+                            <span><span id="diskon-label">{{ $memberDiskon > 0 ? 'Diskon Member' : 'Diskon' }}</span> <span
+                                    id="diskon-persen-label">{{ $memberDiskon > 0 ? '(10%)' : '' }}</span></span>
                             <span id="sum-diskon" class="text-success">-</span>
                         </div>
                         <div class="summary-row" id="row-ongkir">
-                            <span>Ongkir</span>
+                            <span>Ongkos Kirim</span>
                             <span id="sum-ongkir">-</span>
                         </div>
                         <div class="summary-row total">

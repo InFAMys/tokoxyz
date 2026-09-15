@@ -1,58 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Toko XYZ — Deployment Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel 13 e-commerce app. Deploy on a Docker host (Ubuntu VM) behind Nginx Proxy Manager, reached publicly through Cloudflare Tunnel (CGNAT-safe, outbound-only).
 
-## About Laravel
+## Architecture
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+Browser → Cloudflare edge (SSL) → cloudflared (bare-metal on VM) → NPM (:8080) → app:8321 → php-fpm/nginx
+                                                                                         → MySQL (db container)
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+- `app` container runs nginx + php-fpm + scheduler + queue via supervisor (single unit).
+- `db` = mysql:8.4, persisted in named volume `dbdata`.
+- App storage (uploads) persisted via bind mount `./storage/app/public`.
+- Auto-refund scheduler (`orders:reconcile`) runs hourly via `schedule:work` — **required**, no cron needed.
 
-## Contributing
+## Prerequisites
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Docker + Compose on the target VM
+- Nginx Proxy Manager running (external network `nginx-proxy-manager_default`)
+- cloudflared installed on the VM (bare-metal, not docker)
+- Real Midtrans live keys, SMTP, Klikresi keys for production
 
-## Code of Conduct
+## Deploy
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone <repo> ~/DockerApps/tokoxyz && cd ~/DockerApps/tokoxyz
+cp .env.example .env && vim .env
+docker compose up -d --build
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan optimize storage:link
+docker compose logs -f app
+```
 
-## Security Vulnerabilities
+### `.env` (production values)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```ini
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://tokoxyz.infmys.my.id
+DB_HOST=db
+DB_DATABASE=tokoxyz
+DB_USERNAME=toko
+DB_PASSWORD=<set>
+DB_ROOT_PASSWORD=<set>
+SESSION_DRIVER=database
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+MIDTRANS_IS_PRODUCTION=true
+MIDTRANS_SERVER_KEY=<live>
+MIDTRANS_CLIENT_KEY=<live>
+MAIL_MAILER=smtp
+MAIL_HOST=<smtp>
+MAIL_FROM_ADDRESS=<email>
+KLIKRESI_KEY=<live>
+KLIKRESI_ORIGIN=<live>
+KLIKRESI_COURIER=<live>
+```
 
-## License
+## Nginx Proxy Manager
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Add Proxy Host.
+2. Domain: `tokoxyz.infmys.my.id`, scheme `http`, forward host `app`, forward port `8321`.
+3. No internal SSL (Cloudflare edge terminates TLS).
+
+## Cloudflare Tunnel
+
+cloudflared runs on the VM (not in docker). Add ingress route:
+
+```
+tokoxyz.infmys.my.id -> http://127.0.0.1:8080
+```
+
+(NPM published on host port 8080.)
+
+## Verify
+
+```bash
+docker compose ps
+docker compose exec app php artisan schedule:list    # 0 * * * * orders:reconcile
+docker compose exec app php artisan about            # confirms env + DB
+docker compose logs -f app
+```
+
+Then run a live payment flow end-to-end.
+
+## Troubleshooting
+
+- **Midtrans payments fail / refunds stuck** — check live keys and that the Midtrans refund feature is activated on the account (QRIS API refunds return 412 until enabled). App flags failures via `refund_failed_at` instead of falsely marking refunded.
+- **Images not loading** — ensure `storage:link` ran and the bind mount is in place.
+- **Frontend not reflecting changes** — rebuild image (`docker compose up -d --build`) since assets are compiled at build time.
+- **Can't reach app from NPM** — confirm app is on the external `nginx-proxy-manager_default` network and forward port `8321` matches `docker/nginx.conf`.
+
+## Update / rebuild
+
+```bash
+cd ~/DockerApps/tokoxyz
+git pull
+docker compose up -d --build
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan optimize
+```

@@ -76,13 +76,13 @@
                                     <div class="modal-content bg-pink">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-4" id="deleteModal-{{ $ds->id_diskon }}Label">
-                                                Hapus Kategori ?
+                                                Hapus Diskon ?
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body text-center my-4">
-                                            Hapus Kategori {{ $ds->nama_diskon }} ?
+                                            Hapus Diskon {{ $ds->nama_diskon }} ?
                                         </div>
                                         <div class="modal-footer mx-auto">
                                             <form action="{{ route('owner.deldiskon', $ds->id_diskon) }}"

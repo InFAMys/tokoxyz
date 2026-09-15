@@ -28,9 +28,15 @@
                     </div>
                 @elseif ($checkout->status === 'paid')
                     <div class="alert alert-warning">
-                        <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana direfund) pada
+                        <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana dikembalikan) pada
                         <strong>{{ optional($checkout->paid_at)->addDays(3)->format('d M Y H:i') }}</strong>
                         jika belum diproses.
+                    </div>
+                @elseif ($checkout->status === 'processed')
+                    <div class="alert alert-warning">
+                        <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana dikembalikan) pada
+                        <strong>{{ $checkout->updated_at->addDays(3)->format('d M Y H:i') }}</strong>
+                        jika tidak ada tanggapan.
                     </div>
                 @endif
 
@@ -53,6 +59,10 @@
                         @endif
                     </div>
                 </div>
+
+                @if ($tracking)
+                    @include('components.tracking-timeline')
+                @endif
 
                 <div class="summary-box mb-3">
                     <div class="form-label-pink">Barang</div>
@@ -84,7 +94,7 @@
                         <span>- Rp {{ number_format($checkout->diskon_nominal, 0, ',', '.') }}</span>
                     </div>
                     <div class="summary-row">
-                        <span>Ongkir</span>
+                        <span>Ongkos Kirim</span>
                         <span>Rp {{ number_format($checkout->shipping_cost, 0, ',', '.') }}</span>
                     </div>
                     <div class="summary-row total">
@@ -143,7 +153,8 @@
                                                 </div>
                                                 @if ($checkout->cancel_from === 'paid' || $checkout->cancel_from === 'processed')
                                                     <div class="small text-muted">
-                                                        Dana dikembalikan ke customer ({{ $checkout->cancel_from }} → refund).
+                                                        Dana dikembalikan ke customer ({{ $checkout->cancel_from }} →
+                                                        refund).
                                                     </div>
                                                 @endif
                                             </div>
@@ -197,7 +208,7 @@
                         @enderror
                         @if ($checkout->status === 'processed')
                             <button type="submit" class="btn btn-pink w-100 mt-2">
-                                <i class="fa-solid fa-truck"></i> Kirim Pesanan
+                                <i class="fa-solid fa-truck"></i> Konfirmasi Pesanan Dikirim
                             </button>
                         @endif
                     </form>

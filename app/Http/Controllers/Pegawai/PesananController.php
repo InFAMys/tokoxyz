@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pegawai;
 
 use App\Http\Controllers\Controller;
 use App\Models\Checkout;
+use App\Services\CheckoutStatusService;
 use App\Services\KlikresiApi;
 use App\Services\MidtransApi;
 use Illuminate\Http\RedirectResponse;
@@ -16,11 +17,22 @@ class PesananController extends Controller
     public function __construct(
         protected KlikresiApi $klikresi,
         protected MidtransApi $midtrans,
+        protected CheckoutStatusService $status,
     ) {}
 
     public function listPesanan(Request $request): View
     {
         $filter = trim((string) $request->query('status', ''));
+
+        $query = Checkout::query()
+            ->with(['items', 'pegawai'])
+            ->when($filter !== '' && array_key_exists($filter, Checkout::STATUSES), fn ($q) => $q->where('status', $filter));
+
+        $all = $query->get();
+
+        foreach ($all as $checkout) {
+            $this->status->reconcile($checkout);
+        }
 
         $pesanan = Checkout::query()
             ->with(['items', 'pegawai'])
@@ -35,8 +47,10 @@ class PesananController extends Controller
     public function detailPesanan(int $id): View
     {
         $checkout = Checkout::with(['items', 'customer', 'pegawai'])->findOrFail($id);
+        $this->status->reconcile($checkout);
+        $tracking = $this->status->trackingFor($checkout);
 
-        return view('pegawai.pesanan.detailPesanan', compact('checkout'));
+        return view('pegawai.pesanan.detailPesanan', compact('checkout', 'tracking'));
     }
 
     public function proccessRequest(Request $request, int $id): RedirectResponse
@@ -91,13 +105,17 @@ class PesananController extends Controller
 
         if (in_array($checkout->cancel_from, ['paid', 'processed'], true)) {
             try {
-                $this->midtrans->refund(
-                    $checkout->order_id,
-                    (float) $checkout->total_amount,
-                    'Pembatalan pesanan '.$checkout->order_id,
-                );
+                if (! $this->alreadyRefunded($checkout)) {
+                    $this->midtrans->refund(
+                        $checkout->order_id,
+                        (float) $checkout->total_amount,
+                        'Pembatalan pesanan '.$checkout->order_id,
+                    );
+                }
             } catch (Throwable $e) {
-                logger()->warning('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
+                logger()->error('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
+
+                return back()->withErrors(['cancel' => 'Refund gagal, coba lagi atau lakukan manual.']);
             }
 
             $checkout->restoreStock();
@@ -130,5 +148,16 @@ class PesananController extends Controller
         ]);
 
         return redirect()->route('pegawai.pesanan')->with('status', 'Permintaan pembatalan ditolak.');
+    }
+
+    protected function alreadyRefunded(Checkout $checkout): bool
+    {
+        try {
+            $data = $this->midtrans->transactionStatus($checkout->order_id);
+        } catch (Throwable) {
+            return false;
+        }
+
+        return in_array(strval($data['transaction_status'] ?? ''), ['refund', 'partial_refund', 'partially_refunded'], true);
     }
 }

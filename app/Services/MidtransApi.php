@@ -71,9 +71,12 @@ class MidtransApi
     }
 
     /**
-     * Request a refund for an order (optional, currently unexposed).
+     * Request a direct (online) refund for a transaction.
+     *
+     * Direct refund supports QRIS, GoPay, ShopeePay, credit card, Akulaku, Kredivo.
+     * The refund_key is idempotent — reused for the same order to avoid double refund.
      */
-    public function refund(string $orderId, int|string $amount, string $reason = ''): array
+    public function refund(string $orderId, int|string|float $amount, string $reason = ''): array
     {
         $base = config('services.midtrans.is_production')
             ? 'https://api.midtrans.com'
@@ -82,15 +85,18 @@ class MidtransApi
         $response = Http::withBasicAuth(strval(config('services.midtrans.server_key')), '')
             ->asJson()
             ->timeout(15)
-            ->post($base."/v2/{$orderId}/refund", [
-                'amount' => (float) $amount,
+            ->post($base."/v2/{$orderId}/refund/online/direct", [
+                'refund_key' => $orderId,
+                'amount' => (int) $amount,
                 'reason' => $reason,
             ]);
 
-        if ($response->failed()) {
+        $body = $response->json() ?? [];
+
+        if ($response->failed() || (string) ($body['status_code'] ?? '') !== '200') {
             throw new RuntimeException('Midtrans refund error: '.$response->body());
         }
 
-        return $response->json() ?? [];
+        return $body;
     }
 }

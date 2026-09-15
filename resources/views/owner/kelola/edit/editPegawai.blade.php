@@ -47,6 +47,10 @@
                         <label for="password" class="form-label-pink text-danger">
                             {{ $message }}
                         </label>
+                    @else
+                        <p class="form-label-rememberme mt-2 formhint">Kosongkan jika tidak ingin mengubah password.
+                            Password lama akan tetap dipakai.
+                        </p>
                     @enderror
                 </div>
                 <button type="submit" class="btn btn-pink w-100 mb-2">

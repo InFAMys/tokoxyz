@@ -41,6 +41,15 @@
             </div>
         </div>
 
+        @if ($failedRefunds->isNotEmpty())
+            <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>
+                    {{ $failedRefunds->count() }} pesanan gagal refund otomatis — perlu refund manual di dashboard Midtrans.
+                </span>
+            </div>
+        @endif
+
         <div class="card-pink p-3">
             <div class="filter-bar">
                 <h5 class="mb-0 fw-bold text-pink me-auto">Laporan Penjualan</h5>

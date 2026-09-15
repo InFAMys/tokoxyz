@@ -176,14 +176,14 @@
                                 <div>{{ $barang->kategori?->nama_kategori ?? '-' }}</div>
                             </div>
                         </div>
-                        @if ($hasUkuran)
+                        @if ($barang->preorder !== 'Tersedia' && $hasUkuran)
                             <div class="col-sm-6">
                                 <div class="summary-box h-100">
                                     <div class="form-label-pink">Stok Total</div>
                                     <div>{{ $stokReady }}</div>
                                 </div>
                             </div>
-                        @else
+                        @elseif ($barang->preorder !== 'Tersedia')
                             <div class="col-sm-6">
                                 <div class="summary-box h-100">
                                     <div class="form-label-pink">Stok</div>
@@ -206,7 +206,9 @@
                                     <dl class="row mb-2">
                                         <dt class="col-sm-4">{{ $ukuran->nama_ukuran }}</dt>
                                         <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->ukuran }}</dd>
-                                        <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->stok_ukuran }}</dd>
+                                        @if ($barang->preorder !== 'Tersedia')
+                                            <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->stok_ukuran }}</dd>
+                                        @endif
                                     </dl>
                                 @endforeach
                             </div>

@@ -134,7 +134,7 @@
                             <th>Customer</th>
                             <th>Subtotal</th>
                             <th>Diskon</th>
-                            <th>Ongkir</th>
+                            <th>Ongkos Kirim</th>
                             <th>Total</th>
                             <th class="print-hide">Tipe</th>
                             <th class="print-hide">Status</th>
@@ -185,68 +185,84 @@
             grid-auto-rows: 1fr;
             gap: 1rem;
         }
+
         .col-no {
             width: 3rem;
             text-align: center;
         }
+
         @media print {
             body {
                 background: #fff !important;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
                 color: #000 !important;
             }
+
             .main-content {
                 margin: 0 !important;
                 padding: 0 !important;
             }
+
             .d-print-none {
                 display: none !important;
             }
+
             .print-hide {
                 display: none !important;
             }
+
             .card-pink {
                 box-shadow: none !important;
                 border: none !important;
                 background: #fff !important;
             }
+
             .stat-card {
                 box-shadow: none !important;
                 border: none !important;
                 background: #fff !important;
             }
+
             .stat-card .stat-icon {
                 display: none !important;
             }
+
             .stat-card .stat-icon,
             .stat-card .stat-value,
             .stat-card .stat-label {
                 color: #000 !important;
                 font-family: inherit !important;
             }
+
             .page-title {
                 color: #000 !important;
                 font-family: inherit !important;
             }
+
             .card-pink,
             .card-pink * {
                 color: #000 !important;
                 font-family: inherit !important;
             }
+
             .table-pink thead {
                 background: #fff !important;
                 color: #000 !important;
                 border-bottom: 2px solid #000 !important;
             }
+
             .table-responsive {
                 overflow: visible !important;
             }
-            .table-responsive > .table {
+
+            .table-responsive>.table {
                 min-width: 0 !important;
             }
+
             .table-pink tbody tr {
                 border-bottom: 1px solid #ccc !important;
             }
+
             .table-pink thead th,
             .table-pink tbody td,
             .table-pink th,
@@ -255,18 +271,22 @@
                 background: #fff !important;
                 color: #000 !important;
             }
+
             .mobile-card-table,
             .mobile-card-table tbody,
             .mobile-card-table tr,
             .mobile-card-table td {
                 display: table !important;
             }
+
             .mobile-card-table thead {
                 display: table-header-group !important;
             }
+
             .mobile-card-table tbody {
                 display: table-row-group !important;
             }
+
             .mobile-card-table tr {
                 display: table-row !important;
                 border: none !important;
@@ -274,20 +294,24 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
+
             .mobile-card-table tbody td {
                 display: table-cell !important;
                 text-align: left !important;
                 border-bottom: 1px solid #ccc !important;
                 padding: 0.5rem !important;
             }
+
             .mobile-card-table tbody td::before {
                 content: none !important;
                 display: none !important;
             }
+
             .col-no {
                 width: 2rem !important;
                 max-width: 2rem !important;
             }
+
             .print-hide,
             .mobile-card-table .print-hide {
                 display: none !important;

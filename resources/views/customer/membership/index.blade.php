@@ -43,7 +43,7 @@
 
         @if ($customer->member === 'false')
             <a href="{{ route('membership.subscribe') }}" class="btn btn-pink w-100 d-block">
-                <i class="fa-solid fa-id-card"></i> Jadi Member — Rp {{ number_format(25000, 0, ',', '.') }}
+                <i class="fa-solid fa-id-card"></i> Daftar Member — Rp {{ number_format(25000, 0, ',', '.') }}
             </a>
         @endif
     </div>

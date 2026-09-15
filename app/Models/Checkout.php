@@ -34,6 +34,7 @@ class Checkout extends Model
         'snap_token',
         'payment_type',
         'paid_at',
+        'refund_failed_at',
         'no_resi',
         'delivered_at',
         'cancel_reason',
@@ -53,6 +54,7 @@ class Checkout extends Model
             'total_amount' => 'decimal:2',
             'berat_total' => 'decimal:2',
             'paid_at' => 'datetime',
+            'refund_failed_at' => 'datetime',
             'delivered_at' => 'datetime',
             'cancel_requested_at' => 'datetime',
         ];

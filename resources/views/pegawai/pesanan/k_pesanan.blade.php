@@ -14,11 +14,11 @@
                 <div class="filter-bar">
                     <form method="GET" class="search-wrapper filter-search-lg">
                         <span class="search-icon"><i class="fa-solid fa-filter"></i></span>
-                        <select name="status" class="form-control form-control-pink"
-                            onchange="this.form.submit()">
+                        <select name="status" class="form-control form-control-pink" onchange="this.form.submit()">
                             <option value="">Semua Status</option>
                             @foreach (\App\Models\Checkout::STATUSES as $code => $label)
-                                <option value="{{ $code }}" @selected($filter === $code)>{{ $label }}</option>
+                                <option value="{{ $code }}" @selected($filter === $code)>{{ $label }}
+                                </option>
                             @endforeach
                         </select>
                     </form>
@@ -59,6 +59,12 @@
                                         <span class="badge rounded-pill text-bg-{{ $po->statusColor() }}">
                                             {{ $po->statusLabel() }}
                                         </span>
+                                        @if ($po->refund_failed_at)
+                                            <span class="badge rounded-pill text-bg-danger ms-1"
+                                                title="Refund gagal, perlu penanganan manual">
+                                                <i class="fa-solid fa-triangle-exclamation"></i> Refund Gagal
+                                            </span>
+                                        @endif
                                     </td>
                                     <td data-label="Pemroses">{{ $po->pegawai?->nama_pegawai ?? '-' }}</td>
                                     <td data-label="Aksi" class="mobile-card-actions">

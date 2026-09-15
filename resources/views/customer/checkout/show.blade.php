@@ -33,10 +33,10 @@
                 @endphp
                 <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
                     @foreach ($order as $i => $state)
-                        <div class="text-center {{ $i + 1 <= $current ? 'text-pink fw-bold' : 'text-muted' }}"
+                        <div class="text-center {{ $i <= $current ? 'text-pink fw-bold' : 'text-muted' }}"
                             style="flex:1 1 8rem">
                             <div class="mb-1">{{ $steps[$state] }}</div>
-                            <i class="fa-solid {{ $i + 1 <= $current ? 'fa-circle-check' : 'fa-regular fa-circle' }}"></i>
+                            <i class="fa-solid {{ $i <= $current ? 'fa-circle-check' : 'fa-regular fa-circle' }}"></i>
                         </div>
                     @endforeach
                 </div>
@@ -51,6 +51,8 @@
                     </div>
                     <div class="small text-muted">Status pengiriman diperbarui otomatis.</div>
                 </div>
+
+                @include('components.tracking-timeline')
             @endif
 
             <div class="summary-box mb-3">
@@ -92,7 +94,7 @@
                     <span>- Rp {{ number_format($checkout->diskon_nominal, 0, ',', '.') }}</span>
                 </div>
                 <div class="summary-row">
-                    <span>Ongkir</span>
+                    <span>Ongkos Kirim</span>
                     <span>Rp {{ number_format($checkout->shipping_cost, 0, ',', '.') }}</span>
                 </div>
                 <div class="summary-row total">
@@ -123,17 +125,22 @@
                 </div>
             @elseif ($checkout->status === 'paid')
                 <div class="alert alert-warning mb-3">
-                    <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana direfund) pada
+                    <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana dikembalikan) pada
                     <strong>{{ optional($checkout->paid_at)->addDays(3)->format('d M Y H:i') }}</strong>
                     jika belum diproses.
+                </div>
+            @elseif ($checkout->status === 'processed')
+                <div class="alert alert-warning mb-3">
+                    <i class="fa-solid fa-clock"></i> Pesanan otomatis dibatalkan (dana dikembalikan) pada
+                    <strong>{{ $checkout->updated_at->addDays(3)->format('d M Y H:i') }}</strong>
+                    jika tidak ada tanggapan.
                 </div>
             @endif
 
             @if ($checkout->status === 'delivered')
                 <form method="POST" action="{{ route('checkout.confirm', $checkout->id_checkout) }}" id="confirm-form">
                     @csrf
-                    <button type="button" class="btn btn-pink w-100" data-bs-toggle="modal"
-                        data-bs-target="#confirmModal">
+                    <button type="button" class="btn btn-pink w-100" data-bs-toggle="modal" data-bs-target="#confirmModal">
                         <i class="fa-solid fa-check"></i> Konfirmasi Pesanan Diterima
                     </button>
                 </form>
@@ -156,9 +163,10 @@
                                 <p class="mb-2">Yakin pesanan
                                     <strong>{{ $checkout->order_id }}</strong> sudah diterima dengan baik?
                                 </p>
-                                <label class="form-label-pink">Kritik & Saran <span class="text-muted small">(opsional)</span></label>
-                                <textarea name="kritik_saran" form="confirm-form" rows="3" maxlength="2000"
-                                    class="form-control form-control-pink" placeholder="Tulis masukan Anda untuk kami..."></textarea>
+                                <label class="form-label-pink">Kritik & Saran <span
+                                        class="text-muted small">(opsional)</span></label>
+                                <textarea name="kritik_saran" form="confirm-form" rows="3" maxlength="2000" class="form-control form-control-pink"
+                                    placeholder="Tulis masukan Anda untuk kami..."></textarea>
                                 @error('kritik_saran')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -176,7 +184,8 @@
                 <button type="button" id="bayar-button" class="btn btn-pink w-100"
                     data-checkout-token="{{ $checkout->snap_token }}"
                     data-client-key="{{ config('services.midtrans.client_key') }}"
-                    data-prod="{{ config('services.midtrans.is_production') ? 1 : 0 }}">
+                    data-prod="{{ config('services.midtrans.is_production') ? 1 : 0 }}"
+                    data-status-url="{{ route('checkout.status', $checkout->id_checkout) }}">
                     <i class="fa-solid fa-credit-card"></i> Bayar Sekarang
                 </button>
                 <p class="text-muted small mt-2 mb-0">Setelah pembayaran, status akan diperbarui otomatis.</p>
@@ -236,15 +245,16 @@
                                 </p>
                                 @if ($checkout->status !== 'pending')
                                     <textarea name="cancel_reason" form="cancel-form" rows="2" maxlength="255"
-                                        class="form-control form-control-pink @error('cancel_reason') is-invalid @enderror" placeholder="Alasan pembatalan"
-                                        required>{{ old('cancel_reason') }}</textarea>
+                                        class="form-control form-control-pink @error('cancel_reason') is-invalid @enderror"
+                                        placeholder="Alasan pembatalan" required>{{ old('cancel_reason') }}</textarea>
                                     @error('cancel_reason')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 @endif
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-pink-outline" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-pink-outline"
+                                    data-bs-dismiss="modal">Batal</button>
                                 <button type="submit" form="cancel-form" class="btn btn-delete">
                                     <i class="fa-solid fa-check"></i> Ya, Batalkan
                                 </button>

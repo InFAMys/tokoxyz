@@ -320,7 +320,8 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
             diskonPersenLabel.textContent = persen ? `(${persen}%)` : "";
     };
     const setDiskonLabel = (isMember) => {
-        if (diskonLabel) diskonLabel.textContent = isMember ? "Diskon Member" : "Diskon";
+        if (diskonLabel)
+            diskonLabel.textContent = isMember ? "Diskon Member" : "Diskon";
     };
     const memberDiskon = () => Number(form.dataset.memberDiskon || 0);
     const memberRow = document.getElementById("sum-member-diskon");
@@ -373,7 +374,8 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
                 '<span class="text-danger">Pilih alamat terlebih dahulu.</span>';
             return;
         }
-        box.innerHTML = '<span class="text-muted">Menghitung ongkir…</span>';
+        box.innerHTML =
+            '<span class="text-muted">Mengecek Ongkos Kirim…</span>';
         const csrf = form.querySelector("input[name='_token']")?.value || "";
         const rateUrl = form.dataset.rateUrl || "";
         fetch(rateUrl, {
@@ -526,10 +528,27 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         });
 
     btn.addEventListener("click", () => {
-        const redirectUrl = btn.dataset.redirectUrl;
+        const statusUrl = btn.dataset.statusUrl;
+        const pollStatus = () => {
+            if (!statusUrl) return done();
+            const maxTries = 20;
+            let tries = 0;
+            const tick = () => {
+                fetch(statusUrl)
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (data.status && data.status !== "pending") return done();
+                        if (++tries < maxTries) return setTimeout(tick, 1000);
+                        done();
+                    })
+                    .catch(done);
+            };
+            tick();
+        };
+
         const done = () =>
-            redirectUrl
-                ? (window.location.href = redirectUrl)
+            btn.dataset.redirectUrl
+                ? (window.location.href = btn.dataset.redirectUrl)
                 : window.location.reload();
         const form = btn.closest("form");
         const tokenUrl = form ? form.dataset.tokenUrl : "";
@@ -583,13 +602,50 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
             .then((t) =>
                 loadSnap().then(() => {
                     window.snap.pay(t, {
-                        onSuccess: done,
-                        onPending: done,
+                        onSuccess: pollStatus,
+                        onPending: pollStatus,
                         onError: done,
                         onClose: done,
                     });
                 }),
             )
             .catch(() => errBox());
+    });
+})();
+
+// Kode Barang Duplicate Check
+(function () {
+    const input = document.getElementById("kode_barang");
+    if (!input || !input.dataset.checkUrl) {
+        return;
+    }
+
+    const feedback = document.getElementById("kode_barang_feedback");
+    let timer = null;
+
+    input.addEventListener("input", () => {
+        clearTimeout(timer);
+        const kode = input.value.trim();
+        feedback.textContent = "";
+
+        if (!kode) {
+            return;
+        }
+
+        timer = setTimeout(() => {
+            const url = new URL(input.dataset.checkUrl, window.location.origin);
+            url.searchParams.set("kode", kode);
+            url.searchParams.set("exclude", input.dataset.exclude ?? "");
+
+            fetch(url)
+                .then((r) => r.json())
+                .then((d) => {
+                    if (d.exists) {
+                        feedback.textContent =
+                            "Kode Barang sudah digunakan, silakan gunakan kode lain!";
+                    }
+                })
+                .catch(() => {});
+        }, 400);
     });
 })();

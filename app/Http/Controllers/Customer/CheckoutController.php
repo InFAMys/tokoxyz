@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alamat;
-use App\Models\Barang;
 use App\Models\Checkout;
 use App\Models\CheckoutItem;
 use App\Models\Customer;
 use App\Models\Diskon;
 use App\Models\Keranjang;
 use App\Models\Membership;
-use App\Models\Ukuran;
+use App\Services\CheckoutStatusService;
 use App\Services\KlikresiApi;
 use App\Services\MidtransApi;
 use Illuminate\Http\JsonResponse;
@@ -31,6 +30,7 @@ class CheckoutController extends Controller
     public function __construct(
         protected KlikresiApi $klikresi,
         protected MidtransApi $midtrans,
+        protected CheckoutStatusService $status,
     ) {}
 
     public function create(): View|RedirectResponse
@@ -180,7 +180,7 @@ class CheckoutController extends Controller
                 }
 
                 if ($totalAmount === 0.0) {
-                    $this->decrementStockForItems($items);
+                    $this->status->decrementStockForItems($items);
                 }
 
                 if ($totalAmount > 0) {
@@ -209,16 +209,28 @@ class CheckoutController extends Controller
     public function show(int $id): View
     {
         $checkout = $this->ownedCheckout($id);
-        $this->reconcileAutoStatuses($checkout);
-        $this->reconcileShipping($checkout);
+        $this->status->reconcile($checkout);
+        $tracking = $this->status->trackingFor($checkout);
 
-        return view('customer.checkout.show', compact('checkout'));
+        return view('customer.checkout.show', compact('checkout', 'tracking'));
+    }
+
+    public function status(int $id): JsonResponse
+    {
+        $checkout = $this->ownedCheckout($id);
+        $this->status->reconcileMidtrans($checkout);
+
+        return response()->json([
+            'status' => $checkout->status,
+            'label' => $checkout->statusLabel(),
+            'color' => $checkout->statusColor(),
+        ]);
     }
 
     public function confirm(Request $request, int $id): RedirectResponse
     {
         $checkout = $this->ownedCheckout($id);
-        $this->reconcileShipping($checkout);
+        $this->status->reconcileShipping($checkout);
 
         if ($checkout->status !== 'delivered') {
             return back()->withErrors(['status' => 'Pesanan belum sampai di tujuan.']);
@@ -273,15 +285,15 @@ class CheckoutController extends Controller
         $all = $customer->checkouts()->with('items')->latest('id_checkout')->get();
 
         foreach ($all->where('status', 'pending') as $checkout) {
-            $this->reconcileMidtrans($checkout);
+            $this->status->reconcileMidtrans($checkout);
         }
 
         foreach ($all->whereIn('status', ['shipping', 'delivered']) as $checkout) {
-            $this->reconcileShipping($checkout);
+            $this->status->reconcileShipping($checkout);
         }
 
         foreach ($all as $checkout) {
-            $this->reconcileAutoStatuses($checkout);
+            $this->status->reconcileAutoStatuses($checkout);
         }
 
         $checkouts = $customer->checkouts()
@@ -313,7 +325,7 @@ class CheckoutController extends Controller
                 return response()->json(['message' => 'Order not found'], 200);
             }
 
-            $this->applyMidtransStatus($checkout, $request->string('transaction_status'), $request->string('payment_type'));
+            $this->status->applyMidtransStatus($checkout, $request->string('transaction_status'), $request->string('payment_type'));
 
             return response()->json(['message' => 'OK']);
         }
@@ -523,75 +535,15 @@ class CheckoutController extends Controller
         ];
     }
 
-    protected function applyMidtransStatus(Checkout $checkout, string $transactionStatus, string $paymentType): void
+    protected function addressLabel(Alamat $alamat): string
     {
-        $map = [
-            'capture' => 'paid',
-            'settlement' => 'paid',
-            'expire' => 'expired',
-            'cancel' => 'cancelled',
-            'deny' => 'deny',
-            'refund' => 'refunded',
-            'partial_refund' => 'partially_refunded',
-            'partially_refunded' => 'partially_refunded',
-        ];
-
-        $status = $map[$transactionStatus] ?? null;
-
-        if ($status === null) {
-            return;
-        }
-
-        if ($status === 'paid') {
-            $checkout->paid_at = $checkout->paid_at ?? now();
-            $checkout->payment_type = $checkout->payment_type ?? $paymentType;
-        }
-
-        $wasPaid = $checkout->status === 'paid';
-
-        if ($checkout->status === 'pending' || $status === 'paid') {
-            $checkout->status = $status;
-            $checkout->save();
-        }
-
-        if ($status === 'paid' && ! $wasPaid) {
-            $this->decrementStock($checkout);
-        }
-    }
-
-    protected function decrementStock(Checkout $checkout): void
-    {
-        $this->decrementStockForItems($checkout->items);
-    }
-
-    /** @param iterable<array{id_ukuran?: int|null, id_barang: int, jumlah_barang: int}>|Illuminate\Database\Eloquent\Collection<int, CheckoutItem> $rows */
-    protected function decrementStockForItems($rows): void
-    {
-        foreach ($rows as $item) {
-            $idUkuran = $item['id_ukuran'] ?? $item->id_ukuran ?? null;
-            $idBarang = $item['id_barang'] ?? $item->id_barang;
-            $jumlah = (int) ($item['jumlah_barang'] ?? $item->jumlah_barang);
-
-            if ($item['is_preorder'] ?? $item->is_preorder ?? false) {
-                continue;
-            }
-
-            if ($idUkuran) {
-                $ukuran = Ukuran::where('id_ukuran', $idUkuran)->first();
-
-                if ($ukuran) {
-                    $ukuran->stok_ukuran = max(0, (int) $ukuran->stok_ukuran - $jumlah);
-                    $ukuran->save();
-                }
-            } else {
-                $barang = Barang::where('id_barang', $idBarang)->first();
-
-                if ($barang) {
-                    $barang->stok = max(0, (int) $barang->stok - $jumlah);
-                    $barang->save();
-                }
-            }
-        }
+        return implode(', ', array_filter([
+            $alamat->detail_alamat,
+            trim($alamat->kelurahan.' '.$alamat->kecamatan),
+            $alamat->kota,
+            $alamat->provinsi,
+            $alamat->kode_pos,
+        ]));
     }
 
     protected function ownedAlamat(int $id): Alamat
@@ -606,100 +558,10 @@ class CheckoutController extends Controller
             ->findOrFail($id);
 
         if ($checkout->status === 'pending') {
-            $this->reconcileMidtrans($checkout);
+            $this->status->reconcileMidtrans($checkout);
         }
 
         return $checkout;
-    }
-
-    protected function reconcileAutoStatuses(Checkout $checkout): void
-    {
-        if ($checkout->status === 'pending' && $checkout->created_at->lt(now()->subHours(24))) {
-            $checkout->update(['status' => 'cancelled']);
-        }
-
-        if ($checkout->status === 'paid' && $checkout->paid_at && $checkout->paid_at->lt(now()->subDays(3))) {
-            $this->restockAndRefund($checkout, 'Pesanan dibatalkan otomatis, pembayaran belum dikonfirmasi 3 hari.');
-        }
-    }
-
-    protected function restockAndRefund(Checkout $checkout, string $reason): void
-    {
-        try {
-            $this->midtrans->refund($checkout->order_id, (float) $checkout->total_amount, $reason);
-        } catch (Throwable $e) {
-            logger()->warning('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
-        }
-
-        $checkout->restoreStock();
-        $checkout->update(['status' => 'refunded']);
-    }
-
-    protected function reconcileMidtrans(Checkout $checkout): void
-    {
-        try {
-            $data = $this->midtrans->transactionStatus($checkout->order_id);
-        } catch (Throwable) {
-            return;
-        }
-
-        $this->applyMidtransStatus($checkout, strval($data['transaction_status'] ?? ''), strval($data['payment_type'] ?? ''));
-    }
-
-    protected function reconcileShipping(Checkout $checkout): void
-    {
-        if ($checkout->status === 'shipping' && $checkout->no_resi && $this->trackingIsDelivered($checkout->no_resi)) {
-            $checkout->update([
-                'status' => 'delivered',
-                'delivered_at' => $checkout->delivered_at ?? now(),
-            ]);
-        }
-
-        if ($checkout->status === 'delivered' && $checkout->delivered_at && $checkout->delivered_at->lt(now()->subDays(7))) {
-            $checkout->update(['status' => 'completed']);
-        }
-    }
-
-    protected function trackingIsDelivered(string $noResi): bool
-    {
-        try {
-            return $this->hasDeliveredMarker($this->klikresi->tracking($noResi));
-        } catch (Throwable) {
-            return false;
-        }
-    }
-
-    /** @param mixed $value */
-    protected function hasDeliveredMarker($value): bool
-    {
-        if (is_string($value)) {
-            return str_contains(strtolower($value), 'deliver')
-                || str_contains(strtolower($value), 'sampai')
-                || str_contains(strtolower($value), 'terkirim');
-        }
-
-        if (! is_array($value)) {
-            return false;
-        }
-
-        foreach ($value as $item) {
-            if ($this->hasDeliveredMarker($item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected function addressLabel(Alamat $alamat): string
-    {
-        return implode(', ', array_filter([
-            $alamat->detail_alamat,
-            trim($alamat->kelurahan.' '.$alamat->kecamatan),
-            $alamat->kota,
-            $alamat->provinsi,
-            $alamat->kode_pos,
-        ]));
     }
 
     protected function orderId(): string

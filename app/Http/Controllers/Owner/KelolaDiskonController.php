@@ -41,7 +41,7 @@ class KelolaDiskonController extends Controller
         $data = $request->validate([
             'nama_diskon' => ['required', 'string', 'max:30'],
             'jumlah_diskon' => ['required', 'numeric', 'min:1', 'max:95'],
-            'kode_diskon' => ['required', 'string', 'max:10', 'regex:/^[A-Za-z0-9]+$/'],
+            'kode_diskon' => ['required', 'string', 'max:10', 'regex:/^[A-Za-z0-9]+$/', Rule::unique('diskons', 'kode_diskon')],
             'mulai_diskon' => ['required', 'date'],
             'akhir_diskon' => ['required', 'date'],
         ],
@@ -54,6 +54,7 @@ class KelolaDiskonController extends Controller
                 'kode_diskon.required' => 'Masukkan Kode Diskon!',
                 'kode_diskon.max' => 'Panjang Kode Diskon Maksimal 10 Karakter!',
                 'kode_diskon.maxregex' => 'Hanya huruf dan angka yang diperbolehkan untuk Username.!',
+                'kode_diskon.unique' => 'Kode Diskon sudah dipakai. Hapus diskon lama dengan kode yang sama terlebih dahulu.',
                 'mulai_diskon.required' => 'Masukkan Mulai Diskon!',
                 'akhir_diskon.required' => 'Masukkan Akhir Diskon!',
             ]);
@@ -88,7 +89,7 @@ class KelolaDiskonController extends Controller
         $data = $request->validate([
             'nama_diskon' => ['required', 'string', 'max:30'],
             'jumlah_diskon' => ['required', 'numeric', 'min:1', 'max:95'],
-            'kode_diskon' => ['required', 'string', 'max:10', 'regex:/^[A-Za-z0-9]+$/'],
+            'kode_diskon' => ['required', 'string', 'max:10', 'regex:/^[A-Za-z0-9]+$/', Rule::unique('diskons', 'kode_diskon')->ignore($id, 'id_diskon')],
             'mulai_diskon' => ['required', 'date'],
             'akhir_diskon' => ['required', 'date'],
             'status_diskon' => ['required', Rule::in(Diskon::statusOptions())],
@@ -102,6 +103,7 @@ class KelolaDiskonController extends Controller
                 'kode_diskon.required' => 'Masukkan Kode Diskon!',
                 'kode_diskon.max' => 'Panjang Kode Diskon Maksimal 10 Karakter!',
                 'kode_diskon.maxregex' => 'Hanya huruf dan angka yang diperbolehkan untuk Username.!',
+                'kode_diskon.unique' => 'Kode Diskon sudah dipakai. Hapus diskon lama dengan kode yang sama terlebih dahulu.',
                 'mulai_diskon.required' => 'Masukkan Mulai Diskon!',
                 'akhir_diskon.required' => 'Masukkan Akhir Diskon!',
             ]);

@@ -28,6 +28,7 @@ class BarangController extends Controller
         $barang = Barang::query()
             ->with('ukurans')
             ->when($q, $filter)
+            ->latest('id_barang')
             ->paginate(10)
             ->withQueryString();
 
@@ -73,7 +74,7 @@ class BarangController extends Controller
         $data = $request->validate([
             'id_brand' => ['required', 'exists:brands,id_brand'],
             'id_kategori' => ['required', 'exists:kategoris,id_kategori'],
-            'kode_barang' => ['required', 'string', 'max:15', 'regex:/^[A-Za-z0-9_-]+$/'],
+            'kode_barang' => ['required', 'string', 'max:15', 'regex:/^[A-Za-z0-9_-]+$/', Rule::unique('barangs', 'kode_barang')],
             'nama_barang' => ['required', 'string', 'max:32'],
             'deskripsi' => ['required', 'string'],
             'thumbnail' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
@@ -90,6 +91,7 @@ class BarangController extends Controller
                 'kode_barang.required' => 'Kode Barang Harus Diisi!',
                 'kode_barang.max' => 'Kode Barang Maksimal 15 Karakter!',
                 'kode_barang.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Kode Barang.',
+                'kode_barang.unique' => 'Kode Barang sudah digunakan, silakan gunakan kode lain!',
                 'nama_barang.required' => 'Nama Barang Harus Diisi!',
                 'nama_barang.max' => 'Nama Barang Maksimal 32 Karakter!',
                 'deskripsi.required' => 'Deskripsi Harus Diisi!',
@@ -140,7 +142,7 @@ class BarangController extends Controller
         $data = $request->validate([
             'id_brand' => ['required', 'exists:brands,id_brand'],
             'id_kategori' => ['required', 'exists:kategoris,id_kategori'],
-            'kode_barang' => ['required', 'string', 'max:15', 'regex:/^[A-Za-z0-9_-]+$/'],
+            'kode_barang' => ['required', 'string', 'max:15', 'regex:/^[A-Za-z0-9_-]+$/', Rule::unique('barangs', 'kode_barang')->ignore($barang->id_barang, 'id_barang')],
             'nama_barang' => ['required', 'string', 'max:32'],
             'deskripsi' => ['required', 'string'],
             'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
@@ -161,6 +163,7 @@ class BarangController extends Controller
             'kode_barang.required' => 'Kode Barang Harus Diisi!',
             'kode_barang.max' => 'Kode Barang Maksimal 15 Karakter!',
             'kode_barang.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Kode Barang.',
+            'kode_barang.unique' => 'Kode Barang sudah digunakan, silakan gunakan kode lain!',
             'nama_barang.required' => 'Nama Barang Harus Diisi!',
             'nama_barang.max' => 'Nama Barang Maksimal 32 Karakter!',
             'deskripsi.required' => 'Deskripsi Harus Diisi!',
@@ -254,6 +257,17 @@ class BarangController extends Controller
         $request->merge([
             'berat' => Str::of($request->berat)->trim()->replace(',', '.')->toString(),
         ]);
+    }
+
+    public function checkKodeBarang(Request $request)
+    {
+        $kode = trim((string) $request->query('kode'));
+        $exclude = trim((string) $request->query('exclude'));
+
+        $exists = $kode !== '' && $kode !== $exclude
+            && Barang::where('kode_barang', $kode)->exists();
+
+        return response()->json(['exists' => $exists]);
     }
 
     public function deleteBarang(int $id)

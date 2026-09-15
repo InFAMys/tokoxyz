@@ -66,7 +66,7 @@
                     </div>
 
                     <div class="card-pink p-4 mb-4">
-                        <div class="form-label-pink mb-3"><i class="fa-solid fa-location-dot"></i> Wilayah (Klikresi)</div>
+                        <div class="form-label-pink mb-3"><i class="fa-solid fa-location-dot"></i> Wilayah</div>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="id_provinsi" class="form-label-pink">Provinsi</label>

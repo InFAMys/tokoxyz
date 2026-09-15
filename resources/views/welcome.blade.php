@@ -31,6 +31,32 @@
             </button>
         </div>
 
+        <!-- Kategori -->
+        @if ($kategoris->isNotEmpty())
+            <h5 class="fw-bold text-pink mb-2">Kategori</h5>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                @foreach ($kategoris as $kat)
+                    <a href="{{ route('kategori', $kat->id_kategori) }}"
+                        class="btn btn-sm btn-pink-outline rounded-pill">
+                        {{ $kat->nama_kategori }}
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
+        <!-- Brand -->
+        @if ($brands->isNotEmpty())
+            <h5 class="fw-bold text-pink mb-2">Brand</h5>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                @foreach ($brands as $brand)
+                    <a href="{{ route('brand', $brand->id_brand) }}"
+                        class="btn btn-sm btn-pink-outline rounded-pill">
+                        {{ $brand->nama_brand }}
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
         <!-- Produk Baru -->
         <h5 class="fw-bold text-pink mb-3">Produk Baru</h5>
         <div class="row g-3 mb-4">
@@ -41,8 +67,12 @@
                             <img class="img-fluid" src="{{ asset('storage/' . $bn->thumbnailPath()) }}"
                                 alt="{{ $bn->nama_barang }}" />
                             @if ($bn->stokReady() < 1)
-                                <span class="position-absolute top-0 start-0 badge text-bg-secondary"
-                                    style="opacity:.85">Habis</span>
+                                @if ($bn->preorder === 'Tersedia')
+                                    <span class="position-absolute top-0 start-0 badge text-bg-warning" style="font-size:0.65em">Preorder</span>
+                                @else
+                                    <span class="position-absolute top-0 start-0 badge text-bg-secondary"
+                                        style="opacity:.85">Habis</span>
+                                @endif
                             @endif
                         </div>
                         <div class="card-body">
@@ -69,8 +99,12 @@
                             <img class="img-fluid" src="{{ asset('storage/' . $br->thumbnailPath()) }}"
                                 alt="{{ $br->nama_barang }}" />
                             @if ($br->stokReady() < 1)
-                                <span class="position-absolute top-0 start-0 badge text-bg-secondary"
-                                    style="opacity:.85">Habis</span>
+                                @if ($br->preorder === 'Tersedia')
+                                    <span class="position-absolute top-0 start-0 badge text-bg-warning" style="font-size:0.65em">Preorder</span>
+                                @else
+                                    <span class="position-absolute top-0 start-0 badge text-bg-secondary"
+                                        style="opacity:.85">Habis</span>
+                                @endif
                             @endif
                         </div>
                         <div class="card-body">
