@@ -20,10 +20,44 @@
             </a>
         </div>
 
-            <form method="GET" action="{{ route('barang.search') }}" class="d-flex flex-column flex-sm-row gap-2 mb-4" role="search">
-            <input class="form-control" type="search" name="q" value="{{ $q }}"
-                placeholder="Cari produk..." aria-label="Cari produk">
-            <button class="btn btn-pink" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Cari</button>
+            <form method="GET" action="{{ route('barang.search') }}" class="mb-4" role="search">
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <input class="form-control" type="search" name="q" value="{{ $q }}"
+                    placeholder="Cari produk..." aria-label="Cari produk">
+                <button class="btn btn-pink" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Cari</button>
+            </div>
+            <div class="card-pink p-3 mt-3">
+                <button type="button" class="btn btn-pink-outline w-100 d-flex justify-content-between align-items-center"
+                    data-bs-toggle="collapse" data-bs-target="#filterHarga" aria-expanded="false">
+                    <span>Filter Harga</span>
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+                <div id="filterHarga" class="collapse">
+                    <div class="row g-2 mt-3">
+                        <div class="col-6">
+                            <label class="text-muted small">Harga Min</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Rp</span>
+                                <input class="form-control" type="text" inputmode="numeric" name="min"
+                                    value="{{ $min }}" placeholder="Min" aria-label="Harga min">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="text-muted small">Harga Maks</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">Rp</span>
+                                <input class="form-control" type="text" inputmode="numeric" name="max"
+                                    value="{{ $max }}" placeholder="Maks" aria-label="Harga maks">
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button class="btn btn-pink btn-sm w-100" type="submit">
+                                Terapkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
         @if ($barang->isEmpty())
@@ -41,7 +75,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="product-name">{{ $b->nama_barang }}</div>
-                                <div class="product-price">Rp {{ number_format($b->harga, 0, ',', '.') }}</div>
+                                <div class="product-price">@include('customer.partials.harga', ['item' => $b])</div>
                             </div>
                         </div>
                     </a>

@@ -194,7 +194,7 @@ const moneyFormat = (raw) => {
 };
 
 document
-    .querySelectorAll("input[name='harga'], input[name='harga_ukuran']")
+    .querySelectorAll("input[name='harga'], input[name='harga_ukuran'], input[name='min'], input[name='max']")
     .forEach((el) => {
         el.value = moneyFormat(el.value);
 

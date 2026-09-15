@@ -79,10 +79,7 @@
                             {{-- <div class="product-name">{{ Str::limit($bn->nama_barang, 20) }}</div> --}}
                             <div class="product-name">{{ $bn->nama_barang }}</div>
                             <div class="product-price">
-                                @php
-                                    $harga = $bn->ukurans->pluck('harga_ukuran')->filter()->map(fn ($p) => (float) $p)->min();
-                                @endphp
-                                Rp {{ number_format($harga ?? $bn->harga, 0, ',', '.') }}
+                                @include('customer.partials.harga', ['item' => $bn])
                             </div>
                         </div>
                     </div>
@@ -111,10 +108,7 @@
                             {{-- <div class="product-name">{{ Str::limit($br->nama_barang, 20) }}</div> --}}
                             <div class="product-name">{{ $br->nama_barang }}</div>
                             <div class="product-price">
-                                @php
-                                    $harga = $br->ukurans->pluck('harga_ukuran')->filter()->map(fn ($p) => (float) $p)->min();
-                                @endphp
-                                Rp {{ number_format($harga ?? $br->harga, 0, ',', '.') }}
+                                @include('customer.partials.harga', ['item' => $br])
                             </div>
                         </div>
                     </div>

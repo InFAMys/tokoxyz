@@ -40,12 +40,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="product-name">{{ $b->nama_barang }}</div>
-                                <div class="product-price">
-                                    @php
-                                        $harga = $b->ukurans->pluck('harga_ukuran')->filter()->map(fn ($p) => (float) $p)->min();
-                                    @endphp
-                                    Rp {{ number_format($harga ?? $b->harga, 0, ',', '.') }}
-                                </div>
+                                <div class="product-price">@include('customer.partials.harga', ['item' => $b])</div>
                             </div>
                         </div>
                     </a>

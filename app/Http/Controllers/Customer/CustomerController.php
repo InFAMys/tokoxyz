@@ -17,7 +17,7 @@ class CustomerController extends Controller
     public function home()
     {
         $barangRand = Barang::with('ukurans')->where('status', 'Ditampilkan')->inRandomOrder()->get();
-        $barangNew = Barang::with('ukurans')->where('status', 'Ditampilkan')->latest()->get();
+        $barangNew = Barang::with('ukurans')->where('status', 'Ditampilkan')->latest()->limit(12)->get();
 
         $kategoriIds = Barang::where('status', 'Ditampilkan')->distinct()->pluck('id_kategori');
         $kategoris = Kategori::whereIn('id_kategori', $kategoriIds)->get();
@@ -65,8 +65,10 @@ class CustomerController extends Controller
     public function cari(Request $request)
     {
         $q = trim((string) $request->query('q'));
+        $min = str_replace('.', '', trim((string) $request->query('min')));
+        $max = str_replace('.', '', trim((string) $request->query('max')));
 
-        $barang = Barang::with(['brand', 'kategori'])
+        $barang = Barang::with(['brand', 'kategori', 'ukurans'])
             ->where('status', 'Ditampilkan')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($w) use ($q) {
@@ -76,11 +78,13 @@ class CustomerController extends Controller
                         ->orWhereHas('kategori', fn ($k) => $k->where('nama_kategori', 'like', "%{$q}%"));
                 });
             })
+            ->when($min !== '' && is_numeric($min), fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM ukurans WHERE ukurans.id_barang = barangs.id_barang AND ukurans.harga_ukuran IS NOT NULL), barangs.harga) >= ?', [(float) $min]))
+            ->when($max !== '' && is_numeric($max), fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM ukurans WHERE ukurans.id_barang = barangs.id_barang AND ukurans.harga_ukuran IS NOT NULL), barangs.harga) <= ?', [(float) $max]))
             ->orderByDesc('id_barang')
             ->paginate(12)
             ->withQueryString();
 
-        return view('customer.barang.search', compact('barang', 'q'));
+        return view('customer.barang.search', compact('barang', 'q', 'min', 'max'));
     }
 
     public function detailBarang(int $id)
