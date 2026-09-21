@@ -17,18 +17,6 @@
 
                 <div class="row g-2">
                     <div class="col-md-6">
-                        <label for="id_brand" class="form-label-pink">Brand</label>
-                        <select id="id_brand" name="id_brand" class="form-select form-control-pink" required>
-                            @foreach ($brands as $brand)
-                                <option value="{{ $brand->id_brand }}" @selected(old('id_brand', $barang->id_brand) == $brand->id_brand)>{{ $brand->nama_brand }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('id_brand')
-                            <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
-                        @enderror
-                    </div>
-                    <div class="col-md-6">
                         <label for="id_kategori" class="form-label-pink">Kategori</label>
                         <select id="id_kategori" name="id_kategori" class="form-select form-control-pink" required>
                             @foreach ($kategoris as $kategori)
@@ -40,6 +28,18 @@
                             <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
                         @enderror
                     </div>
+                    <div class="col-md-6">
+                        <label for="id_brand" class="form-label-pink">Brand</label>
+                        <select id="id_brand" name="id_brand" class="form-select form-control-pink" required>
+                            @foreach ($brands as $brand)
+                                <option value="{{ $brand->id_brand }}" @selected(old('id_brand', $barang->id_brand) == $brand->id_brand)>{{ $brand->nama_brand }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_brand')
+                            <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="mb-2 mt-2">
@@ -47,6 +47,7 @@
                     <input id="kode_barang" name="kode_barang" type="text" maxlength="15"
                         class="form-control form-control-pink" value="{{ old('kode_barang', $barang->kode_barang) }}"
                         data-check-url="{{ route('pegawai.checkkodebarang') }}" data-exclude="{{ $barang->kode_barang }}"
+                        data-kategori="{{ $barang->id_kategori }}" data-brand="{{ $barang->id_brand }}"
                         required>
                     <div class="form-label-pink text-danger mt-2" id="kode_barang_feedback"></div>
                     @error('kode_barang')

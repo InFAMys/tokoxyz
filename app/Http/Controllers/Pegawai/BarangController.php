@@ -64,7 +64,9 @@ class BarangController extends Controller
         $brands = Brand::orderBy('nama_brand')->get(['id_brand', 'nama_brand']);
         $kategoris = Kategori::orderBy('nama_kategori')->get(['id_kategori', 'nama_kategori']);
 
-        return view('pegawai.kelola.tambah.tambahBarang', compact('brands', 'kategoris'));
+        $nextSeq = str_pad(((int) Barang::withTrashed()->max('id_barang')) + 1, 3, '0', STR_PAD_LEFT);
+
+        return view('pegawai.kelola.tambah.tambahBarang', compact('brands', 'kategoris', 'nextSeq'));
     }
 
     public function addBarang(Request $request)

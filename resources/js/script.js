@@ -211,6 +211,32 @@ document
         });
     });
 
+// Harga minimal 1 (client-side guard for barang main price)
+document.querySelectorAll("input[name='harga']").forEach((el) => {
+    const form = el.closest("form");
+    let msg = null;
+    const clearMsg = () => {
+        if (msg) {
+            msg.remove();
+            msg = null;
+        }
+    };
+    el.addEventListener("input", clearMsg);
+    form.addEventListener("submit", (e) => {
+        const digits = toIntegerDigits(el.value);
+        if (digits === "" || Number(digits) === 0) {
+            e.preventDefault();
+            if (!msg) {
+                msg = document.createElement("label");
+                msg.className = "form-label-pink text-danger mt-1";
+                msg.textContent = "Harga minimal 1!";
+                const anchor = el.closest(".input-group") || el.parentElement;
+                anchor.insertAdjacentElement("afterend", msg);
+            }
+        }
+    });
+});
+
 // Berat input mask (digits + single separator , or ., up to 3 decimals)
 document.querySelectorAll("input[id='berat']").forEach((el) => {
     el.addEventListener("input", () => {
@@ -223,6 +249,88 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
         }
         if (el.value !== v) {
             el.value = v;
+        }
+    });
+});
+
+// Required dropdown message (system-wide; fires on novalidate forms where native is off)
+document.querySelectorAll("form").forEach((form) => {
+    const selects = [...form.querySelectorAll("select[required]")];
+    if (!selects.length) {
+        return;
+    }
+
+    selects.forEach((sel) => {
+        sel.addEventListener("change", () => {
+            if (sel._reqMsg) {
+                sel._reqMsg.textContent = "";
+            }
+        });
+
+        form.addEventListener("submit", (e) => {
+            let invalid = false;
+            selects.forEach((s) => {
+                if (s.value === "") {
+                    invalid = true;
+                    const label =
+                        s.closest(".mb-2,.mb-3,.mb-4")
+                            ?.querySelector("label")
+                            ?.textContent?.trim() || "";
+                    const text = label ? `Pilih ${label}.` : "Wajib diisi.";
+                    if (!s._reqMsg) {
+                        s._reqMsg = document.createElement("div");
+                        s._reqMsg.className = "text-danger small mt-1";
+                        s.insertAdjacentElement("afterend", s._reqMsg);
+                    }
+                    s._reqMsg.textContent = text;
+                } else if (s._reqMsg) {
+                    s._reqMsg.textContent = "";
+                }
+            });
+            if (invalid) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+
+// Suppress native bubble + show custom msg on required dropdowns (non-novalidate forms)
+document.querySelectorAll("select[required]").forEach((sel) => {
+    sel.addEventListener("invalid", (e) => {
+        e.preventDefault();
+        const label =
+            sel.closest(".mb-2,.mb-3,.mb-4")
+                ?.querySelector("label")
+                ?.textContent?.trim() || "";
+        if (!sel._reqMsg) {
+            sel._reqMsg = document.createElement("div");
+            sel._reqMsg.className = "text-danger small mt-1";
+            sel.insertAdjacentElement("afterend", sel._reqMsg);
+        }
+        sel._reqMsg.textContent = label ? `Pilih ${label}.` : "Wajib diisi.";
+    });
+});
+
+// Required textarea message (non-novalidate forms), e.g. alamat lengkap
+document.querySelectorAll("textarea[required]").forEach((ta) => {
+    ta.addEventListener("invalid", (e) => {
+        e.preventDefault();
+        const label =
+            ta.closest(".mb-2,.mb-3,.mb-4")
+                ?.querySelector("label")
+                ?.textContent?.trim() ||
+            (ta.id ? document.querySelector(`label[for="${ta.id}"]`)?.textContent?.trim() : "") ||
+            "";
+        if (!ta._reqMsg) {
+            ta._reqMsg = document.createElement("div");
+            ta._reqMsg.className = "text-danger small mt-1";
+            ta.insertAdjacentElement("afterend", ta._reqMsg);
+        }
+        ta._reqMsg.textContent = label ? `${label} wajib diisi.` : "Wajib diisi.";
+    });
+    ta.addEventListener("input", () => {
+        if (ta._reqMsg) {
+            ta._reqMsg.textContent = "";
         }
     });
 });
@@ -648,4 +756,73 @@ document.querySelectorAll("input[id='berat']").forEach((el) => {
                 .catch(() => {});
         }, 400);
     });
+})();
+
+// Auto Kode Barang (BRG-kategori+brand+seq)
+(function () {
+    const input = document.getElementById("kode_barang");
+    if (!input || !input.dataset.checkUrl) {
+        return;
+    }
+
+    const katSel = document.getElementById("id_kategori");
+    const brandSel = document.getElementById("id_brand");
+    if (!katSel || !brandSel) {
+        return;
+    }
+
+    const checkUrl = input.dataset.checkUrl;
+
+    function exists(kode) {
+        const url = new URL(checkUrl, window.location.origin);
+        url.searchParams.set("kode", kode);
+        url.searchParams.set("exclude", input.dataset.exclude ?? "");
+        return fetch(url)
+            .then((r) => r.json())
+            .then((d) => !!d.exists)
+            .catch(() => false);
+    }
+
+    let busy = false;
+    async function fill(kat, brand, seq) {
+        if (busy || !kat || !brand) {
+            return;
+        }
+        busy = true;
+        seq = parseInt(seq, 10) || 1;
+        let kode = `BRG-${kat}${brand}${String(seq).padStart(3, "0")}`;
+        while (await exists(kode)) {
+            seq += 1;
+            kode = `BRG-${kat}${brand}${String(seq).padStart(3, "0")}`;
+        }
+        input.value = kode;
+        busy = false;
+    }
+
+    if (input.dataset.nextSeq) {
+        // Tambah: readonly -> auto-fill on selection
+        const tryFill = () => fill(katSel.value, brandSel.value, input.dataset.nextSeq);
+        katSel.addEventListener("change", tryFill);
+        brandSel.addEventListener("change", tryFill);
+        tryFill();
+    } else {
+        // Edit: editable -> recompute only when field still matches auto pattern
+        const origPrefix = `BRG-${input.dataset.kategori}${input.dataset.brand}`;
+        const origSeq = input.value.startsWith(origPrefix)
+            ? input.value.slice(origPrefix.length)
+            : "";
+        if (!/^\d+$/.test(origSeq)) {
+            return; // not auto-generated; don't auto-touch
+        }
+        const isAutoPattern = () =>
+            input.value.startsWith(origPrefix) &&
+            /^\d+$/.test(input.value.slice(origPrefix.length));
+        const tryRebuild = () => {
+            if (isAutoPattern()) {
+                fill(katSel.value, brandSel.value, origSeq);
+            }
+        };
+        katSel.addEventListener("change", tryRebuild);
+        brandSel.addEventListener("change", tryRebuild);
+    }
 })();

@@ -14,19 +14,6 @@
                 <div class="auth-title">Tambah Barang</div>
                 
                 <div class="mb-2">
-                    <label for="id_brand" class="form-label-pink">Brand</label>
-                    <select id="id_brand" name="id_brand" class="form-select form-control-pink" required>
-                        <option value="">Pilih brand</option>
-                        @foreach ($brands as $brand)
-                            <option value="{{ $brand->id_brand }}" @selected(old('id_brand') == $brand->id_brand)>{{ $brand->nama_brand }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('id_brand')
-                        <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
-                    @enderror
-                </div>
-                <div class="mb-2">
                     <label for="id_kategori" class="form-label-pink">Kategori</label>
                     <select id="id_kategori" name="id_kategori" class="form-select form-control-pink" required>
                         <option value="">Pilih kategori</option>
@@ -40,10 +27,24 @@
                     @enderror
                 </div>
                 <div class="mb-2">
+                    <label for="id_brand" class="form-label-pink">Brand</label>
+                    <select id="id_brand" name="id_brand" class="form-select form-control-pink" required>
+                        <option value="">Pilih brand</option>
+                        @foreach ($brands as $brand)
+                            <option value="{{ $brand->id_brand }}" @selected(old('id_brand') == $brand->id_brand)>{{ $brand->nama_brand }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('id_brand')
+                        <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
+                    @enderror
+                </div>
+                <div class="mb-2">
                     <label for="kode_barang" class="form-label-pink">Kode Barang</label>
-                    <input id="kode_barang" name="kode_barang" type="text" maxlength="15"
+                    <input id="kode_barang" name="kode_barang" type="text" maxlength="15" readonly
                         class="form-control form-control-pink" value="{{ old('kode_barang') }}" required
-                        data-check-url="{{ route('pegawai.checkkodebarang') }}" data-exclude="" />
+                        data-check-url="{{ route('pegawai.checkkodebarang') }}" data-exclude=""
+                        data-next-seq="{{ $nextSeq }}" />
                     <div class="form-label-pink text-danger mt-2" id="kode_barang_feedback"></div>
                     @error('kode_barang')
                         <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
