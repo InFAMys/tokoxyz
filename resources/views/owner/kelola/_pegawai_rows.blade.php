@@ -8,6 +8,7 @@
                     <th>ID</th>
                     <th>Nama Pegawai</th>
                     <th>Username</th>
+                    <th>Akses</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -17,6 +18,13 @@
                         <td data-label="ID">{{ $pg->id_pegawai }}</td>
                         <td data-label="Nama Pegawai">{{ $pg->nama_pegawai }}</td>
                         <td data-label="Username">{{ $pg->username_pegawai }}</td>
+                        <td data-label="Akses">
+                            @if ($pg->canInventory())
+                                <span class="badge text-bg-success">Pesanan + Inventaris</span>
+                            @else
+                                <span class="badge text-bg-secondary">Hanya Pesanan</span>
+                            @endif
+                        </td>
                         <td data-label="Aksi" class="d-flex gap-3 mobile-stack-actions mobile-card-actions">
                             <a href="{{ route('owner.epegawai', $pg->id_pegawai) }}"
                                 class="btn btn-edit-outline btn-sm">

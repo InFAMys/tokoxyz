@@ -42,6 +42,7 @@ class KelolaPegawaiController extends Controller
                 Rule::unique('pegawais', 'username_pegawai'),
             ],
             'password' => ['required', 'string', 'min:8'],
+            'akses' => ['required', 'in:pesanan,inventaris'],
         ],
             [
                 'nama_pegawai.required' => 'Masukkan Nama!',
@@ -56,6 +57,7 @@ class KelolaPegawaiController extends Controller
             'nama_pegawai' => $data['nama_pegawai'],
             'username_pegawai' => $data['username_pegawai'],
             'password' => Hash::make($data['password']),
+            'akses' => $data['akses'],
         ]);
 
         // return redirect()->route('owner.kpegawai');
@@ -81,6 +83,7 @@ class KelolaPegawaiController extends Controller
                     'required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_-]+$/',
                 ],
                 'password' => ['nullable', 'string', 'min:8'],
+                'akses' => ['required', 'in:pesanan,inventaris'],
             ]);
         } else {
             // $check='USER BEDA';
@@ -91,6 +94,7 @@ class KelolaPegawaiController extends Controller
                     Rule::unique('pegawais', 'username_pegawai')->ignore($pegawai->id),
                 ],
                 'password' => ['nullable', 'string', 'min:8'],
+                'akses' => ['required', 'in:pesanan,inventaris'],
             ],
                 [
                     'username_pegawai.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Username.',
@@ -100,6 +104,7 @@ class KelolaPegawaiController extends Controller
 
         $pegawai->nama_pegawai = $data['nama_pegawai'];
         $pegawai->username_pegawai = $data['username_pegawai'];
+        $pegawai->akses = $data['akses'];
 
         if (! empty($data['password'])) {
             $pegawai->password = Hash::make($data['password']);

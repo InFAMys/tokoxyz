@@ -47,6 +47,22 @@
                         </label>
                     @enderror
                 </div>
+                <div class="mb-4">
+                    <label class="form-label-pink">Akses Pegawai</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="akses" id="akses_pesanan"
+                            value="pesanan" @checked(old('akses', 'pesanan') === 'pesanan')>
+                        <label class="form-check-label" for="akses_pesanan">Hanya Pesanan</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="akses" id="akses_inventaris"
+                            value="inventaris" @checked(old('akses') === 'inventaris')>
+                        <label class="form-check-label" for="akses_inventaris">Pesanan + Inventaris</label>
+                    </div>
+                    @error('akses')
+                        <label class="form-label-pink text-danger">{{ $message }}</label>
+                    @enderror
+                </div>
                 <button type="submit" class="btn btn-pink w-100 mb-2">
                     <i class="fa-solid fa-plus"></i> Tambah Akun
                 </button>

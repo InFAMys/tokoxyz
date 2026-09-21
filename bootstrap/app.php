@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckPegawaiAkses;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -42,6 +43,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             'checkout/notification',
+        ]);
+
+        $middleware->alias([
+            'pegawai.inventory' => CheckPegawaiAkses::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

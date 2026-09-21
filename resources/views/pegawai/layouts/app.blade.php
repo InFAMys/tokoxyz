@@ -35,46 +35,48 @@
                                     class="fa-solid fa-house"></i> Home</a>
                         @endif
                     </li>
-                    <li class="nav-item dropdown mx-1">
-                        @if ($activ == 'barang' || $activ == 'kategori' || $activ == 'brand')
-                            <a href="" class="dropdown-toggle nav-link active-link" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-warehouse"></i> Inventaris</a>
-                        @else
-                            <a href="" class="dropdown-toggle nav-link" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="fa-solid fa-warehouse"></i> Inventaris</a>
-                        @endif
-                        <ul class="dropdown-menu dropdown-menu-end drop-pink">
-                            <li class="nav-item mx-1">
-                                @if ($activ == 'barang')
-                                    <a href="{{ route('pegawai.barang') }}" class="nav-link active-link">
-                                        <i class="fa-solid fa-box"></i> Barang</a>
-                                @else
-                                    <a href="{{ route('pegawai.barang') }}" class="nav-link">
-                                        <i class="fa-solid fa-box"></i> Barang</a>
-                                @endif
-                            </li>
-                            <li class="nav-item mx-1">
-                                @if ($activ == 'kategori')
-                                    <a href="{{ route('pegawai.kategori') }}" class="nav-link active-link">
-                                        <i class="fa-solid fa-layer-group"></i> Kategori</a>
-                                @else
-                                    <a href="{{ route('pegawai.kategori') }}" class="nav-link">
-                                        <i class="fa-solid fa-layer-group"></i> Kategori</a>
-                                @endif
-                            </li>
-                            <li class="nav-item mx-1">
-                                @if ($activ == 'brand')
-                                    <a href="{{ route('pegawai.kbrand') }}" class="nav-link active-link">
-                                        <i class="fa-solid fa-tags"></i> Brand</a>
-                                @else
-                                    <a href="{{ route('pegawai.kbrand') }}" class="nav-link">
-                                        <i class="fa-solid fa-tags"></i> Brand</a>
-                                @endif
-                            </li>
-                        </ul>
-                    </li>
+                    @if (auth('pegawai')->user()->canInventory())
+                        <li class="nav-item dropdown mx-1">
+                            @if ($activ == 'barang' || $activ == 'kategori' || $activ == 'brand')
+                                <a href="" class="dropdown-toggle nav-link active-link" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-warehouse"></i> Inventaris</a>
+                            @else
+                                <a href="" class="dropdown-toggle nav-link" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fa-solid fa-warehouse"></i> Inventaris</a>
+                            @endif
+                            <ul class="dropdown-menu dropdown-menu-end drop-pink">
+                                <li class="nav-item mx-1">
+                                    @if ($activ == 'barang')
+                                        <a href="{{ route('pegawai.barang') }}" class="nav-link active-link">
+                                            <i class="fa-solid fa-box"></i> Barang</a>
+                                    @else
+                                        <a href="{{ route('pegawai.barang') }}" class="nav-link">
+                                            <i class="fa-solid fa-box"></i> Barang</a>
+                                    @endif
+                                </li>
+                                <li class="nav-item mx-1">
+                                    @if ($activ == 'kategori')
+                                        <a href="{{ route('pegawai.kategori') }}" class="nav-link active-link">
+                                            <i class="fa-solid fa-layer-group"></i> Kategori</a>
+                                    @else
+                                        <a href="{{ route('pegawai.kategori') }}" class="nav-link">
+                                            <i class="fa-solid fa-layer-group"></i> Kategori</a>
+                                    @endif
+                                </li>
+                                <li class="nav-item mx-1">
+                                    @if ($activ == 'brand')
+                                        <a href="{{ route('pegawai.kbrand') }}" class="nav-link active-link">
+                                            <i class="fa-solid fa-tags"></i> Brand</a>
+                                    @else
+                                        <a href="{{ route('pegawai.kbrand') }}" class="nav-link">
+                                            <i class="fa-solid fa-tags"></i> Brand</a>
+                                    @endif
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
                     <li class="nav-item mx-1">
                         @if ($activ == 'pesanan')
                             <a href="{{ route('pegawai.pesanan') }}" class="nav-link active-link">

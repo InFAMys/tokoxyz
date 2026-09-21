@@ -128,40 +128,42 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::put('updUsername', [PegawaiController::class, 'updateUsername'])->name('update.username');
         Route::put('updPassword', [PegawaiController::class, 'updatePassword'])->name('update.password');
 
-        // Kelola
-        Route::get('kelola-barang', [BarangController::class, 'listBarang'])->name('barang');
-        Route::get('detail-barang/{id}', [BarangController::class, 'detailBarang'])->name('detailbarang');
-        Route::get('add-barang', [BarangController::class, 'tambahBarang'])->name('abarang');
-        Route::post('add-barang', [BarangController::class, 'addBarang'])->name('addbarang');
-        Route::get('edit-barang/{id}', [BarangController::class, 'editBarang'])->name('ebarang');
-        Route::put('update-barang/{id}', [BarangController::class, 'updateBarang'])->name('ubarang');
-        Route::post('delete-barang/{id}', [BarangController::class, 'deleteBarang'])->name('delbarang');
-        Route::get('check-kode-barang', [BarangController::class, 'checkKodeBarang'])->name('checkkodebarang');
+        Route::middleware('pegawai.inventory')->group(function () {
+            // Kelola
+            Route::get('kelola-barang', [BarangController::class, 'listBarang'])->name('barang');
+            Route::get('detail-barang/{id}', [BarangController::class, 'detailBarang'])->name('detailbarang');
+            Route::get('add-barang', [BarangController::class, 'tambahBarang'])->name('abarang');
+            Route::post('add-barang', [BarangController::class, 'addBarang'])->name('addbarang');
+            Route::get('edit-barang/{id}', [BarangController::class, 'editBarang'])->name('ebarang');
+            Route::put('update-barang/{id}', [BarangController::class, 'updateBarang'])->name('ubarang');
+            Route::post('delete-barang/{id}', [BarangController::class, 'deleteBarang'])->name('delbarang');
+            Route::get('check-kode-barang', [BarangController::class, 'checkKodeBarang'])->name('checkkodebarang');
 
-        Route::get('kelola-kategori', [KategoriController::class, 'listKategoris'])->name('kategori');
-        Route::get('add-kategori', [KategoriController::class, 'tambahKategori'])->name('akategori');
-        Route::post('add-kategori', [KategoriController::class, 'addKategori']);
-        Route::get('edit-kategori/{id}', [KategoriController::class, 'editKategori'])->name('ekategori');
-        Route::put('update-kategori/{id}', [KategoriController::class, 'updateKategori'])->name('ukategori');
-        Route::post('delete-kategori/{id}', [KategoriController::class, 'deleteKategori'])->name('delkategori');
+            Route::get('kelola-kategori', [KategoriController::class, 'listKategoris'])->name('kategori');
+            Route::get('add-kategori', [KategoriController::class, 'tambahKategori'])->name('akategori');
+            Route::post('add-kategori', [KategoriController::class, 'addKategori']);
+            Route::get('edit-kategori/{id}', [KategoriController::class, 'editKategori'])->name('ekategori');
+            Route::put('update-kategori/{id}', [KategoriController::class, 'updateKategori'])->name('ukategori');
+            Route::post('delete-kategori/{id}', [KategoriController::class, 'deleteKategori'])->name('delkategori');
 
-        Route::get('kelola-brand', [BrandController::class, 'listBrands'])->name('kbrand');
-        Route::get('add-brand', [BrandController::class, 'tambahBrand'])->name('abrand');
-        Route::post('add-brand', [BrandController::class, 'addBrand']);
-        Route::get('edit-brand/{id}', [BrandController::class, 'editBrand'])->name('ebrand');
-        Route::put('update-brand/{id}', [BrandController::class, 'updateBrand'])->name('ubrand');
-        Route::post('delete-brand/{id}', [BrandController::class, 'deleteBrand'])->name('delbrand');
+            Route::get('kelola-brand', [BrandController::class, 'listBrands'])->name('kbrand');
+            Route::get('add-brand', [BrandController::class, 'tambahBrand'])->name('abrand');
+            Route::post('add-brand', [BrandController::class, 'addBrand']);
+            Route::get('edit-brand/{id}', [BrandController::class, 'editBrand'])->name('ebrand');
+            Route::put('update-brand/{id}', [BrandController::class, 'updateBrand'])->name('ubrand');
+            Route::post('delete-brand/{id}', [BrandController::class, 'deleteBrand'])->name('delbrand');
 
-        Route::get('stok-barang/{id}', [StokController::class, 'stokBarang'])->name('stok');
-        Route::put('update-stok/{id}', [StokController::class, 'updateStok'])->name('ustok');
-        Route::put('update-stok/{id_b}/{id_u}', [StokController::class, 'updateStokUkuran'])->name('ustoku');
-        Route::put('update-harga-ukuran/{id_b}/{id_u}', [UkuranController::class, 'updateHargaUkuran'])->name('uhargau');
-        Route::get('ukuran-barang/{id}', [UkuranController::class, 'listUkuran'])->name('ukuran');
-        Route::get('add-ukuran/{id}', [UkuranController::class, 'tambahUkuran'])->name('addukuran');
-        Route::post('add-ukuran/{id}', [UkuranController::class, 'addUkuran']);
-        Route::get('edit-ukuran/{id_b}/{id_u}', [UkuranController::class, 'editUkuran'])->name('eukuran');
-        Route::put('update-ukuran/{id_b}/{id_u}', [UkuranController::class, 'updateUkuran'])->name('uukuran');
-        Route::post('delete-ukuran/{id}', [UkuranController::class, 'deleteUkuran'])->name('delukuran');
+            Route::get('stok-barang/{id}', [StokController::class, 'stokBarang'])->name('stok');
+            Route::put('update-stok/{id}', [StokController::class, 'updateStok'])->name('ustok');
+            Route::put('update-stok/{id_b}/{id_u}', [StokController::class, 'updateStokUkuran'])->name('ustoku');
+            Route::put('update-harga-ukuran/{id_b}/{id_u}', [UkuranController::class, 'updateHargaUkuran'])->name('uhargau');
+            Route::get('ukuran-barang/{id}', [UkuranController::class, 'listUkuran'])->name('ukuran');
+            Route::get('add-ukuran/{id}', [UkuranController::class, 'tambahUkuran'])->name('addukuran');
+            Route::post('add-ukuran/{id}', [UkuranController::class, 'addUkuran']);
+            Route::get('edit-ukuran/{id_b}/{id_u}', [UkuranController::class, 'editUkuran'])->name('eukuran');
+            Route::put('update-ukuran/{id_b}/{id_u}', [UkuranController::class, 'updateUkuran'])->name('uukuran');
+            Route::post('delete-ukuran/{id}', [UkuranController::class, 'deleteUkuran'])->name('delukuran');
+        });
 
         // Pesanan
         Route::get('pesanan', [PesananController::class, 'listPesanan'])->name('pesanan');
