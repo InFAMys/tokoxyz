@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Brand;
+use App\Models\CheckoutItem;
 use App\Models\Customer;
 use App\Models\Kategori;
+use App\Models\Pengaturan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -25,16 +27,59 @@ class CustomerController extends Controller
         $brandIds = Barang::where('status', 'Ditampilkan')->distinct()->pluck('id_brand');
         $brands = Brand::whereIn('id_brand', $brandIds)->get();
 
-        return view('welcome', compact('barangRand', 'barangNew', 'kategoris', 'brands'));
+        $topIds = CheckoutItem::query()
+            ->selectRaw('id_barang, SUM(jumlah_barang) AS total')
+            ->whereHas('checkout', fn ($q) => $q->whereIn('status', ['shipping', 'delivered', 'completed']))
+            ->groupBy('id_barang')
+            ->orderByDesc('total')
+            ->limit(12)
+            ->pluck('id_barang');
+
+        $barangTerlaris = collect();
+        if ($topIds->isNotEmpty()) {
+            $barangTerlaris = Barang::with('ukurans')
+                ->where('status', 'Ditampilkan')
+                ->whereIn('id_barang', $topIds)
+                ->orderByRaw('FIELD(id_barang, '.$topIds->implode(',').')')
+                ->get();
+        }
+
+        $pengaturan = Pengaturan::allAsArray();
+
+        return view('welcome', compact('barangRand', 'barangNew', 'kategoris', 'brands', 'barangTerlaris', 'pengaturan'));
     }
 
-    public function kategori(int $id)
+    public function allKategori()
+    {
+        $kategoriIds = Barang::where('status', 'Ditampilkan')->distinct()->pluck('id_kategori');
+        $kategoris = Kategori::whereIn('id_kategori', $kategoriIds)->withCount([
+            'barangs as jumlah_barang' => fn ($q) => $q->where('status', 'Ditampilkan'),
+        ])->get();
+
+        return view('customer.kategori.index', compact('kategoris'));
+    }
+
+    public function allBrand()
+    {
+        $brandIds = Barang::where('status', 'Ditampilkan')->distinct()->pluck('id_brand');
+        $brands = Brand::whereIn('id_brand', $brandIds)->withCount([
+            'barangs as jumlah_barang' => fn ($q) => $q->where('status', 'Ditampilkan'),
+        ])->get();
+
+        return view('customer.brand.index', compact('brands'));
+    }
+
+    public function kategori(Request $request, int $id)
     {
         $kategori = Kategori::findOrFail($id);
+
+        [$min, $max] = $this->parsePriceRange($request);
 
         $barang = Barang::with(['brand', 'kategori', 'ukurans'])
             ->where('status', 'Ditampilkan')
             ->where('id_kategori', $id)
+            ->when($min !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM ukurans WHERE ukurans.id_barang = barangs.id_barang AND ukurans.harga_ukuran IS NOT NULL), barangs.harga) >= ?', [$min]))
+            ->when($max !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM ukurans WHERE ukurans.id_barang = barangs.id_barang AND ukurans.harga_ukuran IS NOT NULL), barangs.harga) <= ?', [$max]))
             ->orderByDesc('id_barang')
             ->paginate(12)
             ->withQueryString();
@@ -42,16 +87,22 @@ class CustomerController extends Controller
         return view('customer.barang.filter', [
             'title' => $kategori->nama_kategori,
             'barang' => $barang,
+            'min' => $request->query('min', ''),
+            'max' => $request->query('max', ''),
         ]);
     }
 
-    public function brand(int $id)
+    public function brand(Request $request, int $id)
     {
         $brand = Brand::findOrFail($id);
+
+        [$min, $max] = $this->parsePriceRange($request);
 
         $barang = Barang::with(['brand', 'kategori', 'ukurans'])
             ->where('status', 'Ditampilkan')
             ->where('id_brand', $id)
+            ->when($min !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM ukurans WHERE ukurans.id_barang = barangs.id_barang AND ukurans.harga_ukuran IS NOT NULL), barangs.harga) >= ?', [$min]))
+            ->when($max !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM ukurans WHERE ukurans.id_barang = barangs.id_barang AND ukurans.harga_ukuran IS NOT NULL), barangs.harga) <= ?', [$max]))
             ->orderByDesc('id_barang')
             ->paginate(12)
             ->withQueryString();
@@ -59,7 +110,20 @@ class CustomerController extends Controller
         return view('customer.barang.filter', [
             'title' => $brand->nama_brand,
             'barang' => $barang,
+            'min' => $request->query('min', ''),
+            'max' => $request->query('max', ''),
         ]);
+    }
+
+    private function parsePriceRange(Request $request): array
+    {
+        $min = str_replace('.', '', trim((string) $request->query('min')));
+        $max = str_replace('.', '', trim((string) $request->query('max')));
+
+        return [
+            ($min !== '' && is_numeric($min)) ? (float) $min : null,
+            ($max !== '' && is_numeric($max)) ? (float) $max : null,
+        ];
     }
 
     public function cari(Request $request)

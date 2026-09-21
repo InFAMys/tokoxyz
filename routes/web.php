@@ -11,6 +11,7 @@ use App\Http\Controllers\Customer\KeranjangController;
 use App\Http\Controllers\Customer\MemberController;
 use App\Http\Controllers\Owner\KelolaDiskonController;
 use App\Http\Controllers\Owner\KelolaPegawaiController;
+use App\Http\Controllers\Owner\KelolaPengaturanController;
 use App\Http\Controllers\Owner\LaporanController;
 use App\Http\Controllers\Owner\OwnerController;
 use App\Http\Controllers\Pegawai\BarangController;
@@ -32,6 +33,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CustomerController::class, 'home'])->name('home');
 Route::get('barang/{id}', [CustomerController::class, 'detailBarang'])->name('barang.detail');
 Route::get('cari', [CustomerController::class, 'cari'])->name('barang.search');
+Route::get('kategori', [CustomerController::class, 'allKategori'])->name('kategori.all');
+Route::get('brand', [CustomerController::class, 'allBrand'])->name('brand.all');
 Route::get('kategori/{id}', [CustomerController::class, 'kategori'])->name('kategori');
 Route::get('brand/{id}', [CustomerController::class, 'brand'])->name('brand');
 
@@ -84,6 +87,9 @@ Route::prefix('owner')->name('owner.')->group(function () {
         Route::put('update-diskon/{id}', [KelolaDiskonController::class, 'updateDiskon'])->name('eddiskon');
         Route::post('delete-diskon/{id}', [KelolaDiskonController::class, 'deleteDiskon'])->name('deldiskon');
         Route::post('send-diskon/{id}', [KelolaDiskonController::class, 'sendDiskon'])->name('senddiskon');
+
+        Route::get('kelola-pengaturan', [KelolaPengaturanController::class, 'editPengaturan'])->name('kpengaturan');
+        Route::put('update-pengaturan', [KelolaPengaturanController::class, 'updatePengaturan'])->name('updpengaturan');
 
     });
 });

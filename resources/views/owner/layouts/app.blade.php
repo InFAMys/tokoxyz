@@ -73,6 +73,18 @@
                         @endif
 
                     </li>
+                    <li class="nav-item mx-1">
+                        @if ($activ == 'pengaturan')
+                            <a href="{{ route('owner.kpengaturan') }}" class="nav-link active-link">
+                                <i class="fa-solid fa-shop"></i> Profil Perusahaan
+                            </a>
+                        @else
+                            <a href="{{ route('owner.kpengaturan') }}" class="nav-link">
+                                <i class="fa-solid fa-shop"></i> Profil Perusahaan
+                            </a>
+                        @endif
+
+                    </li>
                     <li class="nav-item dropdown mx-1">
                         @if ($activ == 'profil')
                             <a href="#" class="dropdown-toggle nav-link active-link" type="button"

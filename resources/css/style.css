@@ -822,6 +822,78 @@ body {
     font-size: 5rem;
     opacity: 0.25;
 }
+.carousel-nav {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--pink-600);
+}
+.kategori-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--pink-600);
+    flex: 0 0 auto;
+}
+.kategori-scroll {
+    max-height: 240px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    padding-right: 4px;
+}
+.kategori-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.kategori-scroll::-webkit-scrollbar-track {
+    background: #f3dbe2;
+    border-radius: 4px;
+}
+.kategori-scroll::-webkit-scrollbar-thumb {
+    background: var(--pink-500);
+    border-radius: 4px;
+}
+.carousel-nav:hover {
+    color: #fff;
+    background: var(--pink-600);
+    border-color: var(--pink-600);
+}
+
+.hero-search {
+    max-width: 560px;
+    padding: 6px;
+    border-radius: 50px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(214, 51, 108, 0.25);
+    border: 1px solid var(--pink-200);
+}
+.hero-search-input {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+}
+.hero-search-input:focus {
+    box-shadow: none;
+}
+.hero-search-btn {
+    border-radius: 50px;
+    padding: 0.55rem 1.5rem;
+    flex-shrink: 0;
+}
+
+.hero-banner.carousel-banner {
+    padding: 1.5rem;
+    min-height: 320px;
+}
+@media (min-width: 768px) {
+    .hero-banner.carousel-banner {
+        padding: 3rem 2.5rem;
+    }
+}
+
 .hero-banner h2 {
     font-family: "Playfair Display", serif;
     font-size: 2rem;
