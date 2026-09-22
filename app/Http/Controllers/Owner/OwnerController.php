@@ -26,12 +26,12 @@ class OwnerController extends Controller
  
         $data = $request->validate([
             'username' => [
-                'string', 'max:255', 'required', 'regex:/^[A-Za-z0-9_-]+$/',
+                'string', 'min:3', 'max:255', 'required', 'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                 Rule::unique('owners', 'username')->ignore($owner->id),
             ],
         ],
         [
-            'username.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Username.', 
+            'username.regex' => 'Username tidak boleh diawali dengan garis bawah (_) atau tanda hubung (-).', 
         ]);
  
         $owner->username = $data['username'];

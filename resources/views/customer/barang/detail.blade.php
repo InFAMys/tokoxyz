@@ -109,10 +109,10 @@
 
                                 @if ($hasUkuran)
                                     <div class="mb-3">
-                                        <label for="id_ukuran" class="form-label-pink">Ukuran</label>
+                                        <label for="id_ukuran" class="form-label-pink">Varian</label>
                                         <select id="id_ukuran" name="id_ukuran"
                                             class="form-select @error('id_ukuran') is-invalid @enderror" required>
-                                            <option value="">Pilih Ukuran</option>
+                                            <option value="">Pilih Varian</option>
                                             @foreach ($barang->ukurans as $ukuran)
                                                 @if ($isPreorder || $ukuran->stok_ukuran > 0)
                                                     <option value="{{ $ukuran->id_ukuran }}" @selected(old('id_ukuran') == $ukuran->id_ukuran)

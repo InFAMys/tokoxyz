@@ -40,6 +40,16 @@
                     </div>
                 @endif
 
+                @if (in_array($checkout->status, ['refunded', 'partially_refunded', 'cancelled'], true) && $checkout->cancel_reason)
+                    <div class="summary-box mb-3">
+                        <div class="form-label-pink">Alasan Pembatalan</div>
+                        <div>{{ $checkout->cancel_reason }}</div>
+                        <div class="small text-muted">
+                            Diajukan oleh: {{ $checkout->cancel_from === 'customer' ? 'Customer' : 'Pegawai' }}
+                        </div>
+                    </div>
+                @endif
+
                 <div class="summary-box mb-3">
                     <div class="form-label-pink">Customer</div>
                     <div>{{ $checkout->customer_name }} · {{ $checkout->customer_telp }}</div>

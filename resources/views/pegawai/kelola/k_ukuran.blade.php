@@ -1,6 +1,6 @@
 @extends('pegawai.layouts.app')
 
-@section('title', 'Ukuran - Toko XYZ')
+@section('title', 'Varian - Toko XYZ')
 
 @php
     $activ = 'barang';
@@ -10,7 +10,7 @@
 @section('content')
     <div class="d-flex" style="flex: 1">
         <div class="main-content">
-            <h1 class="page-title">Ukuran {{ $brg->nama_barang }}</h1>
+            <h1 class="page-title">Varian {{ $brg->nama_barang }}</h1>
             {{-- <div class="d-flex gap-2"> --}}
             <a href="{{ route('pegawai.detailbarang', $brg->id_barang) }}" class="btn btn-pink-outline mb-3">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
@@ -19,7 +19,7 @@
             <div class="card-pink p-3">
                 <div class="filter-bar">
                     <a href="{{ route('pegawai.addukuran', $brg->id_barang) }}" class="btn btn-pink">
-                        <i class="fa-solid fa-plus"></i> Tambah Ukuran
+                        <i class="fa-solid fa-plus"></i> Tambah Varian
                     </a>
 
 
@@ -29,30 +29,30 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Ukuran</th>
-                            <th>Ukuran</th>
+                            <th>Nama Varian</th>
+                            <th>Varian</th>
                             <th>Harga (Rp)</th>
-                            <th>Stok Ukuran</th>
+                            <th>Stok Varian</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if ($stok == null)
-                            {{-- <h1>Tidak Ada Ukuran</h1> --}}
+                            {{-- <h1>Tidak Ada Varian</h1> --}}
                             <tr>
                                 <td colspan="5" class="text-center">
-                                    <h1 class="my-5 fs-3">Tidak Ada Ukuran</h1>
+                                    <h1 class="my-5 fs-3">Tidak Ada Varian</h1>
                                 </td>
                             </tr>
                         @else
                             @foreach ($stok as $uk)
                                 <tr>
                                     <td data-label="No">{{ $loop->iteration }}</td>
-                                    <td data-label="Nama Ukuran">{{ $uk->nama_ukuran }}</td>
-                                    <td data-label="Ukuran">{{ $uk->ukuran }}</td>
+                                    <td data-label="Nama Varian">{{ $uk->nama_ukuran }}</td>
+                                    <td data-label="Varian">{{ $uk->ukuran }}</td>
                                     <td data-label="Harga" class="mobile-card-form">
                                         <form action="{{ route('pegawai.uhargau', [$uk->id_barang, $uk->id_ukuran]) }}"
-                                            method="post" data-confirm="Ubah Harga Ukuran?">
+                                            method="post" data-confirm="Ubah Harga Varian?">
                                             @csrf
                                             @method('PUT')
                                             <div class="input-group">
@@ -90,7 +90,7 @@
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-4"
                                                             id="deleteModal-{{ $uk->id_ukuran }}Label">
-                                                            Hapus Ukuran ?
+                                                            Hapus Varian ?
                                                         </h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>

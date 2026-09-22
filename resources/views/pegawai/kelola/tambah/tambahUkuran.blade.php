@@ -5,22 +5,22 @@
     $brg = $stokbrg;
 @endphp
 
-@section('title', 'Tambah Ukuran: ' . $brg->nama_barang . '- Toko XYZ')
+@section('title', 'Tambah Varian: ' . $brg->nama_barang . '- Toko XYZ')
 
 
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
             <form action="{{ route('pegawai.addukuran', $brg->id_barang) }}" method="post" enctype="multipart/form-data"
-                data-confirm="Tambah Ukuran?">
+                data-confirm="Tambah Varian?">
                 @csrf
-                <div class="auth-titleA mb-3">Tambah Ukuran</div>
+                <div class="auth-titleA mb-3">Tambah Varian</div>
                 <div class="auth-subtitleA">{{ $brg->nama_barang }}</div>
-                
+
                 <div class="mb-2">
-                    <label for="nama_ukuran" class="form-label-pink">Nama Ukuran</label>
+                    <label for="nama_ukuran" class="form-label-pink">Nama Varian</label>
                     <input id='nama_ukuran' name="nama_ukuran" type="text" class="form-control form-control-pink"
-                        value="{{ old('nama_ukuran') }}" placeholder="Nama Ukuran" required autofocus />
+                        value="{{ old('nama_ukuran') }}" placeholder="M - Biru" required autofocus />
                     @error('nama_ukuran')
                         <label for="nama_ukuran" class="form-label-pink text-danger">
                             {{ $message }}
@@ -28,9 +28,9 @@
                     @enderror
                 </div>
                 <div class="mb-2">
-                    <label for="ukuran" class="form-label-pink">Ukuran</label>
+                    <label for="ukuran" class="form-label-pink">Deskripsi Varian</label>
                     <input id='ukuran' name="ukuran" type="text" class="form-control form-control-pink"
-                        value="{{ old('ukuran') }}" placeholder="Ukuran" required autofocus />
+                        value="{{ old('ukuran') }}" placeholder="Ukuran M - Warna Biru" required autofocus />
                     @error('ukuran')
                         <label for="ukuran" class="form-label-pink text-danger">
                             {{ $message }}
@@ -38,13 +38,12 @@
                     @enderror
                 </div>
                 <div class="mb-4">
-                    <label for="harga_ukuran" class="form-label-pink">Harga Ukuran</label>
+                    <label for="harga_ukuran" class="form-label-pink">Harga Varian</label>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="harga_ukuran-addon1">Rp</span>
                         <input type="text" inputmode="numeric" autocomplete="off" class="form-control form-control-pink"
-                            name="harga_ukuran" placeholder="Harga Ukuran"
-                            aria-label="Harga Ukuran" aria-describedby="harga_ukuran-addon1"
-                            value="{{ old('harga_ukuran') }}" required>
+                            name="harga_ukuran" placeholder="Harga Ukuran" aria-label="Harga Ukuran"
+                            aria-describedby="harga_ukuran-addon1" value="{{ old('harga_ukuran') }}" required>
                     </div>
                     @error('harga_ukuran')
                         <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
@@ -61,4 +60,3 @@
         </div>
     </div>
 @endsection
-

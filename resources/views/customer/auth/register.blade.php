@@ -23,7 +23,7 @@
                 <div class="mb-2">
                     <label for="username" class="form-label-pink">Username</label>
                     <input id='username' name="username" type="text" class="form-control form-control-pink"
-                        value="{{ old('username') }}" placeholder="username" maxlength="15" required />
+                        value="{{ old('username') }}" placeholder="username" maxlength="15" minlength="3" required />
                     @error('username')
                         <label for="username" class="form-label-pink text-danger mt-2">
                             {{ $message }}

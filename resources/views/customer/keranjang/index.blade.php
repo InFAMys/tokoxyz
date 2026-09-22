@@ -98,7 +98,7 @@
                     </p>
                     @if ($item->ukuran)
                         <p class="small mb-1">
-                            Ukuran: {{ $item->ukuran->nama_ukuran }}
+                            Varian: {{ $item->ukuran->nama_ukuran }}
                             @if ($item->ukuran->ukuran)
                                 - {{ $item->ukuran->ukuran }}
                             @endif

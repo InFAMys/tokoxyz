@@ -186,11 +186,12 @@ document.querySelectorAll(".toast[data-bs-delay]").forEach((toast) => {
 const toIntegerDigits = (s) => {
     s = (s || "").trim();
     const m = s.match(/^([\d.,]+?)[.,](\d{1,2})$/);
-    return m ? m[1].replace(/[.,]/g, "") : s.replace(/[.,]/g, "");
+    return m ? m[1].replace(/[.,]/g, "") : s.replace(/[^0-9]/g, "");
 };
 const moneyFormat = (raw) => {
     const digits = toIntegerDigits(raw);
-    return digits === "" ? "" : Number(digits).toLocaleString("id-ID");
+    const num = Number(digits);
+    return Number.isNaN(num) ? "" : num.toLocaleString("id-ID");
 };
 
 document

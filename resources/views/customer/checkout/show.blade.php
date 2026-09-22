@@ -210,6 +210,13 @@
                         WhatsApp
                     </a>.
                 </p>
+
+                @if ($checkout->cancel_reason)
+                    <div class="summary-box mt-3 mb-0">
+                        <div class="form-label-pink">Alasan Pembatalan</div>
+                        <div>{{ $checkout->cancel_reason }}</div>
+                    </div>
+                @endif
             @elseif ($checkout->status === 'pending')
                 <div class="alert alert-info mb-0">Pembayaran belum bisa dimulai kembali. Hubungi admin.</div>
             @else

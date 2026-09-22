@@ -166,7 +166,7 @@ class CheckoutStatusService
             }
 
             if (! $this->confirmRefunded($checkout)) {
-                throw new RuntimeException('Refund not confirmed by Midtrans for '.$checkout->order_id);
+                throw new RuntimeException('Refund belum dikonfirmasi Midtrans untuk '.$checkout->order_id);
             }
         } catch (Throwable $e) {
             logger()->error('Refund failed for checkout '.$checkout->id_checkout.' ('.($checkout->payment_type ?: 'unknown').'): '.$e->getMessage());

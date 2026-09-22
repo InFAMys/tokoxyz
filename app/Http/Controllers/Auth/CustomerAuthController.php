@@ -46,7 +46,8 @@ class CustomerAuthController extends Controller
         $data = $request->validate([
             'nama' => ['required', 'string', 'max:64'],
             'username' => [
-                'required', 'string', 'max:15',
+                'required', 'string', 'min:3', 'max:15',
+                'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                 Rule::unique('customers', 'username'),
             ],
             'email' => [
@@ -63,6 +64,8 @@ class CustomerAuthController extends Controller
                 'nama.required' => 'Masukkan Nama!',
                 'nama.max' => 'Panjang Nama Maksimal 64 Karakter!',
                 'username.required' => 'Masukkan Alamat Username!',
+                'username.min' => 'Panjang Username Minimal 3 Karakter!',
+                'username.regex' => 'Username tidak boleh diawali dengan garis bawah (_) atau tanda hubung (-).',
                 'username.max' => 'Panjang Username Maksimal 15 Karakter!',
                 'username.unique' => 'Username '.$request->input('username').' Sudah Dipakai!',
                 'email.required' => 'Masukkan Alamat E-Mail!',

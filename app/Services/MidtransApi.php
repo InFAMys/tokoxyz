@@ -28,13 +28,13 @@ class MidtransApi
             ->post($this->base.'/snap/v1/transactions', $payload);
 
         if ($response->failed()) {
-            throw new RuntimeException('Midtrans snap error: '.$response->body());
+            throw new RuntimeException('Midtrans error: '.$response->body());
         }
 
         $token = $response->json('token');
 
         if (! is_string($token) || $token === '') {
-            throw new RuntimeException('Midtrans returned no snap token.');
+            throw new RuntimeException('Midtrans tidak mengembalikan token pembayaran.');
         }
 
         return $token;
@@ -94,7 +94,7 @@ class MidtransApi
         $body = $response->json() ?? [];
 
         if ($response->failed() || (string) ($body['status_code'] ?? '') !== '200') {
-            throw new RuntimeException('Midtrans refund error: '.$response->body());
+            throw new RuntimeException('Gagal refund di Midtrans: '.$response->body());
         }
 
         return $body;

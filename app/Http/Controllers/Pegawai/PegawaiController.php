@@ -43,13 +43,13 @@ class PegawaiController extends Controller
 
         $data = $request->validate([
             'username_pegawai' => [
-                'string', 'max:255', 'required', 'regex:/^[A-Za-z0-9_-]+$/',
+                'string', 'min:3', 'max:255', 'required', 'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                 Rule::unique('pegawais', 'username_pegawai')->ignore($pegawai->id),
             ],
         ],
         [
             'username_pegawai.unique' => 'Username ' . $request->input('username_pegawai') . ' Sudah Dipakai!', 
-            'username_pegawai.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Username.', 
+            'username_pegawai.regex' => 'Username tidak boleh diawali dengan garis bawah (_) atau tanda hubung (-).', 
         ]);
  
         $pegawai->username_pegawai = $data['username_pegawai'];

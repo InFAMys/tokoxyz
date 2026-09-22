@@ -38,7 +38,7 @@ class KelolaPegawaiController extends Controller
         $data = $request->validate([
             'nama_pegawai' => ['required', 'string', 'max:255'],
             'username_pegawai' => [
-                'required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_-]+$/',
+                'required', 'string', 'min:3', 'max:255', 'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                 Rule::unique('pegawais', 'username_pegawai'),
             ],
             'password' => ['required', 'string', 'min:8'],
@@ -80,7 +80,7 @@ class KelolaPegawaiController extends Controller
             $data = $request->validate([
                 'nama_pegawai' => ['required', 'string', 'max:255'],
                 'username_pegawai' => [
-                    'required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_-]+$/',
+                    'required', 'string', 'min:3', 'max:255', 'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                 ],
                 'password' => ['nullable', 'string', 'min:8'],
                 'akses' => ['required', 'in:pesanan,inventaris'],
@@ -90,14 +90,14 @@ class KelolaPegawaiController extends Controller
             $data = $request->validate([
                 'nama_pegawai' => ['required', 'string', 'max:255'],
                 'username_pegawai' => [
-                    'required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_-]+$/',
+                    'required', 'string', 'min:3', 'max:255', 'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                     Rule::unique('pegawais', 'username_pegawai')->ignore($pegawai->id),
                 ],
                 'password' => ['nullable', 'string', 'min:8'],
                 'akses' => ['required', 'in:pesanan,inventaris'],
             ],
                 [
-                    'username_pegawai.regex' => 'Hanya huruf, angka, garis bawah (_), dan tanda hubung (-) yang diperbolehkan untuk Username.',
+                'username_pegawai.regex' => 'Username tidak boleh diawali dengan garis bawah (_) atau tanda hubung (-).',
 
                 ]);
         }

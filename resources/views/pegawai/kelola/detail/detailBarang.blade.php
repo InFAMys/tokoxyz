@@ -32,7 +32,7 @@
                     <i class="fa-solid fa-boxes-stacked"></i> Stok
                 </a>
                 <a href="{{ route('pegawai.ukuran', $barang->id_barang) }}" class="btn btn-detail">
-                    <i class="fa-solid fa-ruler"></i> Ukuran
+                    <i class="fa-solid fa-ruler"></i> Varian
                 </a>
                 <a href="{{ route('pegawai.ebarang', $barang->id_barang) }}" class="btn btn-edit">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -143,7 +143,7 @@
                     </div>
                     @if ($hasUkuran)
                         <div class="summary-box mb-3">
-                            <div class="form-label-pink">Ukuran</div>
+                            <div class="form-label-pink">Varian</div>
                             <div class="mt-3">
                                 @foreach ($stok as $uk)
                                     <dl class="row mb-2">

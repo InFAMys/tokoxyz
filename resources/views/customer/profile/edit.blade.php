@@ -79,7 +79,7 @@
                     <label for="username" class="form-label-pink">Username</label>
                     <input id='username' name="username" type="text" class="form-control form-control-pink"
                         value="{{ old('username', $customer->username) }}" placeholder="Username" maxlength="15"
-                        required />
+                        minlength="3" required />
                     @error('username')
                         <label for="username" class="form-label-pink text-danger mt-2">
                             {{ $message }}

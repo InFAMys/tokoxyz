@@ -47,7 +47,8 @@ class OwnerAuthController extends Controller
         $data = $request->validate([
             // 'username' => ['required', 'string', 'max:255'],
             'username' => [
-                'required', 'string', 'max:255',
+                'required', 'string', 'min:3', 'max:255',
+                'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
                 Rule::unique('owners', 'username'),
             ],
             'password' => ['required', 'string', 'min:8'],
