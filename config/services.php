@@ -51,6 +51,10 @@ return [
         'tracking_url' => env('KLIKRESI_TRACKING_URL', '/api/trackings'),
     ],
 
+    'wilayah' => [
+        'base_url' => env('WILAYAH_BASE_URL', 'https://wilayah.id/api'),
+    ],
+
     'whatsapp' => [
         'number' => env('WA_NUMBER'),
     ],

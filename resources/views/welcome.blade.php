@@ -20,8 +20,12 @@
         </form>
 
         <!-- Produk Terbaru Carousel -->
-        @if ($barangNew->isNotEmpty())
-            @php $slides = $barangNew->take(6); @endphp
+        @php
+            $slides = $barangNew
+                ->filter(fn ($b) => $b->stokReady() >= 1 || $b->preorder === 'Tersedia')
+                ->take(6);
+        @endphp
+        @if ($slides->isNotEmpty())
             <div id="produkCarousel" class="carousel slide carousel-fade mb-4 position-relative"
                 data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-inner rounded-4 overflow-hidden shadow-sm">
@@ -39,6 +43,9 @@
                                         </div>
                                         <div class="col-12 col-md-6 ps-md-5">
                                             <span class="badge text-bg-light text-pink mb-2">Produk Terbaru</span>
+                                            @if ($sl->preorder === 'Tersedia' && $sl->stokReady() < 1)
+                                                <span class="badge text-bg-warning mb-2">Preorder</span>
+                                            @endif
                                             <h2 class="fw-bold mb-2">{{ $sl->nama_barang }}</h2>
                                             <div class="fs-5 fs-md-4 fw-semibold mb-3">
                                                 @include('customer.partials.harga', ['item' => $sl])

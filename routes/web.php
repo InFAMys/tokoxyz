@@ -231,6 +231,7 @@ Route::prefix('/')->group(function () {
         // Alamat: Klikresi province -> city -> district
         Route::get('alamat/cities/{id}', [AlamatController::class, 'cities'])->name('alamat.cities');
         Route::get('alamat/districts/{id}', [AlamatController::class, 'districts'])->name('alamat.districts');
+        Route::get('alamat/villages/{id}', [AlamatController::class, 'villages'])->name('alamat.villages');
 
         // Checkout
         Route::get('checkout', [CheckoutController::class, 'create'])->name('checkout.create');

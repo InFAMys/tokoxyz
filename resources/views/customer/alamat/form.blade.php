@@ -75,7 +75,7 @@
                                     data-cities-url="{{ route('alamat.cities', ':id') }}">
                                     <option value="">Pilih Provinsi</option>
                                     @foreach ($provinces as $province)
-                                        <option value="{{ $province['id'] }}" @selected(old('id_provinsi', $isEdit ? $alamat->id_provinsi : '') == $province['id'])>
+                                        <option value="{{ $province['code'] }}" @selected(old('id_provinsi', $isEdit ? $alamat->id_provinsi : '') == $province['code'])>
                                             {{ $province['name'] }}
                                         </option>
                                     @endforeach
@@ -112,10 +112,14 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="kelurahan" class="form-label-pink">Kelurahan</label>
-                                <input id="kelurahan" name="kelurahan" type="text" class="form-control form-control-pink"
-                                    value="{{ old('kelurahan', $isEdit ? $alamat->kelurahan : '') }}"
-                                    placeholder="Kelurahan / Desa" maxlength="64" required>
+                                <label for="id_kelurahan" class="form-label-pink">Kelurahan / Desa</label>
+                                <select id="id_kelurahan" name="id_kelurahan" class="form-select form-control-pink" required
+                                    data-saved="{{ old('id_kelurahan', $isEdit ? $alamat->id_kelurahan : '') }}"
+                                    data-villages-url="{{ route('alamat.villages', ':id') }}">
+                                    <option value="">Pilih Kelurahan/Desa</option>
+                                </select>
+                                <input type="hidden" name="kelurahan"
+                                    value="{{ old('kelurahan', $isEdit ? $alamat->kelurahan : '') }}">
                                 @error('kelurahan')
                                     <div class="form-label-pink text-danger mt-1">{{ $message }}</div>
                                 @enderror

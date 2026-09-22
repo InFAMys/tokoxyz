@@ -335,20 +335,22 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
     });
 });
 
-// Alamat form: Klikresi province -> city -> district dropdowns
+// Alamat form: province -> city -> district -> village dropdowns
 (() => {
     const provSel = document.getElementById("id_provinsi");
     const citySel = document.getElementById("id_kota");
     const distSel = document.getElementById("id_kecamatan");
-    if (!provSel || !citySel || !distSel) return;
+    const villSel = document.getElementById("id_kelurahan");
+    if (!provSel || !citySel || !distSel || !villSel) return;
 
     const cityUrlTpl = provSel.dataset.citiesUrl || null;
     const distUrlTpl = citySel.dataset.districtsUrl || null;
+    const villUrlTpl = villSel.dataset.villagesUrl || null;
     const labelFor = (name) => document.querySelector(`input[name='${name}']`);
 
     const optionOf = (item) => {
         const o = document.createElement("option");
-        o.value = item.id;
+        o.value = item.code ?? item.id;
         o.textContent = item.name;
         return o;
     };
@@ -357,12 +359,15 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
         const p = provSel.selectedOptions[0];
         const c = citySel.selectedOptions[0];
         const d = distSel.selectedOptions[0];
+        const v = villSel.selectedOptions[0];
         if (labelFor("provinsi"))
             labelFor("provinsi").value = p && p.value ? p.textContent : "";
         if (labelFor("kota"))
             labelFor("kota").value = c && c.value ? c.textContent : "";
         if (labelFor("kecamatan"))
             labelFor("kecamatan").value = d && d.value ? d.textContent : "";
+        if (labelFor("kelurahan"))
+            labelFor("kelurahan").value = v && v.value ? v.textContent : "";
     };
 
     const fill = (sel, items, saved) => {
@@ -381,6 +386,7 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
         const id = provSel.value;
         citySel.innerHTML = '<option value="">Pilih</option>';
         distSel.innerHTML = '<option value="">Pilih</option>';
+        villSel.innerHTML = '<option value="">Pilih</option>';
         syncLabels();
         if (!id || !cityUrlTpl) return;
         fetchList(cityUrlTpl.replace(":id", id))
@@ -394,18 +400,31 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
     const loadDistricts = () => {
         const id = citySel.value;
         distSel.innerHTML = '<option value="">Pilih</option>';
+        villSel.innerHTML = '<option value="">Pilih</option>';
         syncLabels();
         if (!id || !distUrlTpl) return;
         fetchList(distUrlTpl.replace(":id", id))
-            .then((districts) =>
-                fill(distSel, districts, distSel.dataset.saved),
-            )
+            .then((districts) => {
+                fill(distSel, districts, distSel.dataset.saved);
+                if (distSel.value) loadVillages();
+            })
+            .catch(() => {});
+    };
+
+    const loadVillages = () => {
+        const id = distSel.value;
+        villSel.innerHTML = '<option value="">Pilih</option>';
+        syncLabels();
+        if (!id || !villUrlTpl) return;
+        fetchList(villUrlTpl.replace(":id", id))
+            .then((villages) => fill(villSel, villages, villSel.dataset.saved))
             .catch(() => {});
     };
 
     provSel.addEventListener("change", loadCities);
     citySel.addEventListener("change", loadDistricts);
-    distSel.addEventListener("change", syncLabels);
+    distSel.addEventListener("change", loadVillages);
+    villSel.addEventListener("change", syncLabels);
     if (provSel.value) loadCities();
 })();
 

@@ -28,6 +28,7 @@ class Alamat extends Model
         'id_provinsi',
         'id_kota',
         'id_kecamatan',
+        'id_kelurahan',
     ];
 
     public function customer(): BelongsTo
