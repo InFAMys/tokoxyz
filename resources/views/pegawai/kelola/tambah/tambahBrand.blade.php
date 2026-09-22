@@ -9,7 +9,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('pegawai.abrand') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('pegawai.abrand') }}" method="post" enctype="multipart/form-data"
+                data-confirm="Tambah Brand?">
                 @csrf
                 <div class="auth-title">Tambah Brand</div>
                 

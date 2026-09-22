@@ -30,7 +30,7 @@
                                 <td data-label="Ukuran">{{ $sk->ukuran }}</td>
                                 <td data-label="Aksi" class="mobile-card-actions mobile-card-form">
                                     <form action="{{ route('pegawai.ustoku', [$stokbrg->id_barang, $sk->id_ukuran]) }}"
-                                        method="post" enctype="multipart/form-data">
+                                        method="post" enctype="multipart/form-data" data-confirm="Ubah Stok?">
                                         @csrf
                                         @method('PUT')
 

@@ -8,7 +8,7 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('owner.updpengaturan') }}" method="post">
+            <form action="{{ route('owner.updpengaturan') }}" method="post" data-confirm="Simpan Pengaturan?">
                 @csrf
                 @method('PUT')
                 <div class="auth-titleA">Profil Perusahaan</div>

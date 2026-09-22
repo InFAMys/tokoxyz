@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
             <div class="auth-title">Edit Profil</div>
-            <form action="{{ route('profil.update.nama') }}" method="post">
+            <form action="{{ route('profil.update.nama') }}" method="post" data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 
@@ -31,7 +31,7 @@
                 </button>
             </form>
             <hr>
-            <form action="{{ route('profil.update.email') }}" method="post">
+            <form action="{{ route('profil.update.email') }}" method="post" data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 
@@ -50,7 +50,7 @@
                 </button>
             </form>
             <hr>
-            <form action="{{ route('profil.update.telp') }}" method="post">
+            <form action="{{ route('profil.update.telp') }}" method="post" data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 
@@ -71,7 +71,7 @@
                 </button>
             </form>
             <hr>
-            <form action="{{ route('profil.update.username') }}" method="post">
+            <form action="{{ route('profil.update.username') }}" method="post" data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 

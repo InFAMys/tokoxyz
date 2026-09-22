@@ -52,7 +52,7 @@
                                     <td data-label="Ukuran">{{ $uk->ukuran }}</td>
                                     <td data-label="Harga" class="mobile-card-form">
                                         <form action="{{ route('pegawai.uhargau', [$uk->id_barang, $uk->id_ukuran]) }}"
-                                            method="post">
+                                            method="post" data-confirm="Ubah Harga Ukuran?">
                                             @csrf
                                             @method('PUT')
                                             <div class="input-group">

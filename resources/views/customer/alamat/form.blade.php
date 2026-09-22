@@ -20,7 +20,8 @@
             </a>
         </div>
 
-        <form action="{{ $isEdit ? route('alamat.update', $alamat->id_alamat) : route('alamat.store') }}" method="post">
+        <form action="{{ $isEdit ? route('alamat.update', $alamat->id_alamat) : route('alamat.store') }}" method="post"
+            data-confirm="Simpan Alamat?">
             @csrf
             @if ($isEdit)
                 @method('PUT')

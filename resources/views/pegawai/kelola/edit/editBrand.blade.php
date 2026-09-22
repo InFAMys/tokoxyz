@@ -8,7 +8,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('pegawai.ubrand', $brand->id_brand) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('pegawai.ubrand', $brand->id_brand) }}" method="post" enctype="multipart/form-data"
+                data-confirm="Perbarui Brand?">
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Brand</div>

@@ -8,7 +8,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('owner.edpegawai', $pgw->id_pegawai) }}" method="post">
+            <form action="{{ route('owner.edpegawai', $pgw->id_pegawai) }}" method="post"
+                data-confirm="Perbarui Akun Pegawai?">
                 @csrf
                 @method('PUT')
                 <div class="auth-titleA">Edit Akun Pegawai</div>

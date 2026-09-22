@@ -9,7 +9,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card auth-card-wide">
-            <form action="{{ route('pegawai.ubarang', $barang->id_barang) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('pegawai.ubarang', $barang->id_barang) }}" method="post" enctype="multipart/form-data"
+                data-confirm="Perbarui Barang?">
                 @csrf
                 @method('PUT')
 

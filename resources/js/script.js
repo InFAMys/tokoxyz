@@ -826,3 +826,68 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
         brandSel.addEventListener("change", tryRebuild);
     }
 })();
+
+// Confirm modal for add/edit forms (data-confirm)
+(() => {
+    let modal = null;
+    let pending = null;
+
+    const ensureModal = () => {
+        if (modal) {
+            return modal;
+        }
+        modal = document.createElement("div");
+        modal.className = "modal fade";
+        modal.tabIndex = -1;
+        modal.setAttribute("aria-hidden", "true");
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-pink">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-4">Konfirmasi</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center my-4" data-confirm-msg></div>
+                    <div class="modal-footer mx-auto">
+                        <button type="button" class="btn btn-green" data-confirm-ok>YA</button>
+                        <button type="button" class="btn btn-delete" data-bs-dismiss="modal">BATAL</button>
+                    </div>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+
+        modal.querySelector("[data-confirm-ok]").addEventListener("click", () => {
+            if (pending) {
+                const form = pending.form;
+                form._confirmDone = true;
+                form.requestSubmit();
+                pending = null;
+            }
+            if (window.bootstrap) {
+                window.bootstrap.Modal.getInstance(modal)?.hide();
+            }
+        });
+
+        return modal;
+    };
+
+    const showConfirm = (msg) => {
+        const m = ensureModal();
+        m.querySelector("[data-confirm-msg]").textContent = `Apakah Anda yakin ingin ${msg}`;
+        if (window.bootstrap) {
+            window.bootstrap.Modal.getOrCreateInstance(m).show();
+        }
+    };
+
+    document.querySelectorAll("form[data-confirm]").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+            if (form._confirmDone) {
+                form._confirmDone = false;
+                return;
+            }
+            e.preventDefault();
+            pending = { form, msg: form.dataset.confirm };
+            showConfirm(pending.msg);
+        });
+    });
+})();

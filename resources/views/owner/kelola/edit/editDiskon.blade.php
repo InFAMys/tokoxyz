@@ -8,7 +8,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('owner.eddiskon', $diskon->id_diskon) }}" method="post">
+            <form action="{{ route('owner.eddiskon', $diskon->id_diskon) }}" method="post"
+                data-confirm="Perbarui Diskon?">
                 @csrf
                 @method('PUT')
                 <div class="auth-titleA">Edit Diskon</div>

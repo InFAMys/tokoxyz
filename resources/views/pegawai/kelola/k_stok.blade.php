@@ -8,7 +8,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('pegawai.ustok', $stokbrg->id_barang) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('pegawai.ustok', $stokbrg->id_barang) }}" method="post" enctype="multipart/form-data"
+                data-confirm="Ubah Stok?">
                 @csrf
                 @method('PUT')
                 <div class="auth-titleA">Kelola Stok</div>

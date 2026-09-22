@@ -9,7 +9,7 @@
     <div class="auth-wrapper">
         <div class="auth-card">
             <form action="{{ route('pegawai.ukategori', $kategori->id_kategori) }}" method="post"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data" data-confirm="Perbarui Kategori?">
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Kategori</div>

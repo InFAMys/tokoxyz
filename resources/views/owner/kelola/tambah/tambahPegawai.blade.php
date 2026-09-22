@@ -8,7 +8,7 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('owner.addpegawai') }}" method="post">
+            <form action="{{ route('owner.addpegawai') }}" method="post" data-confirm="Tambah Akun Pegawai?">
                 @csrf
                 <div class="auth-title">Tambah Akun Pegawai</div>
                 

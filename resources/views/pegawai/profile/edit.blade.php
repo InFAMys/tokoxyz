@@ -9,7 +9,7 @@
     <div class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-title">Edit Profil</div>
-            <form action="{{ route('pegawai.update.nama') }}" method="post">
+            <form action="{{ route('pegawai.update.nama') }}" method="post" data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 
@@ -28,7 +28,8 @@
                 </button>
             </form>
             <hr>
-            <form action="{{ route('pegawai.update.username') }}" method="post">
+            <form action="{{ route('pegawai.update.username') }}" method="post"
+                data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 
@@ -52,7 +53,8 @@
                 </button>
             </form>
             <hr>
-            <form action="{{ route('pegawai.update.password') }}" method="post">
+            <form action="{{ route('pegawai.update.password') }}" method="post"
+                data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 

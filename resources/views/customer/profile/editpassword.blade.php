@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
             <div class="auth-title">Edit Password</div>
-            <form action="{{ route('password.update') }}" method="post">
+            <form action="{{ route('password.update') }}" method="post" data-confirm="Simpan Password Baru?">
                 @csrf
                 @method('PUT')
                 

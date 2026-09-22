@@ -8,7 +8,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('owner.update.username') }}" method="post">
+            <form action="{{ route('owner.update.username') }}" method="post"
+                data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Profil</div>
@@ -32,7 +33,8 @@
                 </button>
             </form>
             <hr>
-            <form action="{{ route('owner.update.password') }}" method="post">
+            <form action="{{ route('owner.update.password') }}" method="post"
+                data-confirm="Simpan Perubahan?">
                 @csrf
                 @method('PUT')
                 

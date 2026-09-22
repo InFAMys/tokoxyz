@@ -11,7 +11,8 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('pegawai.addukuran', $brg->id_barang) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('pegawai.addukuran', $brg->id_barang) }}" method="post" enctype="multipart/form-data"
+                data-confirm="Tambah Ukuran?">
                 @csrf
                 <div class="auth-titleA mb-3">Tambah Ukuran</div>
                 <div class="auth-subtitleA">{{ $brg->nama_barang }}</div>
