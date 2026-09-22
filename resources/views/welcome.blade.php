@@ -257,7 +257,16 @@
                             <li class="mb-2"><i class="fa-solid fa-location-dot text-pink me-2"></i>{{ $pengaturan['alamat'] }}</li>
                         @endif
                         @if (!empty($pengaturan['jam_buka']))
-                            <li class="mb-2"><i class="fa-solid fa-clock text-pink me-2"></i>{{ $pengaturan['jam_buka'] }}</li>
+                            <li class="mb-2"><i class="fa-solid fa-clock text-pink me-2"></i>
+                                @if (!empty($pengaturan['jam_tutup']))
+                                    @if (!empty($pengaturan['jam_hari']))
+                                        {{ $pengaturan['jam_hari'] }},
+                                    @endif
+                                    {{ $pengaturan['jam_buka'] }} - {{ $pengaturan['jam_tutup'] }} WIB
+                                @else
+                                    {{ $pengaturan['jam_buka'] }}
+                                @endif
+                            </li>
                         @endif
                         @if (!empty($pengaturan['no_telp']))
                             <li class="mb-2"><i class="fa-solid fa-phone text-pink me-2"></i>{{ $pengaturan['no_telp'] }}</li>

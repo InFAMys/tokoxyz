@@ -21,7 +21,9 @@ class KelolaPengaturanController extends Controller
         $messages = [];
 
         foreach (Pengaturan::KEYS as $key => $label) {
-            $rules[$key] = ['nullable', 'string'];
+            $required = in_array($key, Pengaturan::REQUIRED, true);
+            $rules[$key] = [$required ? 'required' : 'nullable', 'string'];
+            $messages[$key.'.required'] = 'Kolom '.$label.' wajib diisi.';
         }
 
         $data = $request->validate($rules, $messages);

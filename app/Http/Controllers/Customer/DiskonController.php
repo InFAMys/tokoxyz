@@ -17,17 +17,11 @@ class DiskonController extends Controller
 
         $user = auth('customer')->user();
 
-        $notifiedIds = $user->notifications()
-            ->where('type', 'discount-available')
-            ->whereNull('read_at')
-            ->get()
-            ->map(fn ($n) => (int) ($n->data['id_diskon'] ?? 0))
-            ->all();
+        $unread = $user->unreadActiveDiscountNotifications();
 
-        $user->notifications()
-            ->where('type', 'discount-available')
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        $notifiedIds = $unread->map(fn ($n) => (int) ($n->data['id_diskon'] ?? 0))->all();
+
+        $unread->each->markAsRead();
 
         return view('customer.diskon.index', compact('diskons', 'notifiedIds'));
     }

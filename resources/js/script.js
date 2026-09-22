@@ -910,3 +910,102 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
         });
     });
 })();
+
+// Searchable selects: native <select> stays the source of truth; a filter
+// input + option list wrap it. Repopulation (fill()) re-renders via observer.
+(() => {
+    const renderOptions = (sel) => {
+        const items = [];
+        sel.querySelectorAll("option").forEach((o) => {
+            items.push({ value: o.value, label: o.textContent.trim() });
+        });
+        return items;
+    };
+
+    document.querySelectorAll("select.searchable").forEach((sel) => {
+        sel.classList.add("searchable-bound");
+        const hidden = sel.closest(".searchable-wrap");
+        if (hidden) return;
+
+        const wrap = document.createElement("div");
+        wrap.className = "searchable-wrap mb-1";
+
+        const box = document.createElement("div");
+        box.className = "searchable-box position-relative";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control form-control-pink searchable-input pe-5";
+        input.autocomplete = "off";
+        input.placeholder = "Cari…";
+
+        const caret = document.createElement("i");
+        caret.className =
+            "fa-solid fa-chevron-down position-absolute top-50 translate-middle-y end-0 me-3 text-muted";
+        caret.style.pointerEvents = "none";
+
+        const list = document.createElement("div");
+        list.className =
+            "searchable-list position-absolute start-0 end-0 bg-white border rounded shadow-sm d-none";
+        list.style.zIndex = "1080";
+        list.style.maxHeight = "220px";
+        list.style.overflowY = "auto";
+
+        const display = () => {
+            const o = sel.selectedOptions[0];
+            input.value = o && o.value ? o.textContent.trim() : "";
+        };
+
+        const build = () => {
+            list.innerHTML = "";
+            const items = renderOptions(sel);
+            const q = input.value.toLowerCase();
+            items.forEach((it) => {
+                if (q && !it.label.toLowerCase().includes(q)) return;
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className =
+                    "searchable-opt d-block w-100 text-start border-0 bg-transparent px-3 py-2";
+                btn.textContent = it.label;
+                btn.dataset.value = it.value;
+                if (it.value === sel.value) btn.classList.add("fw-bold", "text-pink");
+                btn.addEventListener("mousedown", (e) => e.preventDefault());
+                btn.addEventListener("click", () => {
+                    sel.value = it.value;
+                    sel.dispatchEvent(new Event("change", { bubbles: true }));
+                    display();
+                    list.classList.add("d-none");
+                    input.blur();
+                });
+                list.appendChild(btn);
+            });
+        };
+
+        input.addEventListener("focus", () => {
+            build();
+            list.classList.remove("d-none");
+        });
+        input.addEventListener("input", build);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") list.classList.add("d-none");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!wrap.contains(e.target)) list.classList.add("d-none");
+        });
+
+        sel.style.display = "none";
+        sel.insertAdjacentElement("afterend", wrap);
+        wrap.appendChild(box);
+        box.appendChild(input);
+        box.appendChild(caret);
+        box.appendChild(list);
+        display();
+
+        const observer = new MutationObserver(() => {
+            display();
+            build();
+        });
+        observer.observe(sel, { childList: true, attributes: true });
+    });
+})();

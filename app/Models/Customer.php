@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 
 #[Table(key: 'id_cst')]
@@ -54,5 +56,25 @@ class Customer extends Authenticatable
     public function memberships(): HasMany
     {
         return $this->hasMany(Membership::class, 'id_cst', 'id_cst');
+    }
+
+    /**
+     * Unread discount notifications whose discount is still active (not expired).
+     *
+     * @return Collection<int, DatabaseNotification>
+     */
+    public function unreadActiveDiscountNotifications(): Collection
+    {
+        $activeIds = Diskon::where('status_diskon', 'aktif')
+            ->where('mulai_diskon', '<=', now())
+            ->where('akhir_diskon', '>=', now())
+            ->pluck('id_diskon');
+
+        return $this->notifications()
+            ->where('type', 'discount-available')
+            ->whereNull('read_at')
+            ->get()
+            ->filter(fn ($n) => $activeIds->contains((int) ($n->data['id_diskon'] ?? 0)))
+            ->values();
     }
 }

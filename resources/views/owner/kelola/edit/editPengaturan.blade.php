@@ -15,16 +15,25 @@
                 <div class="auth-subtitleA">Informasi yang tampil di halaman utama toko</div>
 
                 @foreach (\App\Models\Pengaturan::KEYS as $key => $label)
-                    @php $textarea = in_array($key, ['deskripsi', 'alamat']); @endphp
+                    @php
+                        $textarea = in_array($key, ['deskripsi', 'alamat']);
+                        $timeInput = in_array($key, ['jam_buka', 'jam_tutup']);
+                    @endphp
                     <div class="mb-2">
-                        <label for="{{ $key }}" class="form-label-pink">{{ $label }}</label>
+                        <label for="{{ $key }}" class="form-label-pink">{{ $label }}
+                            @if (in_array($key, \App\Models\Pengaturan::REQUIRED, true))
+                                <span class="text-danger">*</span>
+                            @endif
+                        </label>
                         @if ($textarea)
                             <textarea id="{{ $key }}" name="{{ $key }}" rows="3"
                                 class="form-control form-control-pink"
+                                @required(in_array($key, \App\Models\Pengaturan::REQUIRED, true))
                                 placeholder="{{ $label }}">{{ old($key, $pengaturan[$key] ?? '') }}</textarea>
                         @else
-                            <input id="{{ $key }}" name="{{ $key }}" type="text"
+                            <input id="{{ $key }}" name="{{ $key }}" type="{{ $timeInput ? 'time' : 'text' }}"
                                 class="form-control form-control-pink"
+                                @required(in_array($key, \App\Models\Pengaturan::REQUIRED, true))
                                 value="{{ old($key, $pengaturan[$key] ?? '') }}"
                                 placeholder="{{ $label }}" />
                         @endif
@@ -36,7 +45,7 @@
                     </div>
                 @endforeach
 
-                <button type="submit" class="btn btn-pink w-100 mb-2">
+                <button type="submit" class="btn btn-pink w-100 mb-2 mt-4">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
                 </button>
                 <a class="btn btn-pink-outline w-100" href="{{ route('owner.dashboard') }}">

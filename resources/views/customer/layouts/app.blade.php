@@ -59,10 +59,7 @@
                     @elseif (auth('customer')->check())
                         @php
                             $notifCount = auth('customer')->user()
-                                ?->notifications()
-                                ->where('type', 'discount-available')
-                                ->whereNull('read_at')
-                                ->count() ?? 0;
+                                ?->unreadActiveDiscountNotifications()->count() ?? 0;
                         @endphp
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li class="nav-item mx-1">

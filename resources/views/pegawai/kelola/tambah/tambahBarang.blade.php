@@ -16,7 +16,7 @@
                 
                 <div class="mb-2">
                     <label for="id_kategori" class="form-label-pink">Kategori</label>
-                    <select id="id_kategori" name="id_kategori" class="form-select form-control-pink" required>
+                    <select id="id_kategori" name="id_kategori" class="form-select form-control-pink searchable" required>
                         <option value="">Pilih kategori</option>
                         @foreach ($kategoris as $kategori)
                             <option value="{{ $kategori->id_kategori }}" @selected(old('id_kategori') == $kategori->id_kategori)>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="mb-2">
                     <label for="id_brand" class="form-label-pink">Brand</label>
-                    <select id="id_brand" name="id_brand" class="form-select form-control-pink" required>
+                    <select id="id_brand" name="id_brand" class="form-select form-control-pink searchable" required>
                         <option value="">Pilih brand</option>
                         @foreach ($brands as $brand)
                             <option value="{{ $brand->id_brand }}" @selected(old('id_brand') == $brand->id_brand)>{{ $brand->nama_brand }}
@@ -41,7 +41,7 @@
                     @enderror
                 </div>
                 <div class="mb-2">
-                    <label for="kode_barang" class="form-label-pink">Kode Barang</label>
+                    <label for="kode_barang" class="form-label-pink">Kode Barang <span class="text-muted small fw-normal">(otomatis dibuat)</span></label>
                     <input id="kode_barang" name="kode_barang" type="text" maxlength="15" readonly
                         class="form-control form-control-pink" value="{{ old('kode_barang') }}" required
                         data-check-url="{{ route('pegawai.checkkodebarang') }}" data-exclude=""

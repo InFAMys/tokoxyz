@@ -13,10 +13,24 @@ class Pengaturan extends Model
         'alamat' => 'Alamat',
         'no_telp' => 'No. Telepon',
         'email' => 'Email',
-        'jam_buka' => 'Jam Operasional',
+        'jam_hari' => 'Hari Operasional',
+        'jam_buka' => 'Jam Buka',
+        'jam_tutup' => 'Jam Tutup',
         'instagram' => 'Instagram',
         'facebook' => 'Facebook',
         'tiktok' => 'TikTok',
+    ];
+
+    public const REQUIRED = [
+        'nama_toko',
+        'tagline',
+        'deskripsi',
+        'alamat',
+        'no_telp',
+        'email',
+        'jam_hari',
+        'jam_buka',
+        'jam_tutup',
     ];
 
     protected $primaryKey = 'id_pengaturan';

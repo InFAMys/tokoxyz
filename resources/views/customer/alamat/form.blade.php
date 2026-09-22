@@ -71,7 +71,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="id_provinsi" class="form-label-pink">Provinsi</label>
-                                <select id="id_provinsi" name="id_provinsi" class="form-select form-control-pink" required
+                                <select id="id_provinsi" name="id_provinsi" class="form-select form-control-pink searchable" required
                                     data-cities-url="{{ route('alamat.cities', ':id') }}">
                                     <option value="">Pilih Provinsi</option>
                                     @foreach ($provinces as $province)
@@ -88,7 +88,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="id_kota" class="form-label-pink">Kota/Kabupaten</label>
-                                <select id="id_kota" name="id_kota" class="form-select form-control-pink" required
+                                <select id="id_kota" name="id_kota" class="form-select form-control-pink searchable" required
                                     data-saved="{{ old('id_kota', $isEdit ? $alamat->id_kota : '') }}"
                                     data-districts-url="{{ route('alamat.districts', ':id') }}">
                                     <option value="">Pilih Kota</option>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="id_kecamatan" class="form-label-pink">Kecamatan</label>
-                                <select id="id_kecamatan" name="id_kecamatan" class="form-select form-control-pink" required
+                                <select id="id_kecamatan" name="id_kecamatan" class="form-select form-control-pink searchable" required
                                     data-saved="{{ old('id_kecamatan', $isEdit ? $alamat->id_kecamatan : '') }}">
                                     <option value="">Pilih Kecamatan</option>
                                 </select>
@@ -113,7 +113,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="id_kelurahan" class="form-label-pink">Kelurahan / Desa</label>
-                                <select id="id_kelurahan" name="id_kelurahan" class="form-select form-control-pink" required
+                                <select id="id_kelurahan" name="id_kelurahan" class="form-select form-control-pink searchable" required
                                     data-saved="{{ old('id_kelurahan', $isEdit ? $alamat->id_kelurahan : '') }}"
                                     data-villages-url="{{ route('alamat.villages', ':id') }}">
                                     <option value="">Pilih Kelurahan/Desa</option>
