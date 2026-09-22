@@ -211,8 +211,12 @@ class CheckoutController extends Controller
         $checkout = $this->ownedCheckout($id);
         $this->status->reconcile($checkout);
         $tracking = $this->status->trackingFor($checkout);
+        $trackingFake = (bool) config('services.klikresi.tracking_fake');
 
-        return view('customer.checkout.show', compact('checkout', 'tracking'));
+        $u = strtoupper((string) $checkout->no_resi);
+        $fakeResi = str_contains($u, 'DEL') || str_contains($u, 'TRK') || str_contains($u, 'PIC');
+
+        return view('customer.checkout.show', compact('checkout', 'tracking', 'trackingFake', 'fakeResi'));
     }
 
     public function status(int $id): JsonResponse

@@ -170,6 +170,7 @@ Route::prefix('pegawai')->name('pegawai.')->group(function () {
         Route::get('pesanan/{id}', [PesananController::class, 'detailPesanan'])->name('detailpesanan');
         Route::post('pesanan/{id}/proses', [PesananController::class, 'proccessRequest'])->name('prosespesanan');
         Route::post('pesanan/{id}/kirim', [PesananController::class, 'kirim'])->name('kirimpesanan');
+        Route::post('pesanan/{id}/ubah-tracking', [PesananController::class, 'ubahTracking'])->name('ubahtracking');
         Route::post('pesanan/{id}/cancel-approve', [PesananController::class, 'cancelApprove'])->name('cancelapprovepesanan');
         Route::post('pesanan/{id}/cancel-reject', [PesananController::class, 'cancelReject'])->name('cancelrejectpesanan');
 

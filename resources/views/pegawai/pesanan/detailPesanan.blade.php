@@ -60,8 +60,54 @@
                     </div>
                 </div>
 
+                @if (($trackingFake || $fakeResi) && $checkout->no_resi
+                    && in_array($checkout->status, ['shipping', 'delivered', 'completed'], true))
+                    <div class="alert alert-warning py-2 px-3 mb-3 d-flex align-items-center gap-2" role="alert">
+                        <i class="fa-solid fa-flask"></i>
+                        <span class="small">
+                            @if ($fakeResi)
+                                Pesanan ini memakai <strong>resi palsu (test)</strong> yang tidak valid di tracking asli.
+                            @elseif ($trackingFake)
+                                Mode <code>TRACKING_FAKE</code> aktif: resi ini valid dan dicek via <strong>API asli</strong>.
+                            @endif
+                        </span>
+                    </div>
+                @endif
+
                 @if ($tracking)
                     @include('components.tracking-timeline')
+                @endif
+
+                @if ($trackingFake && $checkout->status === 'shipping' && $checkout->no_resi)
+                    <div class="mb-3 p-3 rounded-3 text-bg-warning border border-warning-subtle"
+                        style="--bs-bg-opacity:.15">
+                        <div class="form-label-pink fw-bold mb-2">
+                            <i class="fa-solid fa-flask-vial"></i> Ubah Status Tracking
+                            <span class="badge text-bg-warning">MODE UJI</span>
+                        </div>
+                        <div class="small text-muted mb-2">
+                            Hanya simulasi karena <code>TRACKING_FAKE</code> aktif. Mengubah resi ke kata kunci
+                            <code>DEL</code>/<code>TRK</code>/<code>PIC</code> untuk memicu progress palsu.
+                        </div>
+                        <form method="POST" action="{{ route('pegawai.ubahtracking', $checkout->id_checkout) }}">
+                            @csrf
+                            @php $resiUpper = strtoupper((string) $checkout->no_resi); @endphp
+                            <div class="d-flex gap-2">
+                                <select name="tracking_status"
+                                    class="form-select form-control-pink @error('tracking_status') is-invalid @enderror">
+                                    <option value="picked_up" @selected(str_contains($resiUpper, 'PIC'))>Picked Up</option>
+                                    <option value="in_transit" @selected(str_contains($resiUpper, 'TRK'))>In Transit</option>
+                                    <option value="delivered" @selected(str_contains($resiUpper, 'DEL'))>Delivered</option>
+                                </select>
+                                <button type="submit" class="btn btn-warning flex-shrink-0">
+                                    <i class="fa-solid fa-arrows-rotate"></i> Ubah
+                                </button>
+                            </div>
+                            @error('tracking_status')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </form>
+                    </div>
                 @endif
 
                 <div class="summary-box mb-3">

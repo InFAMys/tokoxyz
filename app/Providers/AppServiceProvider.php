@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\FakeKlikresiApi;
+use App\Services\KlikresiApi;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +14,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(KlikresiApi::class, function ($app) {
+            return $app['config']->get('services.klikresi.tracking_fake', false)
+                ? new FakeKlikresiApi
+                : new KlikresiApi;
+        });
     }
 
     /**

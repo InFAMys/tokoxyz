@@ -81,7 +81,18 @@ class CheckoutStatusService
         } catch (Throwable $e) {
             logger()->warning('Klikresi tracking failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
 
-            return null;
+            $data = null;
+            $histories = [];
+        }
+
+        if (empty($histories) && $this->isFakeResi($checkout->no_resi)) {
+            try {
+                $data = (new FakeKlikresiApi)->tracking($checkout->no_resi);
+                $histories = $data['histories'] ?? [];
+            } catch (Throwable) {
+                $data = null;
+                $histories = [];
+            }
         }
 
         if (! is_array($histories) || $histories === []) {
@@ -236,6 +247,13 @@ class CheckoutStatusService
         } catch (Throwable) {
             return false;
         }
+    }
+
+    protected function isFakeResi(string $noResi): bool
+    {
+        $u = strtoupper($noResi);
+
+        return str_contains($u, 'DEL') || str_contains($u, 'TRK') || str_contains($u, 'PIC');
     }
 
     /** @param mixed $value */

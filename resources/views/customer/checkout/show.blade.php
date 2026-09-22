@@ -43,6 +43,19 @@
             @endif
 
             @if (in_array($checkout->status, ['shipping', 'delivered', 'completed'], true) && $checkout->no_resi)
+                @if ($trackingFake || $fakeResi)
+                    <div class="alert alert-warning py-2 px-3 mb-3 d-flex align-items-center gap-2" role="alert">
+                        <i class="fa-solid fa-flask"></i>
+                        <span class="small">
+                            @if ($fakeResi)
+                                Pesanan ini memakai <strong>resi palsu (test)</strong> yang tidak valid di tracking asli.
+                            @elseif ($trackingFake)
+                                Mode <code>TRACKING_FAKE</code> aktif: resi ini valid dan dicek via <strong>API asli</strong>.
+                            @endif
+                        </span>
+                    </div>
+                @endif
+
                 <div class="summary-box mb-3">
                     <div class="form-label-pink">No Resi Pengiriman</div>
                     <div class="fw-bold">{{ $checkout->no_resi }}

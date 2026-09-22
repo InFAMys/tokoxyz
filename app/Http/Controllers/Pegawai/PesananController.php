@@ -49,8 +49,12 @@ class PesananController extends Controller
         $checkout = Checkout::with(['items', 'customer', 'pegawai'])->findOrFail($id);
         $this->status->reconcile($checkout);
         $tracking = $this->status->trackingFor($checkout);
+        $trackingFake = (bool) config('services.klikresi.tracking_fake');
 
-        return view('pegawai.pesanan.detailPesanan', compact('checkout', 'tracking'));
+        $u = strtoupper((string) $checkout->no_resi);
+        $fakeResi = str_contains($u, 'DEL') || str_contains($u, 'TRK') || str_contains($u, 'PIC');
+
+        return view('pegawai.pesanan.detailPesanan', compact('checkout', 'tracking', 'trackingFake', 'fakeResi'));
     }
 
     public function proccessRequest(Request $request, int $id): RedirectResponse
@@ -93,6 +97,39 @@ class PesananController extends Controller
         ]);
 
         return redirect()->route('pegawai.pesanan')->with('status', 'No resi disimpan, pesanan dalam pengiriman.');
+    }
+
+    public function ubahTracking(Request $request, int $id): RedirectResponse
+    {
+        if (! (bool) config('services.klikresi.tracking_fake')) {
+            return back()->withErrors(['tracking_status' => 'Fitur hanya tersedia saat TRACKING_FAKE aktif.']);
+        }
+
+        $data = $request->validate([
+            'tracking_status' => ['required', 'string', 'in:delivered,in_transit,picked_up'],
+        ]);
+
+        $checkout = Checkout::findOrFail($id);
+
+        if ($checkout->status !== 'shipping' || ! $checkout->no_resi) {
+            return back()->withErrors(['tracking_status' => 'Pesanan tidak dalam pengiriman.']);
+        }
+
+        $keyword = ['delivered' => 'DEL', 'in_transit' => 'TRK', 'picked_up' => 'PIC'][$data['tracking_status']];
+
+        $checkout->update([
+            'no_resi' => $this->setTrackingKeyword($checkout->no_resi, $keyword),
+        ]);
+
+        return redirect()->route('pegawai.detailpesanan', $checkout->id_checkout)
+            ->with('status', 'Status tracking diubah menjadi '.$data['tracking_status'].'.');
+    }
+
+    protected function setTrackingKeyword(string $noResi, string $keyword): string
+    {
+        $changed = preg_replace('/DEL|TRK|PIC/i', $keyword, $noResi, 1, $count);
+
+        return $count > 0 ? $changed : $noResi.'-'.$keyword;
     }
 
     public function cancelApprove(Request $request, int $id): RedirectResponse

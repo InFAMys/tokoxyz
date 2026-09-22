@@ -49,6 +49,7 @@ return [
         'base_url' => env('KLIKRESI_BASE_URL', 'https://klikresi.com'),
         'rate_url' => env('KLIKRESI_RATE_URL', '/api/rates'),
         'tracking_url' => env('KLIKRESI_TRACKING_URL', '/api/trackings'),
+        'tracking_fake' => env('TRACKING_FAKE', false),
     ],
 
     'wilayah' => [
