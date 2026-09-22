@@ -132,8 +132,68 @@ class PesananController extends Controller
         return $count > 0 ? $changed : $noResi.'-'.$keyword;
     }
 
+    public function cancelPesanan(Request $request, int $id): RedirectResponse
+    {
+        if (! auth('pegawai')->user()->canInventory()) {
+            return back()->withErrors(['cancel' => 'Pembatalan & refund hanya bisa dilakukan pegawai akses Inventaris.']);
+        }
+
+        $data = $request->validate([
+            'cancel_reason' => ['required', 'string', 'max:255'],
+        ]);
+
+        $checkout = Checkout::findOrFail($id);
+
+        if (! in_array($checkout->status, ['paid', 'processed'], true)) {
+            return back()->withErrors(['cancel' => 'Pesanan tidak bisa dibatalkan pada status ini.']);
+        }
+
+        if (! $this->refundCheckout($checkout, trim($data['cancel_reason']))) {
+            return back()->withErrors(['cancel' => 'Refund gagal, coba lagi atau lakukan manual.']);
+        }
+
+        return redirect()->route('pegawai.detailpesanan', $checkout->id_checkout)
+            ->with('status', 'Pesanan dibatalkan, dana dikembalikan ke customer.');
+    }
+
+    protected function refundCheckout(Checkout $checkout, ?string $cancelReason = null): bool
+    {
+        try {
+            if (! $this->alreadyRefunded($checkout)) {
+                $this->midtrans->refund(
+                    $checkout->order_id,
+                    (float) $checkout->total_amount,
+                    'Pembatalan pesanan '.$checkout->order_id,
+                );
+            }
+        } catch (Throwable $e) {
+            logger()->error('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
+
+            return false;
+        }
+
+        $checkout->restoreStock();
+
+        $update = [
+            'status' => 'refunded',
+            'id_pegawai' => (int) auth('pegawai')->id(),
+        ];
+
+        if ($cancelReason !== null) {
+            $update['cancel_reason'] = $cancelReason;
+        }
+
+        $checkout->update($update);
+
+        return true;
+    }
+
     public function cancelApprove(Request $request, int $id): RedirectResponse
     {
+        if (! auth('pegawai')->user()->canInventory()) {
+            return back()->withErrors(['cancel' => 'Pembatalan & refund hanya bisa dilakukan pegawai akses Inventaris.']);
+        }
+
         $checkout = Checkout::findOrFail($id);
 
         if ($checkout->status !== 'cancel_pending') {
@@ -141,22 +201,9 @@ class PesananController extends Controller
         }
 
         if (in_array($checkout->cancel_from, ['paid', 'processed'], true)) {
-            try {
-                if (! $this->alreadyRefunded($checkout)) {
-                    $this->midtrans->refund(
-                        $checkout->order_id,
-                        (float) $checkout->total_amount,
-                        'Pembatalan pesanan '.$checkout->order_id,
-                    );
-                }
-            } catch (Throwable $e) {
-                logger()->error('Refund failed for checkout '.$checkout->id_checkout.': '.$e->getMessage());
-
+            if (! $this->refundCheckout($checkout)) {
                 return back()->withErrors(['cancel' => 'Refund gagal, coba lagi atau lakukan manual.']);
             }
-
-            $checkout->restoreStock();
-            $checkout->update(['status' => 'refunded', 'id_pegawai' => (int) auth('pegawai')->id()]);
         } else {
             $checkout->update(['status' => 'cancelled', 'id_pegawai' => (int) auth('pegawai')->id()]);
         }
@@ -166,6 +213,10 @@ class PesananController extends Controller
 
     public function cancelReject(Request $request, int $id): RedirectResponse
     {
+        if (! auth('pegawai')->user()->canInventory()) {
+            return back()->withErrors(['cancel' => 'Pembatalan & refund hanya bisa dilakukan pegawai akses Inventaris.']);
+        }
+
         $data = $request->validate([
             'cancel_response' => ['required', 'string', 'max:255'],
         ]);

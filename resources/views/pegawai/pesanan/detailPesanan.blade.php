@@ -169,10 +169,17 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-delete w-100 mb-2" data-bs-toggle="modal"
-                        data-bs-target="#cancelModal">
-                        <i class="fa-solid fa-xmark"></i> Proses Pembatalan
-                    </button>
+                    @if (auth('pegawai')->user()->canInventory())
+                        <button type="button" class="btn btn-delete w-100 mb-2" data-bs-toggle="modal"
+                            data-bs-target="#cancelModal">
+                            <i class="fa-solid fa-xmark"></i> Proses Pembatalan
+                        </button>
+                    @else
+                        <div class="alert alert-secondary mb-0">
+                            <i class="fa-solid fa-lock"></i> Pemrosesan pembatalan & refund hanya dapat dilakukan
+                            pegawai dengan akses <strong>Inventaris</strong>. Silakan hubungi pegawai dengan akses lebih tinggi.
+                        </div>
+                    @endif
 
                     <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -258,6 +265,52 @@
                             </button>
                         @endif
                     </form>
+                @endif
+
+                @if (in_array($checkout->status, ['paid', 'processed'], true))
+                    @if (auth('pegawai')->user()->canInventory())
+                        <button type="button" class="btn btn-delete w-100 mt-3" data-bs-toggle="modal"
+                            data-bs-target="#refundModal">
+                            <i class="fa-solid fa-ban"></i> Batalkan Pesanan & Refund
+                        </button>
+
+                        <div class="modal fade" id="refundModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Batalkan Pesanan {{ $checkout->order_id }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST"
+                                            action="{{ route('pegawai.cancelpesanan', $checkout->id_checkout) }}"
+                                            id="refund-form">
+                                            @csrf
+                                            <p class="mb-2">
+                                                Pesanan dibatalkan dan dana dikembalikan ke customer
+                                                (Rp {{ number_format($checkout->total_amount, 0, ',', '.') }}).
+                                            </p>
+                                            <label class="form-label-pink">Alasan Pembatalan <span class="text-danger">*</span></label>
+                                            <textarea name="cancel_reason" rows="2" maxlength="255" required
+                                                class="form-control form-control-pink mb-2 @error('cancel_reason') is-invalid @enderror"
+                                                placeholder="Alasan pembatalan (wajib)">{{ old('cancel_reason') }}</textarea>
+                                            @error('cancel_reason')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <button type="submit" form="refund-form" class="btn btn-delete w-100">
+                                                <i class="fa-solid fa-check"></i> Ya, Batalkan & Refund
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-secondary mb-0 mt-3">
+                            <i class="fa-solid fa-lock"></i> Pembatalan & refund hanya dapat dilakukan pegawai dengan
+                            akses <strong>Inventaris</strong>. Silakan hubungi pegawai dengan akses lebih tinggi.
+                        </div>
+                    @endif
                 @endif
 
                 @if ($checkout->status !== 'paid' && $checkout->status !== 'processed' && $checkout->status !== 'shipping')
