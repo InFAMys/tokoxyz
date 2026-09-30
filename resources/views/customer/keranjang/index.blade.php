@@ -37,17 +37,19 @@
                     @foreach ($keranjang as $item)
                         @php
                             $barang = $item->barang;
-                            $isAvailable =
+                            $isBaseAvailable =
                                 $barang &&
                                 !$barang->trashed() &&
                                 $barang->status === 'Ditampilkan' &&
                                 (!$item->ukuran || !$item->ukuran->trashed());
                             $imagePath = $barang?->thumbnailPath();
-                            $stockReady = $isAvailable
+                            $stockReady = $isBaseAvailable
                                 ? ($item->ukuran
                                     ? $item->ukuran->stok_ukuran
                                     : $barang->stok)
                                 : 0;
+                            $isPreorder = $isBaseAvailable && $barang->preorder === 'Tersedia' && $barang->stokReady() === 0;
+                            $isAvailable = $isBaseAvailable && ($stockReady > 0 || $isPreorder);
                             $subtotal = $isAvailable ? (float) ($item->ukuran?->harga_ukuran ?? $barang->harga) * $item->jumlah_barang : 0;
                         @endphp
 

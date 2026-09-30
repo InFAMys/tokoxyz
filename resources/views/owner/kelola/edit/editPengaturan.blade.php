@@ -1,6 +1,6 @@
 @extends('owner.layouts.app')
 
-@section('title', 'Profil Perusahaan - Toko XYZ')
+@section('title', 'Profil Perusahaan - {{ $namaToko }}')
 @php
     $activ = 'pengaturan';
 @endphp

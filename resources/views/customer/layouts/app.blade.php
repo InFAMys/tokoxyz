@@ -1,10 +1,14 @@
 <!doctype html>
 <html lang="id">
 
+@php
+    $namaToko ??= \App\Models\Pengaturan::nilai('nama_toko') ?: 'Toko XYZ';
+@endphp
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@yield('title', 'Laravel App')</title>
+    <title>@yield('title', $namaToko ?? 'Toko XYZ')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
     <link
@@ -18,7 +22,7 @@
     @include('components.toasts')
     <nav class="navbar sticky-top navbar-expand-lg">
         <div class="container-fluid">
-            <span class="brand"><i class="fa-solid fa-shop"></i> {{ config('app.name', 'Laravel') }} </span>
+            <span class="brand"><i class="fa-solid fa-shop"></i> {{ $namaToko }}</span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">

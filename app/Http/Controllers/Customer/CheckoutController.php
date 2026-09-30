@@ -583,7 +583,15 @@ class CheckoutController extends Controller
             return false;
         }
 
-        return ! $keranjang->ukuran || ! $keranjang->ukuran->trashed();
+        if ($keranjang->ukuran && $keranjang->ukuran->trashed()) {
+            return false;
+        }
+
+        $stokTersedia = $keranjang->ukuran ? (int) $keranjang->ukuran->stok_ukuran : (int) $keranjang->barang->stok;
+
+        $isPreorder = $keranjang->barang->preorder === 'Tersedia' && $keranjang->barang->stokReady() === 0;
+
+        return $stokTersedia > 0 || $isPreorder;
     }
 
     /** @param array<int, array<string, mixed>> $rows */

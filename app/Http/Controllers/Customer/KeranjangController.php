@@ -20,7 +20,7 @@ class KeranjangController extends Controller
     {
         $keranjang = $this->customer()->keranjangs()
             ->with([
-                'barang' => fn ($query) => $query->withTrashed()->with(['brand', 'kategori']),
+                'barang' => fn ($query) => $query->withTrashed()->with(['brand', 'kategori', 'ukurans']),
                 'ukuran' => fn ($query) => $query->withTrashed(),
             ])
             ->latest('id_keranjang')
@@ -46,6 +46,12 @@ class KeranjangController extends Controller
 
         $ids = $this->customer()->keranjangs()
             ->whereIn('id_keranjang', array_map('intval', $data['id_keranjang']))
+            ->with([
+                'barang' => fn ($query) => $query->withTrashed()->with('ukurans'),
+                'ukuran' => fn ($query) => $query->withTrashed(),
+            ])
+            ->get()
+            ->filter(fn (Keranjang $item) => $this->canUseCartItem($item))
             ->pluck('id_keranjang')
             ->all();
 
@@ -177,7 +183,15 @@ class KeranjangController extends Controller
             return false;
         }
 
-        return ! $keranjang->ukuran || ! $keranjang->ukuran->trashed();
+        if ($keranjang->ukuran && $keranjang->ukuran->trashed()) {
+            return false;
+        }
+
+        $stokTersedia = $keranjang->ukuran ? (int) $keranjang->ukuran->stok_ukuran : (int) $keranjang->barang->stok;
+
+        $isPreorder = $keranjang->barang->preorder === 'Tersedia' && $keranjang->barang->stokReady() === 0;
+
+        return $stokTersedia > 0 || $isPreorder;
     }
 
     private function customer(): Customer
