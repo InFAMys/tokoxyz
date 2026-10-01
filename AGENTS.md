@@ -158,9 +158,9 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ### Database & models
 - Custom primary keys everywhere — never assume `id`. Set via `#[Table(key: 'id_x')]`
-  attribute (and/or `$primaryKey`): `barangs.id_barang`, `ukurans.id_ukuran`,
+  attribute (and/or `$primaryKey`): `barangs.id_barang`, `varians.id_ukuran`,
   `keranjang.id_keranjang`, `customers.id_cst`. Use the exact key in queries/relations.
-- Soft deletes on `barangs`, `ukurans`, `pegawais`, etc. Eloquent excludes trashed rows
+- Soft deletes on `barangs`, `varians`, `pegawais`, etc. Eloquent excludes trashed rows
   by default; use `withTrashed()` when needed (e.g. cart shows trashed barang+ukuran).
 
 ### Routing & auth
@@ -189,7 +189,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
   stay under their inputs (not toasts).
 
 ### Money & numeric fields
-- Prices: `barangs.harga` (decimal:2); optional per-ukuran `ukurans.harga_ukuran`
+- Prices: `barangs.harga` (decimal:2); optional per-ukuran `varians.harga_ukuran`
   (decimal:2, nullable). Cart unit price = ukuran price when set:
   `$item->ukuran?->harga_ukuran ?? $item->barang->harga`. Displayed price is a range
   (min–max of ukuran prices).
@@ -198,7 +198,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
   server validates `numeric`. DB `decimal:2` yields values like `"3000000.00"`.
 - `berat` UI uses comma-decimal (input mask allows `.` or `,`); converted to dot server-side
   via `BarangController@normalizeBerat`.
-- `Barang@stokReady()` = sum(`stok_ukuran`) when ukurans exist, else `barang.stok`.
+- `Barang@stokReady()` = sum(`stok_ukuran`) when varians exist, else `barang.stok`.
 
 ### Commands
 - `vendor/bin/pint --dirty --format agent` after PHP edits.

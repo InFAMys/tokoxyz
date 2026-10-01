@@ -142,7 +142,7 @@ class Checkout extends Model
             $jumlah = (int) $item->jumlah_barang;
 
             if ($item->id_ukuran) {
-                $ukuran = Ukuran::find($item->id_ukuran);
+                $ukuran = Varian::find($item->id_ukuran);
 
                 if ($ukuran) {
                     $ukuran->stok_ukuran = (int) $ukuran->stok_ukuran + $jumlah;

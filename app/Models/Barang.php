@@ -55,7 +55,7 @@ class Barang extends Model
 
     public function ukurans(): HasMany
     {
-        return $this->hasMany(Ukuran::class, 'id_barang', 'id_barang');     // (Foreign Key,Primary Key)
+        return $this->hasMany(Varian::class, 'id_barang', 'id_barang');     // (Foreign Key,Primary Key)
     }
 
     public function keranjangs(): HasMany

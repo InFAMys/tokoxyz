@@ -43,6 +43,6 @@ class Keranjang extends Model
 
     public function ukuran(): BelongsTo
     {
-        return $this->belongsTo(Ukuran::class, 'id_ukuran', 'id_ukuran');
+        return $this->belongsTo(Varian::class, 'id_ukuran', 'id_ukuran');
     }
 }

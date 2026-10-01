@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Barang;
 use App\Models\Checkout;
-use App\Models\Ukuran;
+use App\Models\Varian;
 use RuntimeException;
 use Throwable;
 
@@ -126,7 +126,7 @@ class CheckoutStatusService
             }
 
             if ($idUkuran) {
-                $ukuran = Ukuran::where('id_ukuran', $idUkuran)->first();
+                $ukuran = Varian::where('id_ukuran', $idUkuran)->first();
 
                 if ($ukuran) {
                     $ukuran->stok_ukuran = max(0, (int) $ukuran->stok_ukuran - $jumlah);

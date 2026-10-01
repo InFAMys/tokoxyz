@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Brand;
 use App\Models\Kategori;
-use App\Models\Ukuran;
+use App\Models\Varian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -52,7 +52,7 @@ class BarangController extends Controller
         if (! $stokbrg) {
             $stok = null;
         } else {
-            $ukuran = Ukuran::where('id_barang', $id)->get();
+            $ukuran = Varian::where('id_barang', $id)->get();
             $stok = $ukuran;
         }
 

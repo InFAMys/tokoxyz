@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Keranjang;
-use App\Models\Ukuran;
+use App\Models\Varian;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -135,7 +135,7 @@ class KeranjangController extends Controller
         return redirect()->route('keranjang.index')->with('status', 'Barang berhasil dihapus dari keranjang.');
     }
 
-    private function selectedUkuran(Barang $barang, ?int $idUkuran): ?Ukuran
+    private function selectedUkuran(Barang $barang, ?int $idUkuran): ?Varian
     {
         if ($barang->ukurans->isEmpty()) {
             return null;
@@ -158,7 +158,7 @@ class KeranjangController extends Controller
         return $ukuran;
     }
 
-    private function ensureStockIsAvailable(Barang $barang, ?Ukuran $ukuran, int $jumlahBarang): void
+    private function ensureStockIsAvailable(Barang $barang, ?Varian $ukuran, int $jumlahBarang): void
     {
         if ($barang->preorder === 'Tersedia' && $barang->stokReady() === 0) {
             return;

@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Table(key: 'id_ukuran')]
-class Ukuran extends Model
+class Varian extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'ukurans';
+    protected $table = 'varians';
 
     protected $fillable = [
         'id_barang',

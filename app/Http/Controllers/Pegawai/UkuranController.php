@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Pegawai;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\Ukuran;
+use App\Models\Varian;
 use Illuminate\Http\Request;
 
 class UkuranController extends Controller
@@ -22,7 +22,7 @@ class UkuranController extends Controller
             // return response()->json(['message' => 'Barang not found'], 404);
             $stok = null;
         } else {
-            $ukuran = Ukuran::where('id_barang', $id)->get();
+            $ukuran = Varian::where('id_barang', $id)->get();
             $stok = $ukuran;
         }
 
@@ -60,7 +60,7 @@ class UkuranController extends Controller
                 'harga_ukuran.min' => 'Harga tidak boleh negatif!',
             ]);
 
-        $kategori = Ukuran::create([
+        $kategori = Varian::create([
             'id_barang' => $brg->id_barang,
             'nama_ukuran' => $data['nama_ukuran'],
             'ukuran' => $data['ukuran'],
@@ -79,14 +79,14 @@ class UkuranController extends Controller
 
     public function editUkuran($id_b, $id_u)
     {
-        $ukuran = Ukuran::where('id_ukuran', $id_u)->first();
+        $ukuran = Varian::where('id_ukuran', $id_u)->first();
 
         return view('pegawai.kelola.edit.editUkuran', compact('ukuran'));
     }
 
     public function updateUkuran(Request $request, $id_b, $id_u)
     {
-        $ukuran = Ukuran::where('id_ukuran', $id_u)->first();
+        $ukuran = Varian::where('id_ukuran', $id_u)->first();
 
         $data = $request->validate([
             'nama_ukuran' => ['required', 'string', 'max:10'],
@@ -108,7 +108,7 @@ class UkuranController extends Controller
 
     public function updateHargaUkuran(Request $request, $id_b, $id_u)
     {
-        $ukuran = Ukuran::where('id_ukuran', $id_u)->first();
+        $ukuran = Varian::where('id_ukuran', $id_u)->first();
 
         $data = $request->validate([
             'harga_ukuran' => ['required', 'numeric', 'min:0'],
@@ -128,7 +128,7 @@ class UkuranController extends Controller
     public function deleteUkuran($id)
     {
 
-        Ukuran::where('id_ukuran', $id)->first()->delete();
+        Varian::where('id_ukuran', $id)->first()->delete();
 
         // //// Pegawai::where('id', $id)->forceDelete();        // Delete Permanently
 

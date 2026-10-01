@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Brand;
 use App\Models\Kategori;
-use App\Models\Ukuran;
+use App\Models\Varian;
 use Database\Factories\BarangFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -43,7 +43,7 @@ class BarangSeeder extends Seeder
                 $sizes = fake()->randomElements(['S', 'M', 'L', 'XL', 'XXL'], rand(2, 4));
 
                 foreach ($sizes as $ukuran) {
-                    Ukuran::create([
+                    Varian::create([
                         'id_barang' => $barang->id_barang,
                         'nama_ukuran' => $ukuran,
                         'ukuran' => $ukuran,
