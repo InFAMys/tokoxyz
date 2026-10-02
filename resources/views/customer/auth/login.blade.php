@@ -1,6 +1,6 @@
 @extends('customer.layouts.app')
 
-@section('title', 'Login - Toko XYZ')
+@section('title', 'Login - ' . $namaToko)
 @php
     $activ = 'login';
 @endphp

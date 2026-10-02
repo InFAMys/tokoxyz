@@ -1,6 +1,6 @@
 @extends('customer.layouts.app')
 
-@section('title', 'Toko XYZ')
+@section('title', $namaToko)
 @php
     $activ = 'home';
     $namaToko = $pengaturan['nama_toko'] ?? 'Toko XYZ';

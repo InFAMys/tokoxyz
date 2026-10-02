@@ -1,6 +1,6 @@
 @extends('owner.layouts.app')
 
-@section('title', 'Dashboard Owner - {{ $namaToko }}')
+@section('title', 'Dashboard Owner - ' . $namaToko)
 @php
     $activ = 'home';
 @endphp

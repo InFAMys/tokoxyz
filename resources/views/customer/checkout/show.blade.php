@@ -1,6 +1,6 @@
 @extends('customer.layouts.app')
 
-@section('title', 'Checkout #' . $checkout->order_id . ' - Toko XYZ')
+@section('title', 'Checkout #' . $checkout->order_id . ' - ' . $namaToko)
 @php $activ = 'pesanan'; @endphp
 
 @section('content')

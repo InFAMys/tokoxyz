@@ -5,7 +5,7 @@
     $brg = $stokbrg;
 @endphp
 
-@section('title', 'Tambah Varian: ' . $brg->nama_barang . '- Toko XYZ')
+@section('title', 'Tambah Varian: ' . $brg->nama_barang . '- ' . $namaToko)
 
 
 @section('content')

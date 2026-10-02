@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Pengaturan;
 use App\Services\FakeKlikresiApi;
 use App\Services\KlikresiApi;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        View::share('namaToko', Pengaturan::nilai('nama_toko') ?: 'Toko XYZ');
     }
 }

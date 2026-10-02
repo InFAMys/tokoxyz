@@ -1,6 +1,6 @@
 @extends('pegawai.layouts.app')
 
-@section('title', 'Edit Brand - Toko XYZ')
+@section('title', 'Edit Brand - ' . $namaToko)
 @php
     $activ = 'brand';
 @endphp

@@ -6,7 +6,7 @@
 @endphp
 
 
-@section('title', $isEdit ? 'Edit Alamat - Toko XYZ' : 'Tambah Alamat - Toko XYZ')
+@section('title', $isEdit ? 'Edit Alamat - ' . $namaToko : 'Tambah Alamat - ' . $namaToko)
 
 @section('content')
     <div class="main-content">

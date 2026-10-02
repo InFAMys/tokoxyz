@@ -1,6 +1,6 @@
 @extends('pegawai.layouts.app')
 
-@section('title', $barang->nama_barang . ' - Detail Barang - Toko XYZ')
+@section('title', $barang->nama_barang . ' - Detail Barang - ' . $namaToko)
 
 @php
     $activ = 'barang';

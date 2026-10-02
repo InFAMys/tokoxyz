@@ -1,6 +1,6 @@
 @extends('owner.layouts.app')
 
-@section('title', 'Kelola Diskon - {{ $namaToko }}')
+@section('title', 'Kelola Diskon - ' . $namaToko)
 
 @php
     $activ = 'diskon';

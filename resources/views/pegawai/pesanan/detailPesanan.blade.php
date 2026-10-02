@@ -1,6 +1,6 @@
 @extends('pegawai.layouts.app')
 
-@section('title', 'Detail Pesanan ' . $checkout->order_id . ' - Toko XYZ')
+@section('title', 'Detail Pesanan ' . $checkout->order_id . ' - ' . $namaToko)
 @php $activ = 'pesanan'; @endphp
 
 @section('content')
