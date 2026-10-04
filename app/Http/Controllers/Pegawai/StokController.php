@@ -35,7 +35,7 @@ class StokController extends Controller
 
     public function updateStok(Request $request, $id)
     {
-        // $ukuran = Varian::where('id_ukuran', $id_u)->first();
+        // $ukuran = Varian::where('id_varian', $id_u)->first();
         $stok = Barang::where('id_barang', $id)->first();
 
         $data = $request->validate([
@@ -55,8 +55,8 @@ class StokController extends Controller
 
     public function updateStokUkuran(Request $request, $id_b, $id_u)
     {
-        // $ukuran = Varian::where('id_ukuran', $id_u)->first();
-        $stok = Varian::where('id_ukuran', $id_u)->first();
+        // $ukuran = Varian::where('id_varian', $id_u)->first();
+        $stok = Varian::where('id_varian', $id_u)->first();
 
         $data = $request->validate([
             'stok' => ['required', 'integer', 'min:0'],
@@ -67,7 +67,7 @@ class StokController extends Controller
                 'stok.min' => 'Stok Tidak Boleh Kurang Dari 0!',
             ]);
 
-        $stok->stok_ukuran = $data['stok'];
+        $stok->stok_varian = $data['stok'];
         $stok->update();
 
         return back()->with('estatus-'.$id_u, 'Stok Berhasil Di Ubah!');

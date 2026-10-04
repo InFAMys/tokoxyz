@@ -46,25 +46,25 @@ class UkuranController extends Controller
         $hadUkuran = $brg->ukurans()->exists();
 
         $data = $request->validate([
-            'nama_ukuran' => ['required', 'string', 'max:10'],
-            'ukuran' => ['required', 'string', 'min:1'],
-            'harga_ukuran' => ['required', 'numeric', 'min:0'],
+            'nama_varian' => ['required', 'string', 'max:10'],
+            'varian' => ['required', 'string', 'min:1'],
+            'harga_varian' => ['required', 'numeric', 'min:0'],
         ],
             [
-                'nama_ukuran.required' => 'Masukkan Nama Ukuran!',
-                'nama_ukuran.max' => 'Panjang Nama Ukuran Maksimal 10 Karakter!',
-                'ukuran.required' => 'Masukkan Ukuran!',
-                'ukuran.min' => 'Panjang Nama Ukuran Minimal 1 Karakter!',
-                'harga_ukuran.required' => 'Masukkan Harga!',
-                'harga_ukuran.numeric' => 'Harga harus angka!',
-                'harga_ukuran.min' => 'Harga tidak boleh negatif!',
+                'nama_varian.required' => 'Masukkan Nama Ukuran!',
+                'nama_varian.max' => 'Panjang Nama Ukuran Maksimal 10 Karakter!',
+                'varian.required' => 'Masukkan Ukuran!',
+                'varian.min' => 'Panjang Nama Ukuran Minimal 1 Karakter!',
+                'harga_varian.required' => 'Masukkan Harga!',
+                'harga_varian.numeric' => 'Harga harus angka!',
+                'harga_varian.min' => 'Harga tidak boleh negatif!',
             ]);
 
         $kategori = Varian::create([
             'id_barang' => $brg->id_barang,
-            'nama_ukuran' => $data['nama_ukuran'],
-            'ukuran' => $data['ukuran'],
-            'harga_ukuran' => $data['harga_ukuran'],
+            'nama_varian' => $data['nama_varian'],
+            'varian' => $data['varian'],
+            'harga_varian' => $data['harga_varian'],
         ]);
 
         if (! $hadUkuran) {
@@ -79,28 +79,28 @@ class UkuranController extends Controller
 
     public function editUkuran($id_b, $id_u)
     {
-        $ukuran = Varian::where('id_ukuran', $id_u)->first();
+        $ukuran = Varian::where('id_varian', $id_u)->first();
 
         return view('pegawai.kelola.edit.editUkuran', compact('ukuran'));
     }
 
     public function updateUkuran(Request $request, $id_b, $id_u)
     {
-        $ukuran = Varian::where('id_ukuran', $id_u)->first();
+        $ukuran = Varian::where('id_varian', $id_u)->first();
 
         $data = $request->validate([
-            'nama_ukuran' => ['required', 'string', 'max:10'],
-            'ukuran' => ['required', 'string', 'min:1'],
+            'nama_varian' => ['required', 'string', 'max:10'],
+            'varian' => ['required', 'string', 'min:1'],
         ],
             [
-                'nama_ukuran.required' => 'Masukkan Nama Ukuran!',
-                'nama_ukuran.max' => 'Panjang Nama Ukuran Maksimal 10 Karakter!',
-                'ukuran.required' => 'Masukkan Ukuran!',
-                'ukuran.min' => 'Panjang Nama Ukuran Minimal 1 Karakter!',
+                'nama_varian.required' => 'Masukkan Nama Ukuran!',
+                'nama_varian.max' => 'Panjang Nama Ukuran Maksimal 10 Karakter!',
+                'varian.required' => 'Masukkan Ukuran!',
+                'varian.min' => 'Panjang Nama Ukuran Minimal 1 Karakter!',
             ]);
 
-        $ukuran->nama_ukuran = $data['nama_ukuran'];
-        $ukuran->ukuran = $data['ukuran'];
+        $ukuran->nama_varian = $data['nama_varian'];
+        $ukuran->varian = $data['varian'];
         $ukuran->update();
 
         return back()->with('estatus', 'Ukuran Berhasil Di Edit!');
@@ -108,18 +108,18 @@ class UkuranController extends Controller
 
     public function updateHargaUkuran(Request $request, $id_b, $id_u)
     {
-        $ukuran = Varian::where('id_ukuran', $id_u)->first();
+        $ukuran = Varian::where('id_varian', $id_u)->first();
 
         $data = $request->validate([
-            'harga_ukuran' => ['required', 'numeric', 'min:0'],
+            'harga_varian' => ['required', 'numeric', 'min:0'],
         ],
             [
-                'harga_ukuran.required' => 'Masukkan Harga!',
-                'harga_ukuran.numeric' => 'Harga harus angka!',
-                'harga_ukuran.min' => 'Harga tidak boleh negatif!',
+                'harga_varian.required' => 'Masukkan Harga!',
+                'harga_varian.numeric' => 'Harga harus angka!',
+                'harga_varian.min' => 'Harga tidak boleh negatif!',
             ]);
 
-        $ukuran->harga_ukuran = $data['harga_ukuran'];
+        $ukuran->harga_varian = $data['harga_varian'];
         $ukuran->update();
 
         return back()->with('ehargastatus-'.$id_u, 'Harga Ukuran Berhasil Di Update!');
@@ -128,7 +128,7 @@ class UkuranController extends Controller
     public function deleteUkuran($id)
     {
 
-        Varian::where('id_ukuran', $id)->first()->delete();
+        Varian::where('id_varian', $id)->first()->delete();
 
         // //// Pegawai::where('id', $id)->forceDelete();        // Delete Permanently
 

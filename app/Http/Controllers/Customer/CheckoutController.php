@@ -167,9 +167,9 @@ class CheckoutController extends Controller
                     CheckoutItem::create([
                         'id_checkout' => $checkout->id_checkout,
                         'id_barang' => $item['barang']->id_barang,
-                        'id_ukuran' => $item['ukuran']->id_ukuran ?? null,
+                        'id_varian' => $item['ukuran']->id_varian ?? null,
                         'nama_barang' => $item['barang']->nama_barang,
-                        'ukuran_name' => $item['ukuran_name'],
+                        'varian_name' => $item['varian_name'],
                         'unit_price' => $item['unit_price'],
                         'jumlah_barang' => $item['jumlah_barang'],
                         'subtotal' => $item['subtotal'],
@@ -364,15 +364,15 @@ class CheckoutController extends Controller
     protected function cartItems($cart): array
     {
         return $cart->map(function (Keranjang $item): array {
-            $unitPrice = (float) ($item->ukuran?->harga_ukuran ?? $item->barang->harga);
+            $unitPrice = (float) ($item->ukuran?->harga_varian ?? $item->barang->harga);
             $berat = $this->itemBerat($item);
             $isPreorder = $item->barang->preorder === 'Tersedia' && $item->barang->stokReady() === 0;
 
             return [
                 'barang' => $item->barang,
                 'ukuran' => $item->ukuran,
-                'ukuran_name' => $item->ukuran
-                    ? trim($item->ukuran->nama_ukuran.' '.$item->ukuran->ukuran)
+                'varian_name' => $item->ukuran
+                    ? trim($item->ukuran->nama_varian.' '.$item->ukuran->varian)
                     : null,
                 'unit_price' => $unitPrice,
                 'jumlah_barang' => (int) $item->jumlah_barang,
@@ -587,7 +587,7 @@ class CheckoutController extends Controller
             return false;
         }
 
-        $stokTersedia = $keranjang->ukuran ? (int) $keranjang->ukuran->stok_ukuran : (int) $keranjang->barang->stok;
+        $stokTersedia = $keranjang->ukuran ? (int) $keranjang->ukuran->stok_varian : (int) $keranjang->barang->stok;
 
         $isPreorder = $keranjang->barang->preorder === 'Tersedia' && $keranjang->barang->stokReady() === 0;
 

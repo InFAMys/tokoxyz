@@ -14,9 +14,9 @@ class CheckoutItem extends Model
     protected $fillable = [
         'id_checkout',
         'id_barang',
-        'id_ukuran',
+        'id_varian',
         'nama_barang',
-        'ukuran_name',
+        'varian_name',
         'unit_price',
         'jumlah_barang',
         'subtotal',
@@ -48,6 +48,6 @@ class CheckoutItem extends Model
 
     public function ukuran(): BelongsTo
     {
-        return $this->belongsTo(Varian::class, 'id_ukuran', 'id_ukuran');
+        return $this->belongsTo(Varian::class, 'id_varian', 'id_varian');
     }
 }

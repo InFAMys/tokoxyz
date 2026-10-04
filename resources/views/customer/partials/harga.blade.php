@@ -1,5 +1,5 @@
 @php
-    $prices = $item->ukurans->pluck('harga_ukuran')->filter()->map(fn ($p) => (float) $p);
+    $prices = $item->ukurans->pluck('harga_varian')->filter()->map(fn ($p) => (float) $p);
 @endphp
 @if ($prices->isNotEmpty())
     @php

@@ -11,7 +11,7 @@
         ->values();
     $mainImage = $galleryImages->first();
     $hasUkuran = $stok != null;
-    $stokReady = $hasUkuran ? $stok->sum('stok_ukuran') : $barang->stok;
+    $stokReady = $hasUkuran ? $stok->sum('stok_varian') : $barang->stok;
     $formattedBerat = !is_null($barang->berat)
         ? rtrim(rtrim(number_format((float) $barang->berat, 1, ',', '.'), '0'), ',') . ' kg'
         : '-';
@@ -90,9 +90,9 @@
                         @endif
                     </div>
 
-                    @if ($hasUkuran && $stok->pluck('harga_ukuran')->filter()->isNotEmpty())
+                    @if ($hasUkuran && $stok->pluck('harga_varian')->filter()->isNotEmpty())
                         @php
-                            $h = $stok->pluck('harga_ukuran')->filter()->map(fn($p) => (float) $p)->sort()->values();
+                            $h = $stok->pluck('harga_varian')->filter()->map(fn($p) => (float) $p)->sort()->values();
                             $min = $h->first();
                             $max = $h->last();
                         @endphp
@@ -147,13 +147,13 @@
                             <div class="mt-3">
                                 @foreach ($stok as $uk)
                                     <dl class="row mb-2">
-                                        <dt class="col-sm-4">{{ $uk->nama_ukuran }}</dt>
-                                        <dd class="col-sm-4 text-muted mb-0">{{ $uk->ukuran }}</dd>
+                                        <dt class="col-sm-4">{{ $uk->nama_varian }}</dt>
+                                        <dd class="col-sm-4 text-muted mb-0">{{ $uk->varian }}</dd>
                                         <dd class="col-sm-4 text-muted mb-0">
-                                            @if (!is_null($uk->harga_ukuran))
-                                                Rp {{ number_format($uk->harga_ukuran, 0, ',', '.') }}
+                                            @if (!is_null($uk->harga_varian))
+                                                Rp {{ number_format($uk->harga_varian, 0, ',', '.') }}
                                             @else
-                                                (Stok {{ $uk->stok_ukuran }})
+                                                (Stok {{ $uk->stok_varian }})
                                             @endif
                                         </dd>
                                     </dl>

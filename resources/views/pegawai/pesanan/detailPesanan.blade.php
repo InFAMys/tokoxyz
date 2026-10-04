@@ -124,8 +124,8 @@
                     <div class="form-label-pink">Barang</div>
                     @foreach ($checkout->items as $item)
                         <div class="d-flex justify-content-between mb-1">
-                            <span>{{ $item->nama_barang }} @if ($item->ukuran_name)
-                                    ({{ $item->ukuran_name }})
+                            <span>{{ $item->nama_barang }} @if ($item->varian_name)
+                                    ({{ $item->varian_name }})
                                 @endif × {{ $item->jumlah_barang }}
                                 @if ($item->is_preorder)
                                     <span class="badge text-bg-warning ms-1">Preorder

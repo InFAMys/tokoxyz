@@ -48,18 +48,18 @@
                             @foreach ($stok as $uk)
                                 <tr>
                                     <td data-label="No">{{ $loop->iteration }}</td>
-                                    <td data-label="Nama Varian">{{ $uk->nama_ukuran }}</td>
-                                    <td data-label="Varian">{{ $uk->ukuran }}</td>
+                                    <td data-label="Nama Varian">{{ $uk->nama_varian }}</td>
+                                    <td data-label="Varian">{{ $uk->varian }}</td>
                                     <td data-label="Harga" class="mobile-card-form">
-                                        <form action="{{ route('pegawai.uhargau', [$uk->id_barang, $uk->id_ukuran]) }}"
+                                        <form action="{{ route('pegawai.uhargau', [$uk->id_barang, $uk->id_varian]) }}"
                                             method="post" data-confirm="Ubah Harga Varian?">
                                             @csrf
                                             @method('PUT')
                                             <div class="input-group">
                                                 <span class="input-group-text">Rp</span>
                                                 <input type="text" inputmode="numeric" autocomplete="off"
-                                                    name="harga_ukuran"
-                                                    value="{{ old('harga_ukuran', $uk->harga_ukuran) }}"
+                                                    name="harga_varian"
+                                                    value="{{ old('harga_varian', $uk->harga_varian) }}"
                                                     class="form-control form-control-pink price-input-compact"
                                                     required>
                                                 <button type="submit" class="btn btn-pink">
@@ -67,39 +67,39 @@
                                                 </button>
                                             </div>
                                         </form>
-                                        {{-- @if (session('ehargastatus-' . $uk->id_ukuran))
-                                            <small class="text-success">{{ session('ehargastatus-' . $uk->id_ukuran) }}</small>
+                                        {{-- @if (session('ehargastatus-' . $uk->id_varian))
+                                            <small class="text-success">{{ session('ehargastatus-' . $uk->id_varian) }}</small>
                                         @endif --}}
                                     </td>
-                                    <td data-label="Stok Ukuran">{{ $uk->stok_ukuran }}</td>
+                                    <td data-label="Stok Ukuran">{{ $uk->stok_varian }}</td>
                                     <td data-label="Aksi" class="mobile-card-actions">
-                                        <a href="{{ route('pegawai.eukuran', [$uk->id_barang, $uk->id_ukuran]) }}"
+                                        <a href="{{ route('pegawai.eukuran', [$uk->id_barang, $uk->id_varian]) }}"
                                             class="btn btn-edit-outline btn-sm me-1">
                                             <i class="fa-solid fa-pen-to-square"></i> Edit
                                         </a>
                                         <button class="btn btn-delete-outline btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal-{{ $uk->id_ukuran }}">
+                                            data-bs-target="#deleteModal-{{ $uk->id_varian }}">
                                             <i class="fa-solid fa-trash"></i> Hapus
                                         </button>
                                         <!-- Delete Modal -->
-                                        <div class="modal fade" id="deleteModal-{{ $uk->id_ukuran }}" tabindex="-1"
-                                            aria-labelledby="deleteModal-{{ $uk->id_ukuran }}Label" aria-hidden="true"
+                                        <div class="modal fade" id="deleteModal-{{ $uk->id_varian }}" tabindex="-1"
+                                            aria-labelledby="deleteModal-{{ $uk->id_varian }}Label" aria-hidden="true"
                                             data-bs-backdrop="static">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content bg-pink">
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-4"
-                                                            id="deleteModal-{{ $uk->id_ukuran }}Label">
+                                                            id="deleteModal-{{ $uk->id_varian }}Label">
                                                             Hapus Varian ?
                                                         </h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body text-center my-4">
-                                                        Hapus Ukuran {{ $uk->nama_ukuran }} ?
+                                                        Hapus Ukuran {{ $uk->nama_varian }} ?
                                                     </div>
                                                     <div class="modal-footer mx-auto">
-                                                        <form action="{{ route('pegawai.delukuran', $uk->id_ukuran) }}"
+                                                        <form action="{{ route('pegawai.delukuran', $uk->id_varian) }}"
                                                             method="post">
                                                             @csrf
                                                             <button class="btn btn-delete btn-sm" type="submit">

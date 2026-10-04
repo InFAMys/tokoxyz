@@ -96,8 +96,8 @@
                                 <div class="d-flex justify-content-between mb-1 small">
                                     <span>
                                         {{ $item['barang']->nama_barang }}
-                                        @if ($item['ukuran_name'])
-                                            <small class="text-muted">({{ $item['ukuran_name'] }})</small>
+                                        @if ($item['varian_name'])
+                                            <small class="text-muted">({{ $item['varian_name'] }})</small>
                                         @endif
                                         × {{ $item['jumlah_barang'] }}
                                     </span>

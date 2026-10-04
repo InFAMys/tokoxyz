@@ -45,12 +45,12 @@
                             $imagePath = $barang?->thumbnailPath();
                             $stockReady = $isBaseAvailable
                                 ? ($item->ukuran
-                                    ? $item->ukuran->stok_ukuran
+                                    ? $item->ukuran->stok_varian
                                     : $barang->stok)
                                 : 0;
                             $isPreorder = $isBaseAvailable && $barang->preorder === 'Tersedia' && $barang->stokReady() === 0;
                             $isAvailable = $isBaseAvailable && ($stockReady > 0 || $isPreorder);
-                            $subtotal = $isAvailable ? (float) ($item->ukuran?->harga_ukuran ?? $barang->harga) * $item->jumlah_barang : 0;
+                            $subtotal = $isAvailable ? (float) ($item->ukuran?->harga_varian ?? $barang->harga) * $item->jumlah_barang : 0;
                         @endphp
 
                         <div class="card-pink p-3 mb-3">
@@ -100,9 +100,9 @@
                     </p>
                     @if ($item->ukuran)
                         <p class="small mb-1">
-                            Varian: {{ $item->ukuran->nama_ukuran }}
-                            @if ($item->ukuran->ukuran)
-                                - {{ $item->ukuran->ukuran }}
+                            Varian: {{ $item->ukuran->nama_varian }}
+                            @if ($item->ukuran->varian)
+                                - {{ $item->ukuran->varian }}
                             @endif
                         </p>
                     @endif
@@ -116,7 +116,7 @@
                 <div class="col-md-2">
                     <div class="small text-muted">Harga</div>
                     <div class="fw-semibold text-pink">
-                        {{ $isAvailable ? 'Rp ' . number_format($item->ukuran?->harga_ukuran ?? $barang->harga, 0, ',', '.') : '-' }}
+                        {{ $isAvailable ? 'Rp ' . number_format($item->ukuran?->harga_varian ?? $barang->harga, 0, ',', '.') : '-' }}
                     </div>
                 </div>
 

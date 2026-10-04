@@ -66,7 +66,7 @@ class Barang extends Model
     public function stokReady(): int
     {
         return $this->ukurans->isNotEmpty()
-            ? $this->ukurans->sum('stok_ukuran')
+            ? $this->ukurans->sum('stok_varian')
             : $this->stok;
     }
 

@@ -26,10 +26,10 @@
                     <tbody>
                         @foreach ($stok as $sk)
                             <tr>
-                                <td data-label="Nama Ukuran" class="text-center">{{ $sk->nama_ukuran }}</td>
-                                <td data-label="Ukuran">{{ $sk->ukuran }}</td>
+                                <td data-label="Nama Ukuran" class="text-center">{{ $sk->nama_varian }}</td>
+                                <td data-label="Ukuran">{{ $sk->varian }}</td>
                                 <td data-label="Aksi" class="mobile-card-actions mobile-card-form">
-                                    <form action="{{ route('pegawai.ustoku', [$stokbrg->id_barang, $sk->id_ukuran]) }}"
+                                    <form action="{{ route('pegawai.ustoku', [$stokbrg->id_barang, $sk->id_varian]) }}"
                                         method="post" enctype="multipart/form-data" data-confirm="Ubah Stok?">
                                         @csrf
                                         @method('PUT')
@@ -45,7 +45,7 @@
                                                     </button>
                                                     <input id="stok" name="stok" type="number" min="0"
                                                         step="1" class="form-control form-control-pink text-center"
-                                                        value="{{ old('stok_ukuran', $sk->stok_ukuran) }}"
+                                                        value="{{ old('stok_varian', $sk->stok_varian) }}"
                                                         placeholder="Stok" required />
                                                     <button type="button" class="btn btn-pink-outline qty-adjust-btn"
                                                         data-qty-delta="1" aria-label="Tambah stok">

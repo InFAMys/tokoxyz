@@ -11,7 +11,7 @@
         ->values();
     $mainImage = $galleryImages->first();
     $hasUkuran = $barang->ukurans->isNotEmpty();
-    $stokReady = $hasUkuran ? $barang->ukurans->sum('stok_ukuran') : $barang->stok;
+    $stokReady = $hasUkuran ? $barang->ukurans->sum('stok_varian') : $barang->stok;
     $formattedBerat = !is_null($barang->berat)
         ? rtrim(rtrim(number_format((float) $barang->berat, 1, ',', '.'), '0'), ',') . ' kg'
         : '-';
@@ -67,10 +67,10 @@
 
                 <div class="col-lg-6">
                     <h2 class="mb-2">{{ $barang->nama_barang }}</h2>
-                    @if ($hasUkuran && $barang->ukurans->pluck('harga_ukuran')->filter()->isNotEmpty())
+                    @if ($hasUkuran && $barang->ukurans->pluck('harga_varian')->filter()->isNotEmpty())
                         @php
                             $h = $barang->ukurans
-                                ->pluck('harga_ukuran')
+                                ->pluck('harga_varian')
                                 ->filter()
                                 ->map(fn($p) => (float) $p)
                                 ->sort()
@@ -109,28 +109,28 @@
 
                                 @if ($hasUkuran)
                                     <div class="mb-3">
-                                        <label for="id_ukuran" class="form-label-pink">Varian</label>
-                                        <select id="id_ukuran" name="id_ukuran"
-                                            class="form-select @error('id_ukuran') is-invalid @enderror" required>
+                                        <label for="id_varian" class="form-label-pink">Varian</label>
+                                        <select id="id_varian" name="id_varian"
+                                            class="form-select @error('id_varian') is-invalid @enderror" required>
                                             <option value="">Pilih Varian</option>
                                             @foreach ($barang->ukurans as $ukuran)
-                                                @if ($isPreorder || $ukuran->stok_ukuran > 0)
-                                                    <option value="{{ $ukuran->id_ukuran }}" @selected(old('id_ukuran') == $ukuran->id_ukuran)
-                                                        @if (!is_null($ukuran->harga_ukuran)) data-harga="{{ $ukuran->harga_ukuran }}" @endif>
-                                                        {{ $ukuran->nama_ukuran }}
-                                                        @if ($ukuran->ukuran)
-                                                            - {{ $ukuran->ukuran }}
+                                                @if ($isPreorder || $ukuran->stok_varian > 0)
+                                                    <option value="{{ $ukuran->id_varian }}" @selected(old('id_varian') == $ukuran->id_varian)
+                                                        @if (!is_null($ukuran->harga_varian)) data-harga="{{ $ukuran->harga_varian }}" @endif>
+                                                        {{ $ukuran->nama_varian }}
+                                                        @if ($ukuran->varian)
+                                                            - {{ $ukuran->varian }}
                                                         @endif
                                                         @if ($isPreorder)
                                                             (Preorder)
                                                         @else
-                                                            (Stok {{ $ukuran->stok_ukuran }})
+                                                            (Stok {{ $ukuran->stok_varian }})
                                                         @endif
                                                     </option>
                                                 @endif
                                             @endforeach
                                         </select>
-                                        @error('id_ukuran')
+                                        @error('id_varian')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -204,10 +204,10 @@
                             <div class="mt-3">
                                 @foreach ($barang->ukurans as $ukuran)
                                     <dl class="row mb-2">
-                                        <dt class="col-sm-4">{{ $ukuran->nama_ukuran }}</dt>
-                                        <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->ukuran }}</dd>
+                                        <dt class="col-sm-4">{{ $ukuran->nama_varian }}</dt>
+                                        <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->varian }}</dd>
                                         @if ($barang->preorder !== 'Tersedia')
-                                            <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->stok_ukuran }}</dd>
+                                            <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->stok_varian }}</dd>
                                         @endif
                                     </dl>
                                 @endforeach

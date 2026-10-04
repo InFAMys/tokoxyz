@@ -158,10 +158,10 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ### Database & models
 - Custom primary keys everywhere — never assume `id`. Set via `#[Table(key: 'id_x')]`
-  attribute (and/or `$primaryKey`): `barangs.id_barang`, `varians.id_ukuran`,
+  attribute (and/or `$primaryKey`): `barangs.id_barang`, `varians.id_varian`,
   `keranjang.id_keranjang`, `customers.id_cst`. Use the exact key in queries/relations.
 - Soft deletes on `barangs`, `varians`, `pegawais`, etc. Eloquent excludes trashed rows
-  by default; use `withTrashed()` when needed (e.g. cart shows trashed barang+ukuran).
+  by default; use `withTrashed()` when needed (e.g. cart shows trashed barang+varian).
 
 ### Routing & auth
 - Three isolated areas, each own guard + layout:
@@ -189,16 +189,16 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
   stay under their inputs (not toasts).
 
 ### Money & numeric fields
-- Prices: `barangs.harga` (decimal:2); optional per-ukuran `varians.harga_ukuran`
-  (decimal:2, nullable). Cart unit price = ukuran price when set:
-  `$item->ukuran?->harga_ukuran ?? $item->barang->harga`. Displayed price is a range
-  (min–max of ukuran prices).
+- Prices: `barangs.harga` (decimal:2); optional per-varian `varians.harga_varian`
+  (decimal:2, nullable). Cart unit price = varian price when set:
+  `$item->ukuran?->harga_varian ?? $item->barang->harga`. Displayed price is a range
+  (min–max of varian prices).
 - Harga inputs are `type="text"` formatted live (id-ID thousand dots) by
   `moneyFormat()`/`toIntegerDigits()` in script.js; JS strips separators on submit because
   server validates `numeric`. DB `decimal:2` yields values like `"3000000.00"`.
 - `berat` UI uses comma-decimal (input mask allows `.` or `,`); converted to dot server-side
   via `BarangController@normalizeBerat`.
-- `Barang@stokReady()` = sum(`stok_ukuran`) when varians exist, else `barang.stok`.
+- `Barang@stokReady()` = sum(`stok_varian`) when varians exist, else `barang.stok`.
 
 ### Commands
 - `vendor/bin/pint --dirty --format agent` after PHP edits.

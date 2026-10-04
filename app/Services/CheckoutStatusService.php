@@ -117,7 +117,7 @@ class CheckoutStatusService
     public function decrementStockForItems($rows): void
     {
         foreach ($rows as $item) {
-            $idUkuran = $item['id_ukuran'] ?? $item->id_ukuran ?? null;
+            $idUkuran = $item['id_varian'] ?? $item->id_varian ?? null;
             $idBarang = $item['id_barang'] ?? $item->id_barang;
             $jumlah = (int) ($item['jumlah_barang'] ?? $item->jumlah_barang);
 
@@ -126,10 +126,10 @@ class CheckoutStatusService
             }
 
             if ($idUkuran) {
-                $ukuran = Varian::where('id_ukuran', $idUkuran)->first();
+                $ukuran = Varian::where('id_varian', $idUkuran)->first();
 
                 if ($ukuran) {
-                    $ukuran->stok_ukuran = max(0, (int) $ukuran->stok_ukuran - $jumlah);
+                    $ukuran->stok_varian = max(0, (int) $ukuran->stok_varian - $jumlah);
                     $ukuran->save();
                 }
             } else {

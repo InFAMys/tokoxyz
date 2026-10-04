@@ -8,29 +8,29 @@
 @section('content')
     <div class="auth-wrapper">
         <div class="auth-card">
-            <form action="{{ route('pegawai.uukuran', [$ukuran->id_barang, $ukuran->id_ukuran]) }}" method="post"
+            <form action="{{ route('pegawai.uukuran', [$ukuran->id_barang, $ukuran->id_varian]) }}" method="post"
                 enctype="multipart/form-data" data-confirm="Perbarui Varian?">
                 @csrf
                 @method('PUT')
                 <div class="auth-title">Edit Varian</div>
 
                 <div class="mb-2">
-                    <label for="nama_ukuran" class="form-label-pink">Nama Varian</label>
-                    <input id='nama_ukuran' name="nama_ukuran" type="text" class="form-control form-control-pink"
-                        value="{{ old('nama_ukuran', $ukuran->nama_ukuran) }}" placeholder="M - Biru" required autofocus />
-                    @error('nama_ukuran')
-                        <label for="nama_ukuran" class="form-label-pink text-danger">
+                    <label for="nama_varian" class="form-label-pink">Nama Varian</label>
+                    <input id='nama_varian' name="nama_varian" type="text" class="form-control form-control-pink"
+                        value="{{ old('nama_varian', $ukuran->nama_varian) }}" placeholder="M - Biru" required autofocus />
+                    @error('nama_varian')
+                        <label for="nama_varian" class="form-label-pink text-danger">
                             {{ $message }}
                         </label>
                     @enderror
                 </div>
                 <div class="mb-4">
-                    <label for="ukuran" class="form-label-pink">Deskripsi Varian</label>
-                    <input id='ukuran' name="ukuran" type="text" class="form-control form-control-pink"
-                        value="{{ old('ukuran', $ukuran->ukuran) }}" placeholder="Ukuran M - Warna Biru" required
+                    <label for="varian" class="form-label-pink">Deskripsi Varian</label>
+                    <input id='varian' name="varian" type="text" class="form-control form-control-pink"
+                        value="{{ old('varian', $ukuran->varian) }}" placeholder="Ukuran M - Warna Biru" required
                         autofocus />
-                    @error('ukuran')
-                        <label for="ukuran" class="form-label-pink text-danger">
+                    @error('varian')
+                        <label for="varian" class="form-label-pink text-danger">
                             {{ $message }}
                         </label>
                     @enderror

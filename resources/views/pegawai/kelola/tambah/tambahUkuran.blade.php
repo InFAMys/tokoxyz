@@ -18,34 +18,34 @@
                 <div class="auth-subtitleA">{{ $brg->nama_barang }}</div>
 
                 <div class="mb-2">
-                    <label for="nama_ukuran" class="form-label-pink">Nama Varian</label>
-                    <input id='nama_ukuran' name="nama_ukuran" type="text" class="form-control form-control-pink"
-                        value="{{ old('nama_ukuran') }}" placeholder="M - Biru" required autofocus />
-                    @error('nama_ukuran')
-                        <label for="nama_ukuran" class="form-label-pink text-danger">
+                    <label for="nama_varian" class="form-label-pink">Nama Varian</label>
+                    <input id='nama_varian' name="nama_varian" type="text" class="form-control form-control-pink"
+                        value="{{ old('nama_varian') }}" placeholder="M - Biru" required autofocus />
+                    @error('nama_varian')
+                        <label for="nama_varian" class="form-label-pink text-danger">
                             {{ $message }}
                         </label>
                     @enderror
                 </div>
                 <div class="mb-2">
-                    <label for="ukuran" class="form-label-pink">Deskripsi Varian</label>
-                    <input id='ukuran' name="ukuran" type="text" class="form-control form-control-pink"
-                        value="{{ old('ukuran') }}" placeholder="Ukuran M - Warna Biru" required autofocus />
-                    @error('ukuran')
-                        <label for="ukuran" class="form-label-pink text-danger">
+                    <label for="varian" class="form-label-pink">Deskripsi Varian</label>
+                    <input id='varian' name="varian" type="text" class="form-control form-control-pink"
+                        value="{{ old('varian') }}" placeholder="Ukuran M - Warna Biru" required autofocus />
+                    @error('varian')
+                        <label for="varian" class="form-label-pink text-danger">
                             {{ $message }}
                         </label>
                     @enderror
                 </div>
                 <div class="mb-4">
-                    <label for="harga_ukuran" class="form-label-pink">Harga Varian</label>
+                    <label for="harga_varian" class="form-label-pink">Harga Varian</label>
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="harga_ukuran-addon1">Rp</span>
+                        <span class="input-group-text" id="harga_varian-addon1">Rp</span>
                         <input type="text" inputmode="numeric" autocomplete="off" class="form-control form-control-pink"
-                            name="harga_ukuran" placeholder="Harga Ukuran" aria-label="Harga Ukuran"
-                            aria-describedby="harga_ukuran-addon1" value="{{ old('harga_ukuran') }}" required>
+                            name="harga_varian" placeholder="Harga Ukuran" aria-label="Harga Ukuran"
+                            aria-describedby="harga_varian-addon1" value="{{ old('harga_varian') }}" required>
                     </div>
-                    @error('harga_ukuran')
+                    @error('harga_varian')
                         <label class="form-label-pink text-danger mt-2">{{ $message }}</label>
                     @enderror
                 </div>

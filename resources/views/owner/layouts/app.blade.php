@@ -106,18 +106,18 @@
                             <li><a href="{{ route('owner.profile.edit') }}" class="dropdown-item nav-link-drop">
                                     <i class="fa-solid fa-user-pen"></i> Edit Profil</a></li>
                             <li>
-                                <form method="POST" action="{{ route('owner.logout') }}">
-                                    @csrf
-                                    <button class="dropdown-item nav-link-drop"><i
-                                            class="fa-solid fa-right-from-bracket"></i> Log out</button>
-                                </form>
+                                <button type="button" class="dropdown-item nav-link-drop"
+                                    data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Log out
+                                </button>
                             </li>
                         </ul>
                     </li>
                 </ul>
             </div>
     </nav>
-    @yield('content')
+@yield('content')
+    @include('components.logout-modal', ['logoutRoute' => route('owner.logout')])
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>

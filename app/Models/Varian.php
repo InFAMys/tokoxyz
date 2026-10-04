@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Table(key: 'id_ukuran')]
+#[Table(key: 'id_varian')]
 class Varian extends Model
 {
     use SoftDeletes;
@@ -17,16 +17,16 @@ class Varian extends Model
 
     protected $fillable = [
         'id_barang',
-        'nama_ukuran',
-        'ukuran',
-        'harga_ukuran',
-        'stok_ukuran',
+        'nama_varian',
+        'varian',
+        'harga_varian',
+        'stok_varian',
     ];
 
     protected function casts(): array
     {
         return [
-            'harga_ukuran' => 'decimal:2',
+            'harga_varian' => 'decimal:2',
         ];
     }
 
@@ -37,6 +37,6 @@ class Varian extends Model
 
     public function keranjangs(): HasMany
     {
-        return $this->hasMany(Keranjang::class, 'id_ukuran', 'id_ukuran');
+        return $this->hasMany(Keranjang::class, 'id_varian', 'id_varian');
     }
 }

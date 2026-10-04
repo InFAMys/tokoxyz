@@ -131,7 +131,7 @@ class Checkout extends Model
         return self::COLORS[$this->status] ?? 'secondary';
     }
 
-    /** @return array<int, array{id_ukuran?: int|null, id_barang: int, jumlah_barang: int}> */
+    /** @return array<int, array{id_varian?: int|null, id_barang: int, jumlah_barang: int}> */
     public function restoreStock(): void
     {
         foreach ($this->items ?? collect() as $item) {
@@ -141,11 +141,11 @@ class Checkout extends Model
 
             $jumlah = (int) $item->jumlah_barang;
 
-            if ($item->id_ukuran) {
-                $ukuran = Varian::find($item->id_ukuran);
+            if ($item->id_varian) {
+                $ukuran = Varian::find($item->id_varian);
 
                 if ($ukuran) {
-                    $ukuran->stok_ukuran = (int) $ukuran->stok_ukuran + $jumlah;
+                    $ukuran->stok_varian = (int) $ukuran->stok_varian + $jumlah;
                     $ukuran->save();
                 }
             } else {

@@ -78,8 +78,8 @@ class CustomerController extends Controller
         $barang = Barang::with(['brand', 'kategori', 'ukurans'])
             ->where('status', 'Ditampilkan')
             ->where('id_kategori', $id)
-            ->when($min !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_ukuran IS NOT NULL), barangs.harga) >= ?', [$min]))
-            ->when($max !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_ukuran IS NOT NULL), barangs.harga) <= ?', [$max]))
+            ->when($min !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_varian) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_varian IS NOT NULL), barangs.harga) >= ?', [$min]))
+            ->when($max !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_varian) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_varian IS NOT NULL), barangs.harga) <= ?', [$max]))
             ->orderByDesc('id_barang')
             ->paginate(12)
             ->withQueryString();
@@ -101,8 +101,8 @@ class CustomerController extends Controller
         $barang = Barang::with(['brand', 'kategori', 'ukurans'])
             ->where('status', 'Ditampilkan')
             ->where('id_brand', $id)
-            ->when($min !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_ukuran IS NOT NULL), barangs.harga) >= ?', [$min]))
-            ->when($max !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_ukuran IS NOT NULL), barangs.harga) <= ?', [$max]))
+            ->when($min !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_varian) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_varian IS NOT NULL), barangs.harga) >= ?', [$min]))
+            ->when($max !== null, fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_varian) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_varian IS NOT NULL), barangs.harga) <= ?', [$max]))
             ->orderByDesc('id_barang')
             ->paginate(12)
             ->withQueryString();
@@ -142,8 +142,8 @@ class CustomerController extends Controller
                         ->orWhereHas('kategori', fn ($k) => $k->where('nama_kategori', 'like', "%{$q}%"));
                 });
             })
-            ->when($min !== '' && is_numeric($min), fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_ukuran IS NOT NULL), barangs.harga) >= ?', [(float) $min]))
-            ->when($max !== '' && is_numeric($max), fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_ukuran) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_ukuran IS NOT NULL), barangs.harga) <= ?', [(float) $max]))
+            ->when($min !== '' && is_numeric($min), fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_varian) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_varian IS NOT NULL), barangs.harga) >= ?', [(float) $min]))
+            ->when($max !== '' && is_numeric($max), fn ($query) => $query->whereRaw('COALESCE((SELECT MIN(harga_varian) FROM varians WHERE varians.id_barang = barangs.id_barang AND varians.harga_varian IS NOT NULL), barangs.harga) <= ?', [(float) $max]))
             ->orderByDesc('id_barang')
             ->paginate(12)
             ->withQueryString();

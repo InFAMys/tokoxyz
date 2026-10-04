@@ -16,7 +16,7 @@ class Keranjang extends Model
     protected $fillable = [
         'id_cst',
         'id_barang',
-        'id_ukuran',
+        'id_varian',
         'jumlah_barang',
     ];
 
@@ -43,6 +43,6 @@ class Keranjang extends Model
 
     public function ukuran(): BelongsTo
     {
-        return $this->belongsTo(Varian::class, 'id_ukuran', 'id_ukuran');
+        return $this->belongsTo(Varian::class, 'id_varian', 'id_varian');
     }
 }

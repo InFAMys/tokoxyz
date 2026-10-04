@@ -31,7 +31,7 @@ class KeranjangController extends Controller
                 return 0;
             }
 
-            return (float) ($item->ukuran?->harga_ukuran ?? $item->barang->harga) * $item->jumlah_barang;
+            return (float) ($item->ukuran?->harga_varian ?? $item->barang->harga) * $item->jumlah_barang;
         });
 
         return view('customer.keranjang.index', compact('keranjang', 'total'));
@@ -68,19 +68,19 @@ class KeranjangController extends Controller
     {
         $data = $request->validate([
             'id_barang' => ['required', 'integer'],
-            'id_ukuran' => ['nullable', 'integer'],
+            'id_varian' => ['nullable', 'integer'],
             'jumlah_barang' => ['required', 'integer', 'min:1'],
         ]);
 
         $barang = Barang::with('ukurans')
             ->where('status', 'Ditampilkan')
             ->findOrFail($data['id_barang']);
-        $ukuran = $this->selectedUkuran($barang, $data['id_ukuran'] ?? null);
+        $ukuran = $this->selectedUkuran($barang, $data['id_varian'] ?? null);
         $customer = $this->customer();
 
         $keranjang = $customer->keranjangs()
             ->where('id_barang', $barang->id_barang)
-            ->where('id_ukuran', $ukuran?->id_ukuran)
+            ->where('id_varian', $ukuran?->id_varian)
             ->first();
 
         $jumlahBarang = (int) $data['jumlah_barang'] + ($keranjang?->jumlah_barang ?? 0);
@@ -92,7 +92,7 @@ class KeranjangController extends Controller
         } else {
             $customer->keranjangs()->create([
                 'id_barang' => $barang->id_barang,
-                'id_ukuran' => $ukuran?->id_ukuran,
+                'id_varian' => $ukuran?->id_varian,
                 'jumlah_barang' => $jumlahBarang,
             ]);
         }
@@ -143,15 +143,15 @@ class KeranjangController extends Controller
 
         if (! $idUkuran) {
             throw ValidationException::withMessages([
-                'id_ukuran' => 'Pilih ukuran terlebih dahulu.',
+                'id_varian' => 'Pilih ukuran terlebih dahulu.',
             ]);
         }
 
-        $ukuran = $barang->ukurans->firstWhere('id_ukuran', $idUkuran);
+        $ukuran = $barang->ukurans->firstWhere('id_varian', $idUkuran);
 
         if (! $ukuran) {
             throw ValidationException::withMessages([
-                'id_ukuran' => 'Ukuran tidak tersedia untuk barang ini.',
+                'id_varian' => 'Ukuran tidak tersedia untuk barang ini.',
             ]);
         }
 
@@ -164,7 +164,7 @@ class KeranjangController extends Controller
             return;
         }
 
-        $stokTersedia = $ukuran ? (int) $ukuran->stok_ukuran : (int) $barang->stok;
+        $stokTersedia = $ukuran ? (int) $ukuran->stok_varian : (int) $barang->stok;
 
         if ($jumlahBarang > $stokTersedia) {
             throw ValidationException::withMessages([
@@ -187,7 +187,7 @@ class KeranjangController extends Controller
             return false;
         }
 
-        $stokTersedia = $keranjang->ukuran ? (int) $keranjang->ukuran->stok_ukuran : (int) $keranjang->barang->stok;
+        $stokTersedia = $keranjang->ukuran ? (int) $keranjang->ukuran->stok_varian : (int) $keranjang->barang->stok;
 
         $isPreorder = $keranjang->barang->preorder === 'Tersedia' && $keranjang->barang->stokReady() === 0;
 

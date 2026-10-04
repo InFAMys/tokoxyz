@@ -1,0 +1,117 @@
+<mxfile host="Electron">
+  <diagram name="Toko XYZ - Class Diagram" id="class-diagram">
+    <mxGraphModel dx="2903" dy="3193" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Customer&lt;/b&gt;&lt;br&gt;«table: customers»&lt;br&gt;id_cst (PK) : bigint unsigned&lt;br&gt;nama : varchar(255)&lt;br&gt;username : varchar(255)&lt;br&gt;email : varchar(255)&lt;br&gt;no_telp : char(12)&lt;br&gt;password : varchar(255)&lt;br&gt;member : enum(&#39;true&#39;,&#39;false&#39;)&lt;br&gt;member_since : timestamp&lt;br&gt;remember_token : varchar(100)&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;alamats(): HasMany&lt;br&gt;keranjangs(): HasMany&lt;br&gt;checkouts(): HasMany&lt;br&gt;memberships(): HasMany&lt;br&gt;unreadActiveDiscountNotifications(): Collection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="394" width="320" x="-990" y="-470" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Alamat&lt;/b&gt;&lt;br&gt;«table: alamat»&lt;br&gt;id_alamat (PK) : bigint unsigned&lt;br&gt;id_cst (FK) : bigint unsigned&lt;br&gt;nama_alamat : varchar(255)&lt;br&gt;nama_penerima : varchar(255)&lt;br&gt;telp_penerima : varchar(255)&lt;br&gt;detail_alamat : text&lt;br&gt;kecamatan : varchar(255)&lt;br&gt;kelurahan : varchar(255)&lt;br&gt;kota : varchar(255)&lt;br&gt;provinsi : varchar(255)&lt;br&gt;id_provinsi : varchar(255)&lt;br&gt;id_kota : varchar(255)&lt;br&gt;id_kecamatan : varchar(255)&lt;br&gt;id_kelurahan : varchar(32)&lt;br&gt;kode_pos : varchar(10)&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;customer(): BelongsTo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="428" width="320" x="-980" y="-970" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Keranjang&lt;/b&gt;&lt;br&gt;«table: keranjang»&lt;br&gt;id_keranjang (PK) : bigint unsigned&lt;br&gt;id_cst (FK) : bigint unsigned&lt;br&gt;id_barang (FK) : bigint unsigned&lt;br&gt;id_ukuran (FK) : bigint unsigned&lt;br&gt;jumlah_barang : int unsigned&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;customer(): BelongsTo&lt;br&gt;barang(): BelongsTo&lt;br&gt;ukuran(): BelongsTo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="275" width="320" x="-980" y="566" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Checkout&lt;/b&gt;&lt;br&gt;«table: pesanan»&lt;br&gt;id_checkout (PK) : bigint unsigned&lt;br&gt;id_cst (FK) : bigint unsigned&lt;br&gt;id_pegawai (FK) : bigint unsigned&lt;br&gt;id_alamat (FK) : bigint unsigned&lt;br&gt;order_id : varchar(50)&lt;br&gt;customer_name : varchar(255)&lt;br&gt;customer_email : varchar(255)&lt;br&gt;customer_telp : varchar(255)&lt;br&gt;subtotal : decimal(12,2)&lt;br&gt;diskon_nominal : decimal(12,2)&lt;br&gt;member_diskon_nominal : decimal(12,2)&lt;br&gt;shipping_cost : decimal(12,2)&lt;br&gt;total_amount : decimal(12,2)&lt;br&gt;berat_total : decimal(8,3)&lt;br&gt;shipping_courier : varchar(255)&lt;br&gt;shipping_service : varchar(255)&lt;br&gt;shipping_address : text&lt;br&gt;kode_diskon : varchar(10)&lt;br&gt;status : enum(&#39;pending&#39;,&#39;paid&#39;,&#39;expired&#39;,&#39;cancelled&#39;,&#39;refunded&#39;,&#39;partially_refunded&#39;,&#39;deny&#39;,&#39;processed&#39;,&#39;shipping&#39;,&#39;delivered&#39;,&#39;completed&#39;,&#39;cancel_pending&#39;)&lt;br&gt;snap_token : varchar(255)&lt;br&gt;no_resi : varchar(50)&lt;br&gt;delivered_at : timestamp&lt;br&gt;payment_type : varchar(255)&lt;br&gt;cancel_reason : varchar(255)&lt;br&gt;cancel_from : varchar(20)&lt;br&gt;cancel_response : varchar(255)&lt;br&gt;kritik_saran : text&lt;br&gt;cancel_requested_at : timestamp&lt;br&gt;paid_at : timestamp&lt;br&gt;refund_failed_at : timestamp&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;customer(): BelongsTo&lt;br&gt;pegawai(): BelongsTo&lt;br&gt;alamat(): BelongsTo&lt;br&gt;items(): HasMany&lt;br&gt;cancellableStatuses(): array [static]&lt;br&gt;isFinal(): bool&lt;br&gt;statusLabel(): string&lt;br&gt;statusColor(): string&lt;br&gt;restoreStock(): void&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="853" width="320" x="1090" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;CheckoutItem&lt;/b&gt;&lt;br&gt;«table: detail_pesanan»&lt;br&gt;id_checkout_item (PK) : bigint unsigned&lt;br&gt;id_checkout (FK) : bigint unsigned&lt;br&gt;id_barang (FK) : bigint unsigned&lt;br&gt;id_ukuran (FK) : bigint unsigned&lt;br&gt;nama_barang : varchar(255)&lt;br&gt;ukuran_name : varchar(255)&lt;br&gt;unit_price : decimal(12,2)&lt;br&gt;jumlah_barang : int unsigned&lt;br&gt;subtotal : decimal(12,2)&lt;br&gt;berat : decimal(8,3)&lt;br&gt;is_preorder : tinyint(1)&lt;br&gt;estimasi_preorder : int&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;checkout(): BelongsTo&lt;br&gt;barang(): BelongsTo&lt;br&gt;ukuran(): BelongsTo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="394" width="320" x="40" y="923" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Membership&lt;/b&gt;&lt;br&gt;«table: member»&lt;br&gt;id_membership (PK) : bigint unsigned&lt;br&gt;id_cst (FK) : bigint unsigned&lt;br&gt;order_id : varchar(50)&lt;br&gt;nominal : decimal(12,2)&lt;br&gt;status : enum(&#39;pending&#39;,&#39;paid&#39;,&#39;expired&#39;,&#39;deny&#39;,&#39;refunded&#39;)&lt;br&gt;paid_at : timestamp&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;customer(): BelongsTo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="275" width="320" x="-980" y="1760" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Barang&lt;/b&gt;&lt;br&gt;«table: barangs»&lt;br&gt;id_barang (PK) : bigint unsigned&lt;br&gt;id_brand (FK) : bigint unsigned&lt;br&gt;id_kategori (FK) : bigint unsigned&lt;br&gt;kode_barang : varchar(15)&lt;br&gt;nama_barang : varchar(32)&lt;br&gt;deskripsi : text&lt;br&gt;foto : json&lt;br&gt;thumbnail : varchar(255)&lt;br&gt;harga : double&lt;br&gt;berat : decimal(8,3)&lt;br&gt;stok : int&lt;br&gt;status : enum(&#39;Ditampilkan&#39;,&#39;Disembunyikan&#39;)&lt;br&gt;preorder : enum(&#39;Tersedia&#39;,&#39;Tidak Tersedia&#39;)&lt;br&gt;estimasi_preorder : int&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;brand(): BelongsTo&lt;br&gt;kategori(): BelongsTo&lt;br&gt;ukurans(): HasMany&lt;br&gt;keranjangs(): HasMany&lt;br&gt;stokReady(): int&lt;br&gt;thumbnailPath(): ?string&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="496" width="320" x="740" y="923" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Varian&lt;/b&gt;&lt;br&gt;«table: varians»&lt;br&gt;id_ukuran (PK) : bigint unsigned&lt;br&gt;id_barang (FK) : bigint unsigned&lt;br&gt;nama_ukuran : varchar(10)&lt;br&gt;ukuran : varchar(255)&lt;br&gt;harga_ukuran : decimal(10,2)&lt;br&gt;stok_ukuran : int&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;barang(): BelongsTo&lt;br&gt;keranjangs(): HasMany&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="292" width="320" x="-980" y="2079" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Diskon&lt;/b&gt;&lt;br&gt;«table: diskons»&lt;br&gt;id_diskon (PK) : bigint unsigned&lt;br&gt;nama_diskon : varchar(30)&lt;br&gt;jumlah_diskon : double&lt;br&gt;kode_diskon : varchar(10)&lt;br&gt;mulai_diskon : datetime&lt;br&gt;akhir_diskon : datetime&lt;br&gt;status_diskon : enum(&#39;aktif&#39;,&#39;nonaktif&#39;,&#39;kadaluarsa&#39;)&lt;br&gt;notified_at : timestamp&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;statusOptions(): array [static]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="326" width="320" x="-987" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Pegawai&lt;/b&gt;&lt;br&gt;«table: pegawais»&lt;br&gt;id_pegawai (PK) : bigint unsigned&lt;br&gt;nama_pegawai : varchar(255)&lt;br&gt;username_pegawai : varchar(255)&lt;br&gt;password : varchar(255)&lt;br&gt;akses : enum(&#39;pesanan&#39;,&#39;inventaris&#39;)&lt;br&gt;remember_token : varchar(100)&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;canInventory(): bool&lt;br&gt;aksesLabel(): string&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="292" width="320" x="-980" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Owner&lt;/b&gt;&lt;br&gt;«table: owners»&lt;br&gt;id_owner (PK) : bigint unsigned&lt;br&gt;username : varchar(255)&lt;br&gt;password : varchar(255)&lt;br&gt;remember_token : varchar(100)&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="190" width="320" x="-987" y="-4" as="geometry" />
+        </mxCell>
+        <mxCell id="16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Pengaturan&lt;/b&gt;&lt;br&gt;«table: pengaturans»&lt;br&gt;id_pengaturan (PK) : bigint unsigned&lt;br&gt;nama_kunci : varchar(64)&lt;br&gt;nilai : text&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;allAsArray(): array [static]&lt;br&gt;nilai(key, default): string [static]&lt;br&gt;upsertNilai(values): void [static]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="241" width="320" x="390" y="1805" as="geometry" />
+        </mxCell>
+        <mxCell id="17" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="4" value="memiliki  1 → 1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="18" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="5" value="berisi  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="19" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="6" value="membuat  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="8" value="mendapat  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="9" value="memiliki  1 → 1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="9" value="memiliki  1 → 1..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" edge="1" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="12" value="ukurans()  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" edge="1" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="5" value="1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" edge="1" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="7" value="1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="5" value="1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="27" edge="1" parent="1" source="12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="7" value="1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="28" edge="1" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="7" value="berisi  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="29" edge="1" parent="1" source="14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="6" value="diproses  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="30" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="6" value="dikirim ke  1 → 0..*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;;dashed=1;;" target="9" value="mengelola (konseptual)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2KTuBB6v7ch0W7e8bji3-32" connectable="0" parent="31" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Text" vertex="1">
+          <mxGeometry relative="1" x="0.3064" y="59" as="geometry">
+            <mxPoint y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="32" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;;dashed=1;;" target="16" value="mengelola (konseptual)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2KTuBB6v7ch0W7e8bji3-33" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="11" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="1595" as="sourcePoint" />
+            <mxPoint x="-820" y="841" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Kategori&lt;/b&gt;&lt;br&gt;«table: kategoris»&lt;br&gt;id_kategori (PK) : bigint unsigned&lt;br&gt;nama_kategori : varchar(16)&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;barangs(): HasMany&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="207" width="320" x="-980" y="885" as="geometry" />
+        </mxCell>
+        <mxCell id="2KTuBB6v7ch0W7e8bji3-34" edge="1" parent="1" source="12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="390" y="1595" as="sourcePoint" />
+            <mxPoint x="-820" y="1092" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=11;align=left;spacingLeft=8;spacingRight=8;spacingTop=6;spacingBottom=6;" value="&lt;html&gt;&lt;body&gt;&lt;p style=&amp;quot;margin:0px;&amp;quot;&gt;&lt;b&gt;Brand&lt;/b&gt;&lt;br&gt;«table: brands»&lt;br&gt;id_brand (PK) : bigint unsigned&lt;br&gt;nama_brand : varchar(24)&lt;br&gt;logo : varchar(255)&lt;br&gt;created_at : timestamp&lt;br&gt;updated_at : timestamp&lt;br&gt;deleted_at : timestamp&lt;br&gt;──────────────────&lt;br&gt;barangs(): HasMany&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" vertex="1">
+          <mxGeometry height="224" width="320" x="-980" y="1136" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

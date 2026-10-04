@@ -45,10 +45,10 @@ class BarangSeeder extends Seeder
                 foreach ($sizes as $ukuran) {
                     Varian::create([
                         'id_barang' => $barang->id_barang,
-                        'nama_ukuran' => $ukuran,
-                        'ukuran' => $ukuran,
-                        'harga_ukuran' => fake()->boolean() ? fake()->numberBetween(45000, 250000) : null,
-                        'stok_ukuran' => fake()->numberBetween(0, 20),
+                        'nama_varian' => $ukuran,
+                        'varian' => $ukuran,
+                        'harga_varian' => fake()->boolean() ? fake()->numberBetween(45000, 250000) : null,
+                        'stok_varian' => fake()->numberBetween(0, 20),
                     ]);
                 }
             }
