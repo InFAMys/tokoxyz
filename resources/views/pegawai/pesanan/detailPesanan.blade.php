@@ -216,8 +216,8 @@
                                                 </div>
                                                 @if ($checkout->cancel_from === 'paid' || $checkout->cancel_from === 'processed')
                                                     <div class="small text-muted">
-                                                        Dana dikembalikan ke customer ({{ $checkout->cancel_from }} →
-                                                        refund).
+                                                        Dana dikembalikan ke customer ({{ $checkout->cancel_from === 'paid' ? 'Pembayaran Berhasil' : 'Diproses' }}
+                                                        → pengembalian dana).
                                                     </div>
                                                 @endif
                                             </div>

@@ -10,7 +10,7 @@ it('returns 422 json for empty kode when Accept json', function () {
     $this->withHeader('Accept', 'application/json')
         ->post(route('checkout.diskon'), ['kode_diskon' => ''])
         ->assertStatus(422)
-        ->assertJsonPath('errors.kode_diskon.0', 'The kode diskon field is required.');
+        ->assertJsonPath('errors.kode_diskon.0', 'Kode diskon wajib diisi.');
 });
 
 it('returns 302 redirect for empty kode without Accept', function () {

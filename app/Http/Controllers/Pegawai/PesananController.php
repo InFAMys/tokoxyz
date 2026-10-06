@@ -219,6 +219,8 @@ class PesananController extends Controller
 
         $data = $request->validate([
             'cancel_response' => ['required', 'string', 'max:255'],
+        ], [
+            'cancel_response.required' => 'Alasan penolakan wajib diisi.',
         ]);
 
         $checkout = Checkout::findOrFail($id);
