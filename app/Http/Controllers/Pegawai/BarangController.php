@@ -156,7 +156,7 @@ class BarangController extends Controller
             'berat' => ['required', 'numeric', 'min:0.001'],
             'status' => ['required', 'in:Ditampilkan,Disembunyikan'],
             'preorder' => ['required', 'in:Tersedia,Tidak Tersedia'],
-            'estimasi_preorder' => ['nullable', 'required_if:preorder,Tersedia', 'integer', 'min:1'],
+            'estimasi_preorder' => ['nullable', 'required_if:preorder,Tersedia', 'integer', 'min:0'],
         ], [
             'id_brand.required' => 'Brand Harus Diisi!',
             'id_kategori.required' => 'Kategori Harus Diisi!',

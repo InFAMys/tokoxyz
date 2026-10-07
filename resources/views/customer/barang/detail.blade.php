@@ -35,7 +35,7 @@
                     @if ($mainImage)
                         <div class="product-detail-img overflow-hidden">
                             <img id="detail-main-image" src="{{ asset('storage/' . $mainImage) }}"
-                                alt="{{ $barang->nama_barang }}" class="w-100 h-100 object-fit-cover">
+                                alt="{{ $barang->nama_barang }}" class="w-100 h-100 object-fit-contain">
                         </div>
                     @else
                         <div class="product-detail-img">
@@ -89,7 +89,7 @@
                         </h3>
                     @endif
                     <div class="summary-box mb-4">
-                        
+
 
                         @if (!auth('customer')->check())
                             <a href="{{ route('login') }}" class="btn btn-pink w-100">
@@ -121,6 +121,8 @@
                                                         @if ($ukuran->varian)
                                                             - {{ $ukuran->varian }}
                                                         @endif
+                                                        - Rp
+                                                        {{ number_format(!is_null($ukuran->harga_varian) ? $ukuran->harga_varian : $barang->harga, 0, ',', '.') }}
                                                         @if ($isPreorder)
                                                             (Preorder)
                                                         @else
@@ -155,8 +157,8 @@
                                 @if ($isPreorder)
                                     <p class="text-muted small mt-2 mb-0">
                                         <i class="fa-solid fa-circle-info"></i>
-                                        Barang habis. Preorder dibayar penuh di muka dan dikirim
-                                        {{ $barang->estimasi_preorder ? 'sekitar '.$barang->estimasi_preorder.' hari' : 'setelah stok tersedia' }}
+                                        Barang Preorder. Preorder dibayar penuh di muka dan dikirim
+                                        {{ $barang->estimasi_preorder ? 'sekitar ' . $barang->estimasi_preorder . ' hari' : 'setelah stok tersedia' }}
                                         setelah stok tiba.
                                     </p>
                                 @endif
@@ -200,15 +202,46 @@
                     </div>
                     @if ($hasUkuran)
                         <div class="summary-box mb-3">
-                            <div class="form-label-pink">Pilihan Ukuran</div>
+                            <div class="form-label-pink">Pilihan Varian
+                            </div>
                             <div class="mt-3">
+                                <dl class="row mb-3">
+                                    @if ($barang->preorder !== 'Tersedia')
+                                        <dt class="col-sm-2">Kode</dt>
+                                    @else
+                                        <dt class="col-sm-3">Kode</dt>
+                                    @endif
+                                    <dt class="col-sm-4">
+                                        Deskripsi
+                                    </dt>
+                                    @if ($barang->preorder !== 'Tersedia')
+                                        <dt class="col-sm-2">
+                                            Stok
+                                        </dt>
+                                    @endif
+
+                                    <dt class="col-sm-4">
+                                        Harga
+                                    </dt>
+                                </dl>
                                 @foreach ($barang->ukurans as $ukuran)
-                                    <dl class="row mb-2">
-                                        <dt class="col-sm-4">{{ $ukuran->nama_varian }}</dt>
-                                        <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->varian }}</dd>
+                                    <dl class="row mb-3">
                                         @if ($barang->preorder !== 'Tersedia')
-                                            <dd class="col-sm-4 text-muted mb-0">{{ $ukuran->stok_varian }}</dd>
+                                            <dt class="col-sm-2">{{ $ukuran->nama_varian }} </dt>
+                                        @else
+                                            <dt class="col-sm-3">{{ $ukuran->nama_varian }} </dt>
                                         @endif
+                                        <dd class="col-sm-4 text-muted mb-0">
+                                            {{ $ukuran->varian }}
+                                        </dd>
+                                        @if ($barang->preorder !== 'Tersedia')
+                                            <dd class="col-sm-2 text-muted mb-0">
+                                                Stok: {{ $ukuran->stok_varian }}
+                                            </dd>
+                                        @endif
+                                        <dd class="col-sm-4 text-muted mb-0">Rp
+                                            {{ number_format(!is_null($ukuran->harga_varian) ? $ukuran->harga_varian : $barang->harga, 0, ',', '.') }}
+                                        </dd>
                                     </dl>
                                 @endforeach
                             </div>

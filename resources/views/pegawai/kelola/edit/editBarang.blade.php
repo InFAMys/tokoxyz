@@ -182,7 +182,7 @@
 
                 <div class="mb-4">
                     <label for="estimasi_preorder" class="form-label-pink">Estimasi Preorder (hari)</label>
-                    <input id="estimasi_preorder" name="estimasi_preorder" type="number" min="1" step="1"
+                    <input id="estimasi_preorder" name="estimasi_preorder" type="number" min="0" step="1"
                         class="form-control form-control-pink"
                         value="{{ old('estimasi_preorder', $barang->estimasi_preorder) }}">
                     @error('estimasi_preorder')

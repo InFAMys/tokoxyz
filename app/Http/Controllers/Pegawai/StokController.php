@@ -59,15 +59,15 @@ class StokController extends Controller
         $stok = Varian::where('id_varian', $id_u)->first();
 
         $data = $request->validate([
-            'stok' => ['required', 'integer', 'min:0'],
+            'stok.'.$id_u => ['required', 'integer', 'min:0'],
         ],
             [
-                'stok.required' => 'Masukkan Stok!',
-                'stok.integer' => 'Stok Harus Angka!',
-                'stok.min' => 'Stok Tidak Boleh Kurang Dari 0!',
+                'stok.'.$id_u.'.required' => 'Masukkan Stok!',
+                'stok.'.$id_u.'.integer' => 'Stok Harus Angka!',
+                'stok.'.$id_u.'.min' => 'Stok Tidak Boleh Kurang Dari 0!',
             ]);
 
-        $stok->stok_varian = $data['stok'];
+        $stok->stok_varian = $data['stok'][$id_u];
         $stok->update();
 
         return back()->with('estatus-'.$id_u, 'Stok Berhasil Di Ubah!');

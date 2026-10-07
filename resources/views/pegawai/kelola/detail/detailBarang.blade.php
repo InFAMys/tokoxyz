@@ -49,7 +49,7 @@
                     @if ($mainImage)
                         <div class="product-detail-img overflow-hidden">
                             <img id="detail-main-image" src="{{ asset('storage/' . $mainImage) }}"
-                                alt="{{ $barang->nama_barang }}" class="w-100 h-100 object-fit-cover">
+                                alt="{{ $barang->nama_barang }}" class="w-100 h-100 object-fit-contain">
                         </div>
                     @else
                         <div class="product-detail-img">

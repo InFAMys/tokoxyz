@@ -42,11 +42,12 @@
         </div>
 
         @if ($failedRefunds->isNotEmpty())
-            <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+            <div class="alert alert-danger d-flex align-items-center gap-2 mb-4" role="alert">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>
+                <span class="flex-grow-1">
                     {{ $failedRefunds->count() }} pesanan gagal refund otomatis — perlu refund manual di dashboard Midtrans.
                 </span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 

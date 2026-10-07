@@ -195,7 +195,7 @@ const moneyFormat = (raw) => {
 };
 
 document
-    .querySelectorAll("input[name='harga'], input[name='harga_ukuran'], input[name='min'], input[name='max']")
+    .querySelectorAll("input[name='harga'], input[name='harga_varian'], input[name='min'], input[name='max']")
     .forEach((el) => {
         el.value = moneyFormat(el.value);
 
@@ -657,6 +657,20 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
 
     btn.addEventListener("click", () => {
         const statusUrl = btn.dataset.statusUrl;
+        const setLoading = (on) => {
+            if (!on) {
+                if (btn.dataset.originalIcon) {
+                    btn.innerHTML = btn.dataset.originalIcon;
+                    delete btn.dataset.originalIcon;
+                }
+                btn.disabled = false;
+                return;
+            }
+            btn.dataset.originalIcon = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+        };
         const pollStatus = () => {
             if (!statusUrl) return done();
             const maxTries = 20;
@@ -726,9 +740,12 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
                     '<p class="text-danger small mt-2">Gagal memuat pembayaran. Coba lagi.</p>',
                 );
 
+        setLoading(true);
+
         getToken()
             .then((t) =>
                 loadSnap().then(() => {
+                    setLoading(false);
                     window.snap.pay(t, {
                         onSuccess: pollStatus,
                         onPending: pollStatus,
@@ -737,7 +754,10 @@ document.querySelectorAll("textarea[required]").forEach((ta) => {
                     });
                 }),
             )
-            .catch(() => errBox());
+            .catch(() => {
+                setLoading(false);
+                errBox();
+            });
     });
 })();
 

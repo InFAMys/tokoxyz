@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class OwnerAuthController extends Controller
 {
@@ -37,35 +34,6 @@ class OwnerAuthController extends Controller
             ->onlyInput('username');
     }
 
-    public function showRegister()
-    {
-        return view('owner.auth.register');
-    }
-
-    public function register(Request $request)
-    {
-        $data = $request->validate([
-            // 'username' => ['required', 'string', 'max:255'],
-            'username' => [
-                'required', 'string', 'min:3', 'max:255',
-                'regex:/^[A-Za-z0-9][A-Za-z0-9_-]*$/',
-                Rule::unique('owners', 'username'),
-            ],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
-
-        $owner = Owner::create([
-            'username' => $data['username'],
-            'password' => Hash::make($data['password']),
-        ]);
-
-        Auth::guard('owner')->login($owner);
-
-        $request->session()->regenerate();
-
-        return redirect()->route('owner.dashboard');
-    }
-
     public function logout(Request $request)
     {
         Auth::guard('owner')->logout();
@@ -75,6 +43,4 @@ class OwnerAuthController extends Controller
 
         return redirect()->route('owner.login');
     }
-
-    
 }

@@ -48,8 +48,6 @@ Route::prefix('owner')->name('owner.')->group(function () {
         Route::get('/', fn () => redirect()->route('owner.login'));
         Route::get('login', [OwnerAuthController::class, 'showLogin'])->name('login');
         Route::post('login', [OwnerAuthController::class, 'login']);
-        Route::get('register', [OwnerAuthController::class, 'showRegister'])->name('register');
-        Route::post('register', [OwnerAuthController::class, 'register']);
 
     });
 

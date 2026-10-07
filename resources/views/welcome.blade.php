@@ -149,10 +149,15 @@
 
         <!-- Produk Baru -->
         <h5 class="fw-bold text-pink mb-3" id="produk-baru">Produk Baru</h5>
+        @if ($barangNew->isEmpty())
+            <div class="card-pink p-4 text-center mb-4">
+                <p class="mb-0">Belum ada produk baru.</p>
+            </div>
+        @else
         <div class="row g-3 mb-4">
             @foreach ($barangNew as $bn)
-                <a href="{{ route('barang.detail', $bn->id_barang) }}" class="col-6 col-md-3 col-lg-2 text-decoration-none">
-                    <div class="product-card">
+                <a href="{{ route('barang.detail', $bn->id_barang) }}" class="col-6 col-md-3 col-lg-2 h-100 text-decoration-none">
+                    <div class="product-card h-100">
                         <div class="product-img position-relative">
                             <img class="img-fluid" src="{{ asset('storage/' . $bn->thumbnailPath()) }}"
                                 alt="{{ $bn->nama_barang }}" />
@@ -175,14 +180,19 @@
                 </a>
             @endforeach
         </div>
+        @endif
 
         <!-- Paling Banyak Dibeli -->
-        @if ($barangTerlaris->isNotEmpty())
-            <h5 class="fw-bold text-pink mb-3">Paling Banyak Dibeli</h5>
+        <h5 class="fw-bold text-pink mb-3">Paling Banyak Dibeli</h5>
+        @if ($barangTerlaris->isEmpty())
+            <div class="card-pink p-4 text-center mb-4">
+                <p class="mb-0">Belum ada data pembelian.</p>
+            </div>
+        @else
             <div class="row g-3 mb-4">
                 @foreach ($barangTerlaris as $bt)
-                    <a href="{{ route('barang.detail', $bt->id_barang) }}" class="col-6 col-md-3 col-lg-2 text-decoration-none">
-                        <div class="product-card">
+                    <a href="{{ route('barang.detail', $bt->id_barang) }}" class="col-6 col-md-3 col-lg-2 h-100 text-decoration-none">
+                        <div class="product-card h-100">
                             <div class="product-img position-relative">
                                 <img class="img-fluid" src="{{ asset('storage/' . $bt->thumbnailPath()) }}"
                                     alt="{{ $bt->nama_barang }}" />
@@ -209,10 +219,15 @@
 
         <!-- Rekomendasi -->
         <h5 class="fw-bold text-pink mb-3">Rekomendasi Untukmu</h5>
+        @if ($barangRand->isEmpty())
+            <div class="card-pink p-4 text-center mb-4">
+                <p class="mb-0">Belum ada rekomendasi produk.</p>
+            </div>
+        @else
         <div class="row g-3 mb-4">
             @foreach ($barangRand as $br)
-                <a href="{{ route('barang.detail', $br->id_barang) }}" class="col-6 col-md-3 col-lg-2 text-decoration-none">
-                    <div class="product-card">
+                <a href="{{ route('barang.detail', $br->id_barang) }}" class="col-6 col-md-3 col-lg-2 h-100 text-decoration-none">
+                    <div class="product-card h-100">
                         <div class="product-img position-relative">
                             <img class="img-fluid" src="{{ asset('storage/' . $br->thumbnailPath()) }}"
                                 alt="{{ $br->nama_barang }}" />
@@ -235,6 +250,7 @@
                 </a>
             @endforeach
         </div>
+        @endif
 
         <!-- Tentang Kami / Profil Perusahaan -->
         <div class="card border-0 shadow-sm mb-4 overflow-hidden">

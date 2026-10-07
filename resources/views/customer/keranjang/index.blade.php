@@ -91,6 +91,9 @@
                         <a href="{{ route('barang.detail', $barang->id_barang) }}" class="text-decoration-none text-dark">
                             <h2 class="h6 fw-bold mb-1">{{ $barang->nama_barang }}</h2>
                         </a>
+                        @if ($isPreorder)
+                            <span class="badge text-bg-warning mb-1">Preorder</span>
+                        @endif
                     @else
                         <h2 class="h6 fw-bold mb-1 text-muted">{{ $barang?->nama_barang ?? 'Barang tidak tersedia' }}</h2>
                     @endif
