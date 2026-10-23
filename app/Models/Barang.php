@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 #[Table(key: 'id_barang')]
 class Barang extends Model
@@ -73,5 +74,36 @@ class Barang extends Model
     public function thumbnailPath(): ?string
     {
         return $this->thumbnail ?? $this->foto[0] ?? null;
+    }
+
+    public function galleryPaths(): array
+    {
+        $photos = collect($this->foto ?? [])->filter();
+        $thumbnail = $this->thumbnail;
+
+        if ($thumbnail && $photos->isNotEmpty()) {
+            $photoHashes = $photos->map(fn (string $path) => $this->imageHash($path))->flip();
+            if ($photoHashes->has($this->imageHash($thumbnail))) {
+                $thumbnail = null;
+            }
+        }
+
+        return collect([$thumbnail])
+            ->merge($photos)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    protected function imageHash(string $path): string
+    {
+        $key = 'img-hash-'.sha1($path);
+
+        return cache()->rememberForever($key, function () use ($path) {
+            $hash = @md5_file(Storage::disk('public')->path($path));
+
+            return $hash === false ? $path : $hash;
+        });
     }
 }

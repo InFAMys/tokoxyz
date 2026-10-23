@@ -74,6 +74,9 @@
                                 @endif
                             </div>
                             <div class="card-body">
+                                @if ($b->brand)
+                                    <span class="badge text-bg-light text-pink mb-1">{{ $b->brand->nama_brand }}</span>
+                                @endif
                                 <div class="product-name">{{ $b->nama_barang }}</div>
                                 <div class="product-price">@include('customer.partials.harga', ['item' => $b])</div>
                             </div>

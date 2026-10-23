@@ -4,11 +4,7 @@
 
 @php
     $activ = 'barang';
-    $galleryImages = collect([$barang->thumbnail])
-        ->merge($barang->foto ?? [])
-        ->filter()
-        ->unique()
-        ->values();
+    $galleryImages = collect($barang->galleryPaths());
     $mainImage = $galleryImages->first();
     $hasUkuran = $stok != null;
     $stokReady = $hasUkuran ? $stok->sum('stok_varian') : $barang->stok;
@@ -75,7 +71,7 @@
                     <div class="row g-3 mt-3">
                         <div class="summary-box mb-4">
                             <div class="form-label-pink">Deskripsi</div>
-                            <p class="mb-0">{{ $barang->deskripsi }}</p>
+                            <p class="mb-0">{!! nl2br(e($barang->deskripsi)) !!}</p>
                         </div>
                     </div>
                 </div>

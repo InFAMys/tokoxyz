@@ -190,6 +190,7 @@ const toIntegerDigits = (s) => {
 };
 const moneyFormat = (raw) => {
     const digits = toIntegerDigits(raw);
+    if (digits === "") return "";
     const num = Number(digits);
     return Number.isNaN(num) ? "" : num.toLocaleString("id-ID");
 };

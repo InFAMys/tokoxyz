@@ -56,8 +56,7 @@
                         <div class="card-pink p-3 mb-3">
                             <div class="form-check mb-2">
                                 <input class="form-check-input keranjang-check" type="checkbox"
-                                    value="{{ $item->id_keranjang }}" id="check-{{ $item->id_keranjang }}"
-                                    @checked($isAvailable)>
+                                    value="{{ $item->id_keranjang }}" id="check-{{ $item->id_keranjang }}">
                                 <label class="form-check-label small text-muted" for="check-{{ $item->id_keranjang }}">
                                     Pilih untuk checkout
                                 </label>

@@ -243,10 +243,29 @@ class CheckoutStatusService
     protected function trackingIsDelivered(string $noResi): bool
     {
         try {
-            return $this->hasDeliveredMarker($this->klikresi->tracking($noResi));
+            $data = $this->klikresi->tracking($noResi);
+            $histories = is_array($data['histories'] ?? null) ? $data['histories'] : [];
         } catch (Throwable) {
             return false;
         }
+
+        $latest = collect($histories)
+            ->filter(fn ($h) => is_array($h))
+            ->sortByDesc('date')
+            ->first();
+
+        if (! $latest) {
+            return false;
+        }
+
+        $latestStatus = trim((string) ($latest['status'] ?? ''));
+        $latestMessage = trim((string) ($latest['message'] ?? ''));
+
+        if ($latestStatus !== '') {
+            return $this->hasDeliveredMarker($latestStatus);
+        }
+
+        return $this->hasDeliveredMarker($latestMessage);
     }
 
     protected function isFakeResi(string $noResi): bool

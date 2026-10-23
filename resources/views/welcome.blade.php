@@ -51,7 +51,7 @@
                                                 @include('customer.partials.harga', ['item' => $sl])
                                             </div>
                                             <p class="d-none d-md-block mb-4" style="opacity:0.9">
-                                                {{ \Illuminate\Support\Str::limit(strip_tags($sl->deskripsi), 120) }}
+                                                {!! nl2br(e(\Illuminate\Support\Str::limit(strip_tags($sl->deskripsi), 120))) !!}
                                             </p>
                                             <span class="btn btn-light"
                                                 style="color:var(--pink-600);font-weight:700;border-radius:25px;padding:0.5rem 1.5rem">
@@ -171,6 +171,9 @@
                             @endif
                         </div>
                         <div class="card-body">
+                            @if ($bn->brand)
+                                <span class="badge text-bg-light text-pink mb-1">{{ $bn->brand->nama_brand }}</span>
+                            @endif
                             <div class="product-name">{{ $bn->nama_barang }}</div>
                             <div class="product-price">
                                 @include('customer.partials.harga', ['item' => $bn])
@@ -206,7 +209,10 @@
                                 @endif
                             </div>
                             <div class="card-body">
-                                <div class="product-name">{{ $bt->nama_barang }}</div>
+                                @if ($bt->brand)
+                                    <span class="badge text-bg-light text-pink mb-1">{{ $bt->brand->nama_brand }}</span>
+                                @endif
+                            <div class="product-name">{{ $bt->nama_barang }}</div>
                                 <div class="product-price">
                                     @include('customer.partials.harga', ['item' => $bt])
                                 </div>
@@ -241,6 +247,9 @@
                             @endif
                         </div>
                         <div class="card-body">
+                            @if ($br->brand)
+                                <span class="badge text-bg-light text-pink mb-1">{{ $br->brand->nama_brand }}</span>
+                            @endif
                             <div class="product-name">{{ $br->nama_barang }}</div>
                             <div class="product-price">
                                 @include('customer.partials.harga', ['item' => $br])
